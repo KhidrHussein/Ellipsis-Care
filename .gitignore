@@ -4,3 +4,6 @@ venv
 /include/
 /lib/
 pyvenv.cfg
+/data/
+/share/
+/Ellipsis-Care-Chroma-Vector-DB/
