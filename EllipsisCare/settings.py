@@ -54,6 +54,9 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
 ]
 
+
+AUTH_USER_MODEL = 'api.CustomUser'
+
 SITE_ID = 1
 
 # Djoser settings for email authentication
@@ -64,7 +67,7 @@ DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'activate/{uid}/{token}',
     'SERIALIZERS': {
-        'user_create': 'api.serializers.UserCreateSerializer',
+        'user_create': 'api.serializers.UserSerializer',
         'user': 'api.serializers.UserSerializer',
     },
 }
@@ -87,14 +90,17 @@ REST_FRAMEWORK = {
 
 # Email backend settings for sending authentication emails
 from decouple import config
+import logging
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+logging.basicConfig(level=logging.DEBUG)
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
 
 # Allauth settings
 ACCOUNT_EMAIL_REQUIRED = True
@@ -158,7 +164,7 @@ WSGI_APPLICATION = 'EllipsisCare.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'EllipsisCareDB',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',

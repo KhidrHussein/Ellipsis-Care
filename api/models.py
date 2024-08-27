@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from datetime import date
+from EllipsisCare import settings
 
 from datetime import date
 from django.core.exceptions import ValidationError
@@ -10,13 +11,54 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.db import models
+from .managers import CustomUserManager
+
+    # def create_user(self, email, password=None, username=None, **extra_fields):
+    #     if not email:
+    #         raise ValueError("The Email field must be set")
+    #     email = self.normalize_email(email)
+    #     user = self.model(email=email, username=username, **extra_fields)
+    #     user.set_password(password)
+    #     user.save(using=self._db)
+    #     return user
+
+    # def create_superuser(self, email, password=None, username=None, **extra_fields):
+    #     extra_fields.setdefault('is_staff', True)
+    #     extra_fields.setdefault('is_superuser', True)
+
+    #     if extra_fields.get('is_staff') is not True:
+    #         raise ValueError('Superuser must have is_staff=True.')
+    #     if extra_fields.get('is_superuser') is not True:
+    #         raise ValueError('Superuser must have is_superuser=True.')
+
+    #     return self.create_user(email, password, username, **extra_fields)
+
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=30, unique=True, null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(auto_now_add=True)
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []  # If you want the username to be optional, leave this empty
+
+    def __str__(self):
+        return self.email
+
+
 class UserProfile(models.Model):
     GENDER_CHOICES = [
         ('M', 'Male'),
         ('F', 'Female'),
         ('P', 'Prefer not to say'),
     ]
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date_of_birth = models.DateField(null=True, blank=True)
 
     # Ensure the date is valid
@@ -121,7 +163,7 @@ class MealPlan(models.Model):
 
 
 class Appointment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     doctor_name = models.CharField(max_length=255)
     hospital_name = models.CharField(max_length=255)
     appointment_date = models.DateTimeField()
@@ -137,7 +179,7 @@ class Appointment(models.Model):
 
 
 class Audio(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     audio_file = models.FileField(upload_to='audio_files/')
     transcription = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -2,23 +2,43 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from .models import UserProfile, Medication, HealthCondition, MealPlan, Meal, Appointment, User, Audio
 
-User = get_user_model()
+# User = get_user_model()
+
+# class UserSerializer(serializers.ModelSerializer):
+#     password = serializers.CharField(write_only=True)
+
+#     class Meta:
+#         model = User
+#         fields = ['email', 'password', 'username']
+#         extra_kwargs = {'username': {'required': False, 'allow_blank': True}}
+
+#     def create(self, validated_data):
+#         user = User.objects.create_user(
+#             username=validated_data.get('username', ''),  # Default to an empty string if username is optional
+#             email=validated_data['email'],
+#             password=validated_data['password']
+#         )
+#         return user
+
+from .models import CustomUser
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password']
+        model = CustomUser
+        fields = ['email', 'password', 'username']
+        extra_kwargs = {'username': {'required': False, 'allow_blank': True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data['username'],
+        user = CustomUser.objects.create_user(
             email=validated_data['email'],
-            password=validated_data['password']
+            password=validated_data['password'],
+            username=validated_data.get('username', '')  # Optional username
         )
         return user
-    
+
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:

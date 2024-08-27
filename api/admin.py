@@ -1,8 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
-from .models import UserProfile, HealthCondition, Medication, Meal, MealPlan, Appointment, Audio
+from .models import UserProfile, HealthCondition, Medication, Meal, MealPlan, Appointment, Audio, CustomUser
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django import forms
+
+# admin.site.unregister(User)
 
 # Define a custom form for user creation and change
 class UserCreationForm(forms.ModelForm):
@@ -10,7 +12,7 @@ class UserCreationForm(forms.ModelForm):
     password2 = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ('username', 'email')
 
     def clean_password2(self):
@@ -29,28 +31,39 @@ class UserCreationForm(forms.ModelForm):
 
 class UserChangeForm(forms.ModelForm):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ('username', 'email', 'is_active', 'is_staff', 'is_superuser')
 
-# Custom UserAdmin class
-class UserAdmin(DefaultUserAdmin):
+
+@admin.register(CustomUser)
+class CustomUserAdmin(admin.ModelAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('username', 'email', 'is_staff', 'is_superuser')
-    list_filter = ('is_staff', 'is_superuser')
-    fieldsets = (
-        (None, {'fields': ('username', 'email', 'password')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
-    )
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2'),
-        }),
-    )
-    search_fields = ('username', 'email')
-    ordering = ('username',)
+    list_display = ('email', 'username', 'is_staff', 'is_active')
+    search_fields = ('email', 'username')
+    list_filter = ('is_staff', 'is_active')
+
+
+# Custom UserAdmin class
+# class UserAdmin(DefaultUserAdmin):
+#     form = UserChangeForm
+#     add_form = UserCreationForm
+
+#     list_display = ('username', 'email', 'is_staff', 'is_superuser')
+#     list_filter = ('is_staff', 'is_superuser')
+#     fieldsets = (
+#         (None, {'fields': ('username', 'email', 'password')}),
+#         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+#     )
+#     add_fieldsets = (
+#         (None, {
+#             'classes': ('wide',),
+#             'fields': ('username', 'email', 'password1', 'password2'),
+#         }),
+#     )
+#     search_fields = ('username', 'email')
+#     ordering = ('username',)
 
 
 @admin.register(UserProfile)
@@ -89,8 +102,8 @@ class AppointmentAdmin(admin.ModelAdmin):
     list_filter = ('appointment_date', 'status')
 
 # Register the custom UserAdmin
-admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+# admin.site.unregister(User)
+# admin.site.register(User, CustomUserAdmin)
 
 @admin.register(Audio)
 class AudioAdmin(admin.ModelAdmin):

@@ -3,21 +3,34 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.auth import get_user_model
 from .models import User, UserProfile, Medication, HealthCondition, MealPlan, Appointment, Audio
 from .serializers import UserSerializer,UserProfileSerializer, MedicationSerializer, HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer
 
 from .utils import transcribe_audio
 from rest_framework.parsers import MultiPartParser, FormParser
 
+# class UserCreateViewSet(viewsets.ModelViewSet):
+#     serializer_class = UserSerializer
+
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         self.perform_create(serializer)
+#         headers = self.get_success_headers(serializer.data)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+# class UserCreateViewSet(viewsets.ModelViewSet):
+#     serializer_class = UserSerializer
+#     queryset = get_user_model().objects.all()
+
+from .models import CustomUser
+
 class UserCreateViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
+    queryset = CustomUser.objects.all()
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
