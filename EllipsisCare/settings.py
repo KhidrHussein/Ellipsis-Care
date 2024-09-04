@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-twmmpoch5h^9e#b_cox3ihpmnpn_ep0pf-nvir7ljqce%ipp2&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '3ebc-102-89-46-141.ngrok-free.app']
 
 
 # Application definition
@@ -37,10 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     #apps I installed
     'api',
     'rest_framework',
-    'django_celery_beat',
+
+    # scheduling apps
+    # 'django_celery_beat',
+    # 'django_q',
+    'django_apscheduler',
 
     # authentication
     'rest_framework.authtoken',
@@ -52,6 +57,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',  # or any other provider
     'dj_rest_auth',
     'dj_rest_auth.registration',
+    'django_extensions',
 ]
 
 
@@ -63,7 +69,7 @@ SITE_ID = 1
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
-    'SEND_CONFIRMATION_EMAIL': True,
+    'SEND_CONFIRMATION_EMAIL': False,
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'activate/{uid}/{token}',
     'SERIALIZERS': {
@@ -96,7 +102,7 @@ logging.basicConfig(level=logging.DEBUG)
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
-EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool)
+# EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
@@ -112,12 +118,13 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': 'your-client-id',
-            'secret': 'your-secret',
+            'client_id': config('GOOGLE_CLIENT_ID'),
+            'secret': '',
             'key': ''
         }
     }
 }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -247,4 +254,16 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'INFO',
     },
+}
+
+# PythonQ configuration
+Q_CLUSTER = {
+    'name': 'DjangoQ',
+    'workers': 4,
+    'recycle': 500,
+    'timeout': 60,
+    'retry': 120,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default',
 }

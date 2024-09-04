@@ -1,31 +1,18 @@
-from celery import shared_task
-from .models import Medication
 from django.utils import timezone
-import logging
+from .models import Medication
 
-@shared_task
-def test_task():
-    print("Task successfully executed!")
+def medication_reminder_job():
+    now = timezone.now()
+    medications = Medication.objects.filter(is_active=True, reminder_time__lte=now.time(), end_date__gte=now.date())
 
-# logger = logging.getLogger(__name__)
+    for medication in medications:
+        if medication.last_reminded and medication.last_reminded.date() == now.date():
+            continue
 
-# @shared_task
-# def send_medication_reminders():
-#     logger.info("Medication reminder task triggered")
-#     now = timezone.now()
-#     medications = Medication.objects.filter(is_active=True, reminder_time__lte=now.time(), end_date__gte=now.date())
+        # Add your reminder sending logic here
+        print(f"Reminder: {medication.name} for {medication.user_profile.user.username}")
 
-#     for medication in medications:
-#         if medication.last_reminded and medication.last_reminded.date() == now.date():
-#             continue
+        medication.last_reminded = now
+        medication.save()
 
-#         # Send the reminder
-#         send_reminder(medication)
-
-#         medication.last_reminded = now
-#         medication.save()
-
-# def send_reminder(medication):
-#     user = medication.user_profile.user
-#     message = f"Reminder to take your medication: {medication.dosage} of {medication.name} Now!!!"
-#     logger.info(f"Sending reminder to {user.username}: {message}")
+    print("Medication reminders checked and sent if necessary.")

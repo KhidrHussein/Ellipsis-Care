@@ -1,43 +1,19 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import UserProfile, Medication, HealthCondition, MealPlan, Meal, Appointment, User, Audio
+from .models import UserProfile, Medication, HealthCondition, MealPlan, Meal, Appointment, Audio, CustomUser
 
-# User = get_user_model()
-
-# class UserSerializer(serializers.ModelSerializer):
-#     password = serializers.CharField(write_only=True)
-
-#     class Meta:
-#         model = User
-#         fields = ['email', 'password', 'username']
-#         extra_kwargs = {'username': {'required': False, 'allow_blank': True}}
-
-#     def create(self, validated_data):
-#         user = User.objects.create_user(
-#             username=validated_data.get('username', ''),  # Default to an empty string if username is optional
-#             email=validated_data['email'],
-#             password=validated_data['password']
-#         )
-#         return user
-
-from .models import CustomUser
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'username']
-        extra_kwargs = {'username': {'required': False, 'allow_blank': True}}
+        fields = ['email', 'username', 'password']  # Include the fields you need
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password'],
-            username=validated_data.get('username', '')  # Optional username
-        )
+        user = CustomUser.objects.create_user(**validated_data)
+        user.is_active = False  # Deactivate the user until they verify their email
+        user.save()
         return user
-
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
