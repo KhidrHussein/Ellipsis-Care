@@ -72,4 +72,4 @@ def synthesize_speech(text, file_prefix):
     return f"{file_prefix}_output.wav"
 
 # Example usage
-synthesize_speech("I am excited to try text to speech", "example")
+# synthesize_speech("I am excited to try text to speech", "example")
