@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from datetime import date
+from EllipsisCare import settings
 
 from datetime import date
 from django.core.exceptions import ValidationError
@@ -10,13 +11,39 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.db import models
+from .managers import CustomUserManager
+
+
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=30, unique=True, null=True, blank=True)
+    first_name = models.CharField(max_length=30, blank=True, null=True)  # Optional
+    last_name = models.CharField(max_length=30, blank=True, null=True)   # Optional
+    is_active = models.BooleanField(default=False)  # Set default to False
+    is_staff = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    is_verified = models.BooleanField(default=False)  # To track if the user has verified their email
+    verification_code = models.CharField(max_length=6, blank=True, null=True)  # To store the 6-digit code
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []  # No required fields by default
+
+    def __str__(self):
+        return self.email
+
+
 class UserProfile(models.Model):
     GENDER_CHOICES = [
         ('M', 'Male'),
         ('F', 'Female'),
         ('P', 'Prefer not to say'),
     ]
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date_of_birth = models.DateField(null=True, blank=True)
 
     # Ensure the date is valid
@@ -42,7 +69,7 @@ class UserProfile(models.Model):
     emergency_contact = models.CharField(max_length=15, blank=True)
 
     def __str__(self):
-        return f"{self.user.get_full_name() or self.user.username}"
+        return f"{self.user.username}"
 
 
 class HealthCondition(models.Model):
@@ -53,6 +80,7 @@ class HealthCondition(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Medication(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='medications')
@@ -79,6 +107,7 @@ class Meal(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class MealPlan(models.Model):
     WEEKDAYS = [
@@ -121,7 +150,7 @@ class MealPlan(models.Model):
 
 
 class Appointment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     doctor_name = models.CharField(max_length=255)
     hospital_name = models.CharField(max_length=255)
     appointment_date = models.DateTimeField()
@@ -137,7 +166,7 @@ class Appointment(models.Model):
 
 
 class Audio(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     audio_file = models.FileField(upload_to='audio_files/')
     transcription = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

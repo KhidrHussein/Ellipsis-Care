@@ -1,8 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
-from .models import UserProfile, HealthCondition, Medication, Meal, MealPlan, Appointment, Audio
+from .models import UserProfile, HealthCondition, Medication, Meal, MealPlan, Appointment, Audio, CustomUser
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django import forms
+
+from django_apscheduler.models import DjangoJob, DjangoJobExecution
 
 # Define a custom form for user creation and change
 class UserCreationForm(forms.ModelForm):
@@ -10,8 +12,8 @@ class UserCreationForm(forms.ModelForm):
     password2 = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
-        model = User
-        fields = ('username', 'email')
+        model = CustomUser
+        fields = ('username', 'email', 'first_name', 'last_name')
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -27,30 +29,21 @@ class UserCreationForm(forms.ModelForm):
             user.save()
         return user
 
+
 class UserChangeForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ('username', 'email', 'is_active', 'is_staff', 'is_superuser')
+        model = CustomUser
+        fields = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'is_superuser')
 
-# Custom UserAdmin class
-class UserAdmin(DefaultUserAdmin):
+
+@admin.register(CustomUser)
+class CustomUserAdmin(admin.ModelAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('username', 'email', 'is_staff', 'is_superuser')
-    list_filter = ('is_staff', 'is_superuser')
-    fieldsets = (
-        (None, {'fields': ('username', 'email', 'password')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
-    )
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2'),
-        }),
-    )
-    search_fields = ('username', 'email')
-    ordering = ('username',)
+    list_display = ('email', 'username', 'first_name', 'last_name', 'is_staff', 'is_active')
+    search_fields = ('email', 'username',  'first_name', 'last_name')
+    list_filter = ('is_staff', 'is_active')
 
 
 @admin.register(UserProfile)
@@ -88,9 +81,6 @@ class AppointmentAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'doctor_name', 'hospital_name')
     list_filter = ('appointment_date', 'status')
 
-# Register the custom UserAdmin
-admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
 
 @admin.register(Audio)
 class AudioAdmin(admin.ModelAdmin):
@@ -109,3 +99,7 @@ class AudioAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         """Enable deletion of audio files from the admin panel"""
         return True
+    
+
+# admin.site.register(DjangoJob)
+# admin.site.register(DjangoJobExecution)
