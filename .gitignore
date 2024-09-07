@@ -8,3 +8,4 @@ pyvenv.cfg
 /share/
 /Ellipsis-Care-Chroma-Vector-DB/
 *.wav
+*.DS_Store
