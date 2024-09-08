@@ -1,4 +1,4 @@
-from config.database import collection
+from rag_implementation.config.database import collection
 def serializer(record):
     return {
         "id": str(record["_id"]),

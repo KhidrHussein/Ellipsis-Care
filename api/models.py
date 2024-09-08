@@ -169,6 +169,8 @@ class Audio(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     audio_file = models.FileField(upload_to='audio_files/')
     transcription = models.TextField(blank=True, null=True)
+    ai_response = models.TextField(blank=True, null=True)  # Field to store AI-generated response
+    synthesized_audio = models.FileField(upload_to='synthesized_audio/', blank=True, null=True)  # Field to store path to synthesized audio file
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
