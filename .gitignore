@@ -6,6 +6,6 @@ venv
 pyvenv.cfg
 /data/
 /share/
-# /Ellipsis-Care-Chroma-Vector-DB/
+/Ellipsis-Care-Chroma-Vector-DB/
 *.wav
 *.DS_Store
