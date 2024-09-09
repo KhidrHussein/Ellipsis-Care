@@ -74,7 +74,7 @@ class _SigninState extends State<Signin> {
               SizedBox(height: 12.h),
               FilledButton(
                 onPressed: () {
-                  UtilHelpers.pushRoute(RouteNames.verifyEmail);
+                  UtilHelpers.pushRoute(RouteNames.dashboard);
                 },
                 child: const Text("Continue"),
               ),

@@ -3,11 +3,20 @@ import 'package:ellipsis_care/src/features/authentication/presentation/view/forg
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signin.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signup.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/verify_email.dart';
+import 'package:ellipsis_care/src/features/charts/presentation/views/charts.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/views/dashboard.dart';
+import 'package:ellipsis_care/src/features/emergency/presentation/views/emergency.dart';
+import 'package:ellipsis_care/src/features/onboarding/cubit/cubit.dart';
 import 'package:ellipsis_care/src/features/onboarding/onboarding.dart';
+import 'package:ellipsis_care/src/features/reminders/presentation/views/reminders.dart';
+import 'package:ellipsis_care/src/features/settings/presentation/views/settings.dart';
+import 'package:ellipsis_care/src/shared/navigator_shell/navigator_shell.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final GlobalKey<NavigatorState> _routerKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
   initialLocation: "/",
@@ -17,8 +26,14 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/',
       name: RouteNames.onboarding,
-      pageBuilder: (context, state) =>
-          const MaterialPage<Onboarding>(child: Onboarding()),
+      pageBuilder: (context, state) {
+        return MaterialPage<Onboarding>(
+          child: BlocProvider(
+            create: (context) => OnboardingCubit(),
+            child: const Onboarding(),
+          ),
+        );
+      },
     ),
     GoRoute(
       path: '/sign-up',
@@ -46,5 +61,51 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) =>
           const MaterialPage<ForgotPassword>(child: ForgotPassword()),
     ),
+    ShellRoute(
+      navigatorKey: _shellKey,
+      builder: (context, state, child) {
+        return BlocProvider(
+          create: (context) => NavigationRowCubit(),
+          child: NavigatorShell(child: child),
+        );
+      },
+      routes: [
+        GoRoute(
+          path: '/dashboard',
+          name: RouteNames.dashboard,
+          pageBuilder: (context, state) => const MaterialPage<Dashboard>(
+            child: Dashboard(),
+          ),
+        ),
+        GoRoute(
+          path: '/reminders',
+          name: RouteNames.reminders,
+          pageBuilder: (context, state) => const MaterialPage<Reminders>(
+            child: Reminders(),
+          ),
+        ),
+        GoRoute(
+          path: '/emergency',
+          name: RouteNames.emergency,
+          pageBuilder: (context, state) => const MaterialPage<Emergency>(
+            child: Emergency(),
+          ),
+        ),
+        GoRoute(
+          path: '/charts',
+          name: RouteNames.charts,
+          pageBuilder: (context, state) => const MaterialPage<Charts>(
+            child: Charts(),
+          ),
+        ),
+        GoRoute(
+          path: '/settings',
+          name: RouteNames.settings,
+          pageBuilder: (context, state) => const MaterialPage<Settings>(
+            child: Settings(),
+          ),
+        ),
+      ],
+    )
   ],
 );

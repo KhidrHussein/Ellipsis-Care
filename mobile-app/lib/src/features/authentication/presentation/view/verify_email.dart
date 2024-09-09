@@ -1,8 +1,11 @@
+import 'package:ellipsis_care/config/router/route_names.dart';
+import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:ellipsis_care/core/extensions/context_ext.dart';
-import 'package:ellipsis_care/src/features/authentication/presentation/widgets/otp_field.dart';
+
+import '../widgets/otp_field.dart';
 
 class VerifyEmail extends StatefulWidget {
   const VerifyEmail({super.key});
@@ -50,6 +53,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
               FilledButton(
                 onPressed: () {
                   debugPrint(_otpController.text);
+                  UtilHelpers.clearPreviousAndPushRoute(RouteNames.signIn);
                 },
                 child: const Text("Continue"),
               ),

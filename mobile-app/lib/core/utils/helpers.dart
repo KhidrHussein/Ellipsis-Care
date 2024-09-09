@@ -5,6 +5,10 @@ class UtilHelpers {
     router.pushNamed(routeName);
   }
 
+  static void clearPreviousAndPushRoute(String routeName) {
+    router.goNamed(routeName);
+  }
+
   static void popRoute() {
     router.pop();
   }

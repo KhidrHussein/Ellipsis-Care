@@ -6,6 +6,7 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     fontFamily: 'Manrope',
     colorSchemeSeed: AppColors.primary,
+  
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
         textStyle: WidgetStatePropertyAll(
