@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
-from functions import elementary_db, junior_db, senior_db, prompt_setup
+from functions import prompt_setup
 from functions import context_document_retreival_similarity, get_conversation_summary
 from functions import qa_response
 from config.database import collection
@@ -11,7 +11,7 @@ from bson import ObjectId
 users = [
     {
         "name": "",
-        "email_adderess" : "",
+        "email_address" : "",
         "full_history": [],
         "buffer_history": []
     }
@@ -25,7 +25,7 @@ class User(BaseModel):
 
 class UpdateUser(BaseModel):
     name: Optional[str] = None
-    email_adderess: Optional[str] = None
+    email_address: Optional[str] = None
     full_history: Optional[list] = None
     buffer_history: Optional[list] = None
 
@@ -38,7 +38,7 @@ def create_user(user: User):
     # users[user_id] = user
     new_user = dict(user)
     collection.insert_one(new_user)
-    return serializer(collection.find_one({"email_adderess": new_user["email_adderess"]}))
+    return serializer(collection.find_one({"email_address": new_user["email_address"]}))
 
 
 def update_user(user_id: str, user: UpdateUser):
@@ -55,10 +55,10 @@ def update_user(user_id: str, user: UpdateUser):
     else:
         update_data['name'] = existing_user['name']
 
-    if user.email_adderess != None:
-        update_data['email_adderess'] = user.email_adderess
+    if user.email_address != None:
+        update_data['email_address'] = user.email_address
     else:
-        update_data['email_adderess'] = existing_user['email_adderess']
+        update_data['email_address'] = existing_user['email_address']
 
     if user.full_history != None:
         update_data['full_history'] = user.full_history
@@ -85,6 +85,8 @@ def rag_response(user_id: str, query: str, knowledge_base: str):
 
     documents, sources = context_document_retreival_similarity(new_question)
     full_prompt = prompt_template.format(history="\n".join(buffer_history), question=new_question, context=documents)
+    # print(full_prompt)
+    # print()
     response = qa_response(full_prompt)
 
     full_history.append(f"Human: {query}")

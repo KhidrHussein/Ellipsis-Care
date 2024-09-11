@@ -49,7 +49,7 @@ vector_store_ellipsis = Chroma(
 def prompt_setup():
     template_s = """
     Use the following context (delimited by <ctx></ctx>) and the chat history (delimited by <hs></hs>) to answer the user's question. 
-    If you don't know the answer, just say that you don't know, don't try to make up an answer.
+    If you don't know the answer or the context doesn't provide details, just say that you don't know, don't try to make up an answer. Never mention that you are an AI.
     ------
     <ctx>
     {context}
@@ -75,7 +75,7 @@ import langchain
 langchain.verbose = False
 
 def context_document_retreival_similarity(question_summary):
-    results = vector_store_ellipsis.similarity_search(question_summary, k=5)
+    results = vector_store_ellipsis.similarity_search(question_summary, k=3)
     context = ""
     check_sources = set()
     sources = []
@@ -91,7 +91,7 @@ def context_document_retreival_similarity(question_summary):
             sources.append(cur_source)
         else:
             for source in sources:
-                if source["source"] == new_source:
+                if source["source"] == new_source and result.metadata['page'] not in source["page_number"]:
                     source["page_number"].append(result.metadata['page'])
 
     return context, sources
@@ -146,7 +146,7 @@ def qa_response(prompt):
         engine="Voicetask",  # Replace with your Azure OpenAI deployment name
         # prompt=formatted_prompt,
         messages=[
-            # {"role": "system", "content": "You are a helpful assistant vast in the Bible and its Doctrines."},
+            {"role": "system", "content": "You are a health expert and experienced medical practitioner. Use the contexts and chat history to answer the user's question.  Never mention that you are an AI."},
             {"role": "user", "content": prompt}
         ],
         # max_tokens=50,
