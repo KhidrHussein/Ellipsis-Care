@@ -1,17 +1,18 @@
 from typing import Optional
-from pydantic import BaseModel
-from functions import prompt_setup
-from functions import context_document_retreival_similarity, get_conversation_summary
-from functions import qa_response
-from config.database import collection
-from schemas.schema import serializer
+from pydantic import BaseModel, EmailStr
+# from .functions import elementary_db, junior_db, senior_db, prompt_setup
+from .functions import prompt_setup
+from .functions import context_document_retreival_similarity, get_conversation_summary
+from .functions import qa_response
+from .config.database import collection
+from .schemas.schema import serializer
 
 from bson import ObjectId
 
 users = [
     {
         "name": "",
-        "email_address" : "",
+        "email_address" : "",   # same typo here, corrected the spelling
         "full_history": [],
         "buffer_history": []
     }
@@ -19,18 +20,24 @@ users = [
 
 class User(BaseModel):
     name: str
-    email_adderess: str
+    email_address: EmailStr           # same typo here, also changed from str to email str
     full_history: list
     buffer_history: list
 
 class UpdateUser(BaseModel):
     name: Optional[str] = None
-    email_address: Optional[str] = None
+    email_address: Optional[str] = None        # and here
     full_history: Optional[list] = None
     buffer_history: Optional[list] = None
 
 def get_user(user_id: str):
     return serializer(collection.find_one({"_id": ObjectId(user_id)}))
+
+
+# Changes I made to allow getting the user by email
+def get_user_by_email(email: str):
+    return serializer(collection.find_one({"email_address": email}))       # here too
+
 
 def create_user(user: User):
     # if user_id in users:
@@ -38,7 +45,7 @@ def create_user(user: User):
     # users[user_id] = user
     new_user = dict(user)
     collection.insert_one(new_user)
-    return serializer(collection.find_one({"email_address": new_user["email_address"]}))
+    return serializer(collection.find_one({"email_address": new_user["email_address"]})) # there was a typo here so I changed it 
 
 
 def update_user(user_id: str, user: UpdateUser):
@@ -56,9 +63,9 @@ def update_user(user_id: str, user: UpdateUser):
         update_data['name'] = existing_user['name']
 
     if user.email_address != None:
-        update_data['email_address'] = user.email_address
+        update_data['email_address'] = user.email_address          # here too
     else:
-        update_data['email_address'] = existing_user['email_address']
+        update_data['email_address'] = existing_user['email_address']   # and here
 
     if user.full_history != None:
         update_data['full_history'] = user.full_history
