@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from .scheduler import start
+import threading
 
 class ApiConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
@@ -8,6 +8,8 @@ class ApiConfig(AppConfig):
     def ready(self):
         # Import signals
         import api.signals
-        
-        # Start the APScheduler when the Django app is ready
-        start()
+
+        # Start the APScheduler in a new thread to prevent blocking
+        from .scheduler import start
+        scheduler_thread = threading.Thread(target=start)
+        scheduler_thread.start()
