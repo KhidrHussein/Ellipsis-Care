@@ -54,9 +54,8 @@ class AppointmentSerializer(serializers.ModelSerializer):
 class AudioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Audio
-        fields = ['id', 'transcription', 'created_at']  # Exclude 'user'
-        read_only_fields = ['transcription', 'created_at']  # These will be auto-set
+        fields = ['id', 'transcription', 'ai_response', 'created_at']  # Include 'ai_response'
+        read_only_fields = ['transcription', 'ai_response', 'created_at']  # These will be auto-set
 
     def create(self, validated_data):
-        # The user is set in the view, so we don't need to handle it here.
         return Audio.objects.create(**validated_data)

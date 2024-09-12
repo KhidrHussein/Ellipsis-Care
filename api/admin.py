@@ -84,7 +84,7 @@ class AppointmentAdmin(admin.ModelAdmin):
 
 @admin.register(Audio)
 class AudioAdmin(admin.ModelAdmin):
-    list_display = ('user', 'created_at', 'transcription')
+    list_display = ('user', 'created_at', 'transcription', 'ai_response')
     search_fields = ('user__username', 'transcription')
     list_filter = ('created_at',)
 

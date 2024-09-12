@@ -8,6 +8,35 @@ load_dotenv()
 url = f"https://eastus.api.cognitive.microsoft.com/speechtotext/transcriptions:transcribe?api-version=2024-05-15-preview"
 subscription_key = os.getenv('SUBSCRIPTION_KEY')
 
+
+# def transcribe_audio(audio_path):
+#     try:
+#         headers = {
+#             'Ocp-Apim-Subscription-Key': subscription_key,
+#             'Accept': 'application/json'
+#         }
+
+#         files = {
+#             'audio': open(audio_path, 'rb')
+#         }
+
+#         json_data = {
+#             "locales": ["en-US"],
+#             "profanityFilterMode": "Masked"
+#         }
+
+#         response = requests.post(url, headers=headers, files=files, json=json_data)
+
+#         if response.status_code == 200:
+#             return response.json().get('combinedPhrases', [{}])[0].get('text', 'No transcription available')
+#         else:
+#             return "There was an issue with the transcription service. Please try again later."
+    
+#     except Exception as e:
+#         return "An error occurred during transcription. Please try again later."
+
+
+
 def transcribe_audio(audio_path):
     # Set up headers with your subscription key
     # subscription_key = 'YourSubscriptionKey'
