@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from .scheduler import start
 
 
 class ApiConfig(AppConfig):
@@ -7,3 +8,8 @@ class ApiConfig(AppConfig):
 
     def ready(self):
         import api.signals
+
+
+    def ready(self):
+        # Start the APScheduler when the Django app is ready
+        start()

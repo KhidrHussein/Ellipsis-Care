@@ -54,7 +54,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
 class AudioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Audio
-        fields = ['id', 'audio_file', 'transcription', 'created_at']  # Exclude 'user'
+        fields = ['id', 'transcription', 'created_at']  # Exclude 'user'
         read_only_fields = ['transcription', 'created_at']  # These will be auto-set
 
     def create(self, validated_data):

@@ -41,7 +41,7 @@ from langchain import PromptTemplate
 vector_store_ellipsis = Chroma(
     collection_name="Ellipsis-Care-Docs",
     embedding_function=openai_embeddings,
-    persist_directory="./Ellipsis-Care-Chroma-Vector-DB",  # Where to save data locally, remove if not neccesary
+    persist_directory="C:/Users/Hp/EllipsisCare/Ellipsis-Care-Chroma-Vector-DB", # Where to save data locally, remove if not neccesary
 )
 
 # Senior
