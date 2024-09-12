@@ -1,10 +1,10 @@
-import 'package:ellipsis_care/src/features/onboarding/cubit/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:ellipsis_care/core/constants/colors.dart';
 import 'package:ellipsis_care/core/extensions/context_ext.dart';
+import 'package:ellipsis_care/src/features/onboarding/cubit/cubit.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({super.key});
@@ -19,8 +19,9 @@ class Onboarding extends StatelessWidget {
           children: [
             Expanded(
               child: PageView.builder(
-                controller: cubit.slideController,
                 itemCount: stories.length,
+                controller: cubit.slideController,
+                physics: const NeverScrollableScrollPhysics(),
                 onPageChanged: (value) => cubit.updateState(value),
                 itemBuilder: (context, index) {
                   return Padding(
@@ -57,6 +58,13 @@ class Onboarding extends StatelessWidget {
             ),
             BlocBuilder<OnboardingCubit, OnboardingState>(
               bloc: cubit,
+              // listener: (context, state) {
+              //   if (state.currentIndex == 4) {
+              //     context
+              //         .read<EmergencyContactBloc>()
+              //         .add(AddMultipleContactsEvent());
+              //   }
+              // },
               builder: (context, state) {
                 return Column(
                   children: [
@@ -67,12 +75,12 @@ class Onboarding extends StatelessWidget {
                             (story) => AnimatedContainer(
                               duration: Durations.long1,
                               width:
-                                  story.id == state.currentIndex ? 33.w : 8.w,
+                                  state.currentIndex == story.id ? 33.w : 8.w,
                               height: 8.h,
                               margin: REdgeInsets.only(right: 6.w),
                               decoration: BoxDecoration(
                                 color: AppColors.pageviewIndicator,
-                                borderRadius: story.id == state.currentIndex
+                                borderRadius: state.currentIndex == story.id
                                     ? BorderRadius.circular(100.r)
                                     : BorderRadius.circular(33.r),
                               ),

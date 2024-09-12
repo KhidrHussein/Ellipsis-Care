@@ -1,10 +1,12 @@
 import 'package:ellipsis_care/config/router/route_names.dart';
+import 'package:ellipsis_care/core/services/contacts_service.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/forgot_password.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signin.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signup.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/verify_email.dart';
 import 'package:ellipsis_care/src/features/charts/presentation/views/charts.dart';
 import 'package:ellipsis_care/src/features/dashboard/presentation/views/dashboard.dart';
+import 'package:ellipsis_care/src/features/emergency/presentation/bloc/bloc.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/views/emergency.dart';
 import 'package:ellipsis_care/src/features/onboarding/cubit/cubit.dart';
 import 'package:ellipsis_care/src/features/onboarding/onboarding.dart';
@@ -28,8 +30,11 @@ final GoRouter router = GoRouter(
       name: RouteNames.onboarding,
       pageBuilder: (context, state) {
         return MaterialPage<Onboarding>(
-          child: BlocProvider(
-            create: (context) => OnboardingCubit(),
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => OnboardingCubit()),
+              BlocProvider(create: (context) => EmergencyContactBloc())
+            ],
             child: const Onboarding(),
           ),
         );
@@ -87,8 +92,11 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: '/emergency',
           name: RouteNames.emergency,
-          pageBuilder: (context, state) => const MaterialPage<Emergency>(
-            child: Emergency(),
+          pageBuilder: (context, state) => MaterialPage<Emergency>(
+            child: BlocProvider(
+              create: (context) => EmergencyContactBloc(),
+              child: const Emergency(),
+            ),
           ),
         ),
         GoRoute(

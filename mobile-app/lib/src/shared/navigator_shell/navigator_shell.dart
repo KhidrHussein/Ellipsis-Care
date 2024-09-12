@@ -110,7 +110,6 @@ class NavigationRowItem extends StatelessWidget {
               iconPath,
               width: 24.w,
               height: 24.h,
-              fit: BoxFit.cover,
               colorFilter: ColorFilter.mode(
                 switch (selectedIcon) {
                   true => AppColors.black,
