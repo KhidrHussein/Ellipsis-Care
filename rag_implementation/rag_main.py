@@ -92,6 +92,8 @@ def rag_response(user_id: str, query: str, knowledge_base: str):
 
     documents, sources = context_document_retreival_similarity(new_question)
     full_prompt = prompt_template.format(history="\n".join(buffer_history), question=new_question, context=documents)
+    # print(full_prompt)
+    # print()
     response = qa_response(full_prompt)
 
     full_history.append(f"Human: {query}")
