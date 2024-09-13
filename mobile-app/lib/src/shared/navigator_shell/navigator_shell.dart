@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/constants/colors.dart';
-import '../../../core/constants/strings.dart';
+import '../../../core/constants/asset_strings.dart';
 
 part 'cubit.dart';
 
@@ -110,7 +110,7 @@ class NavigationRowItem extends StatelessWidget {
               iconPath,
               width: 24.w,
               height: 24.h,
-              colorFilter: ColorFilter.mode(
+               colorFilter: ColorFilter.mode(
                 switch (selectedIcon) {
                   true => AppColors.black,
                   false => AppColors.navigationIconColor,

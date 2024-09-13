@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:ellipsis_care/config/router/router.dart';
 import 'package:ellipsis_care/config/theme/controller.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized;
+  await dotenv.load(fileName: "secrets.env");
 
   runApp(const EllipsisCare());
 }

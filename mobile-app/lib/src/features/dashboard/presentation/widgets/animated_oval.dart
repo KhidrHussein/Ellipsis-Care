@@ -23,7 +23,7 @@ class _AnimatedOvalState extends State<AnimatedOval>
     _controller = AnimationController(
       vsync: this,
       upperBound: 3,
-      duration: Duration(seconds: 3),
+      duration: const Duration(seconds: 3),
     );
 
     _controller.forward();

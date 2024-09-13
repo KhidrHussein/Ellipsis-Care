@@ -1,4 +1,5 @@
 import 'package:ellipsis_care/core/services/contacts_service.dart';
+import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +22,7 @@ class EmergencyContactBloc
   void _addMultipleContactsToList(AddMultipleContactsEvent event,
       Emitter<EmergencyContactState> handler) async {
     final selectedContacts = await _service.pickContacts();
-    debugPrint("$selectedContacts, $state");
+    "Picked: $selectedContacts, \nCurrent State: $state".printLog();
     handler.call(
       HasContactState(contacts: [...state.contacts, ...?selectedContacts]),
     );
@@ -31,7 +32,7 @@ class EmergencyContactBloc
       AddContactEvent event, Emitter<EmergencyContactState> handler) async {
     final selectedContact = await _service.pickContact();
     if (selectedContact != null) {
-      debugPrint("$selectedContact, $state");
+      "Picked: $selectedContact, \nCurrent State: ${state.contacts}".printLog();
       handler.call(
         HasContactState(contacts: [...state.contacts, selectedContact]),
       );

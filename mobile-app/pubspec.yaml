@@ -36,20 +36,22 @@ dependencies:
   cupertino_icons: ^1.0.8
   
   go_router: ^14.2.7
-
-  flutter_bloc: ^8.1.6
   flutter_screenutil: ^5.9.3
-  flutter_svg: ^2.0.10+1
-  otp_pin_field: ^1.2.9+1
   flutter_dotenv: ^5.1.0
-  dio: ^5.7.0
-  flutter_animate: ^4.5.0
-  flutter_secure_storage: ^9.2.2
-  oktoast: ^3.4.0
+
   equatable: ^2.0.5
-  clean_calendar: ^2.0.0
+  flutter_bloc: ^8.1.6
+
+  oktoast: ^3.4.0
   record: ^5.1.2
+  flutter_animate: ^4.5.0
   flutter_native_contact_picker: ^0.0.7
+  flutter_svg: ^2.0.10+1
+  
+  dio: ^5.7.0
+  flutter_secure_storage: ^9.2.2
+  path_provider: ^2.1.4
+  pretty_dio_logger: ^1.4.0
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +80,7 @@ flutter:
     - assets/icons/authentication/
     - assets/icons/dashboard/
     - assets/images/
+    - secrets.env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

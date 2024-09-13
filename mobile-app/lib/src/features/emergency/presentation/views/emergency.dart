@@ -1,4 +1,4 @@
-import 'package:ellipsis_care/core/extensions/context_ext.dart';
+import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/widgets/contacts_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

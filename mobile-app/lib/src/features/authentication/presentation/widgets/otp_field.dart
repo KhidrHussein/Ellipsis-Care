@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/extensions/context_ext.dart';
+import 'package:ellipsis_care/core/utils/extensions.dart';
 
 class OtpField extends StatefulWidget {
   final TextEditingController controller;

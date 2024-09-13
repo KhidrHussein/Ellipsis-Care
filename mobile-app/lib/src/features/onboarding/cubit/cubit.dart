@@ -1,4 +1,5 @@
 import 'package:ellipsis_care/core/services/contacts_service.dart';
+import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,14 +28,10 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     switch (state.currentIndex) {
       case 1:
         _initializeAudio();
-        slideController.nextPage(
-            duration: Durations.long1, curve: Curves.linear);
         break;
 
       case 4:
         _addEmergencyContacts();
-        slideController.nextPage(
-            duration: Durations.long1, curve: Curves.linear);
         break;
 
       case 6:
@@ -50,14 +47,16 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   void _initializeAudio() async {
     final mic = AudioService.instance;
     await mic.checkForPermission().then((value) {
-      debugPrint("$value");
+      "$value".printLog();
+      slideController.nextPage(duration: Durations.long1, curve: Curves.linear);
     });
   }
 
   void _addEmergencyContacts() async {
     final service = EmergencyContactsService.instance;
-    await service.pickContacts().then((value) {
-      debugPrint("$value");
+    await service.pickContact().then((value) {
+      "$value".printLog();
+      slideController.nextPage(duration: Durations.long1, curve: Curves.linear);
     });
   }
 }

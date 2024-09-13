@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:ellipsis_care/core/extensions/context_ext.dart';
+import 'package:ellipsis_care/core/utils/extensions.dart';
 
-import '../../../../../core/constants/strings.dart';
+import '../../../../../core/constants/asset_strings.dart';
 
 class AuthenticationOptions extends StatelessWidget {
   const AuthenticationOptions({super.key});

@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class Reminders extends StatelessWidget {
   const Reminders({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return SafeArea(
       child: Column(
         children: [
-          // CleanCalendar(
-          //   headerProperties: HeaderProperties(
-          //     monthYearDecoration: MonthYearDecoration(),
-          //     navigatorDecoration: NavigatorDecoration(
-          //       navigateLeftButtonIcon: Icon(null)
-          //     )
-          //   ),
-          // )
+          CalendarDatePicker(
+            initialDate: DateTime(2000),
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2030),
+            currentDate: DateTime.now(),
+            onDateChanged: (date) {},
+          )
+       
         ],
       ),
     );
