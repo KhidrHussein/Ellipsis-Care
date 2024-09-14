@@ -167,7 +167,7 @@ class Appointment(models.Model):
 
 class Audio(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    audio_file = models.FileField(upload_to='audio_files/')
+    audio_file = models.FileField(upload_to='audio_files/', null=True, blank=True)
     transcription = models.TextField(blank=True, null=True)
     ai_response = models.TextField(blank=True, null=True)  # Field to store AI-generated response
     synthesized_audio = models.FileField(upload_to='synthesized_audio/', blank=True, null=True)  # Field to store path to synthesized audio file

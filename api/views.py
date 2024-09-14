@@ -21,7 +21,7 @@ from djoser.views import UserViewSet
 from rag_implementation.rag_main import rag_response
 from rag_implementation.speech_io import synthesize_speech, transcribe_audio
 import os
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import tempfile
 
 from rag_implementation.rag_main import get_user_by_email, create_user, User
@@ -168,6 +168,71 @@ class AudioViewSet(viewsets.ModelViewSet):
         
         return mongo_user
 
+    # def process_audio(self, instance, mongo_user):
+    #     # Get the uploaded audio file
+    #     audio_file = self.request.FILES.get('audio_file')
+    #     if not audio_file:
+    #         return Response({'error': 'Audio file is required'}, status=400)
+
+    #     print(f"Processing file: {audio_file.name}, size: {audio_file.size}")
+
+    #     # Ensure that the file is not empty by checking size
+    #     if audio_file.size == 0:
+    #         return Response({'error': 'Audio file is empty'}, status=400)
+
+    #     # Create a temporary file for the audio
+    #     temp_audio_path = None
+    #     try:
+    #         with tempfile.NamedTemporaryFile(delete=False, suffix='.opus') as temp_audio_file:
+    #             temp_audio_path = temp_audio_file.name
+    #             audio_file.seek(0)  # Ensure pointer is at the beginning of the file
+    #             temp_audio_file.write(audio_file.read())
+    #             temp_audio_file.flush()
+    #             print(f"Temporary file created at: {temp_audio_path}")
+
+    #         # Transcribe the audio using the temporary file path
+    #         transcription = transcribe_audio(temp_audio_path)
+    #         if not transcription:
+    #             raise ValueError("Transcription is empty or failed.")
+    #         print(f"Transcription: {transcription}")
+
+    #         # Save transcription and proceed with other steps
+    #         instance.transcription = transcription
+    #         instance.save()
+
+    #         # Further AI processing, sending transcription to the model for response
+    #         ai_result = rag_response(
+    #             user_id=str(mongo_user['_id']),  # MongoDB ObjectId
+    #             query=transcription,
+    #             knowledge_base="some_knowledge_base"
+    #         )
+    #         if not ai_result or 'response' not in ai_result:
+    #             raise ValueError("AI response is empty or missing.")
+    #         print(f"AI Response: {ai_result['response']}")
+
+    #         instance.ai_response = ai_result['response']
+    #         instance.save()
+
+    #         # Create audio response from LLM response
+    #         synthesized_audio = synthesize_speech(text=ai_result['response'], file_prefix=f"user_{self.request.user.id}")
+    #         print("Synthesized audio generated.")
+
+    #         # Send the synthesized audio in the response
+    #         response = HttpResponse(synthesized_audio, content_type='audio/mpeg')
+    #         response['Content-Disposition'] = 'inline; filename="response.mp3"'
+
+    #         return response
+
+    #     except Exception as e:
+    #         print(f"Error during processing or transcription: {e}")
+    #         return Response({'error': 'Error during processing or transcription'}, status=500)
+
+    #     finally:
+    #         # Clean up: Delete the temporary audio file after processing
+    #         if temp_audio_path and os.path.exists(temp_audio_path):
+    #             os.remove(temp_audio_path)
+    #             print(f"Temporary file {temp_audio_path} deleted.")
+
 
     def process_audio(self, instance, mongo_user):
         # Get the uploaded audio file
@@ -177,7 +242,6 @@ class AudioViewSet(viewsets.ModelViewSet):
 
         print(f"Processing file: {audio_file.name}, size: {audio_file.size}")
 
-        # Ensure that the file is not empty by checking size
         if audio_file.size == 0:
             return Response({'error': 'Audio file is empty'}, status=400)
 
@@ -186,7 +250,7 @@ class AudioViewSet(viewsets.ModelViewSet):
         try:
             with tempfile.NamedTemporaryFile(delete=False, suffix='.opus') as temp_audio_file:
                 temp_audio_path = temp_audio_file.name
-                audio_file.seek(0)  # Ensure pointer is at the beginning of the file
+                audio_file.seek(0)
                 temp_audio_file.write(audio_file.read())
                 temp_audio_file.flush()
                 print(f"Temporary file created at: {temp_audio_path}")
@@ -197,13 +261,13 @@ class AudioViewSet(viewsets.ModelViewSet):
                 raise ValueError("Transcription is empty or failed.")
             print(f"Transcription: {transcription}")
 
-            # Save transcription and proceed with other steps
+            # Save transcription to the instance
             instance.transcription = transcription
             instance.save()
 
-            # Further AI processing, sending transcription to the model for response
+            # Send transcription to the AI model for response
             ai_result = rag_response(
-                user_id=str(mongo_user['_id']),  # MongoDB ObjectId
+                user_id=str(mongo_user['_id']),
                 query=transcription,
                 knowledge_base="some_knowledge_base"
             )
@@ -211,10 +275,11 @@ class AudioViewSet(viewsets.ModelViewSet):
                 raise ValueError("AI response is empty or missing.")
             print(f"AI Response: {ai_result['response']}")
 
+            # Save AI response to the instance
             instance.ai_response = ai_result['response']
             instance.save()
 
-            # Create audio response from LLM response
+            # Generate audio response from AI text response
             synthesized_audio = synthesize_speech(text=ai_result['response'], file_prefix=f"user_{self.request.user.id}")
             print("Synthesized audio generated.")
 
@@ -222,7 +287,13 @@ class AudioViewSet(viewsets.ModelViewSet):
             response = HttpResponse(synthesized_audio, content_type='audio/mpeg')
             response['Content-Disposition'] = 'inline; filename="response.mp3"'
 
-            return response
+            # Create a JSON response containing both the transcription and the AI response
+            data = {
+                'transcription': transcription,
+                'ai_response': ai_result['response']
+            }
+
+            return JsonResponse(data, status=200)
 
         except Exception as e:
             print(f"Error during processing or transcription: {e}")
