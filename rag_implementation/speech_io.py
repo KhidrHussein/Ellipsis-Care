@@ -98,7 +98,14 @@ def synthesize_speech(text, file_prefix):
     #             print("Error details: {}".format(cancellation_details.error_details))
     #             print("Did you set the speech resource key and region values?")
 
-    return f"{file_prefix}_output.wav"
+    # Read the content of the audio file as binary
+    with open(f"{file_prefix}_output.wav", 'rb') as audio_file:
+        binary_content = audio_file.read()
+    
+    # Delete the audio file after reading it
+    os.remove(f"{file_prefix}_output.wav")
+
+    return binary_content
 
 # Example usage
-# synthesize_speech("I am excited to try text to speech", "example")
+synthesize_speech("I am excited to try text to speech", "123413")
