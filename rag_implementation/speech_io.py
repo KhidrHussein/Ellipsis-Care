@@ -170,17 +170,19 @@ def synthesize_speech(text, file_prefix):
     #             print("Did you set the speech resource key and region values?")
 
     # Read the content of the audio file as binary
+
+    
+    with open(f"{file_prefix}_output.wav", 'rb') as audio_file:
+        binary_content = audio_file.read()
+    
+    # Delete the audio file after reading it
     state = True
     while state:
         try:
-            with open(f"{file_prefix}_output.wav", 'rb') as audio_file:
-                binary_content = audio_file.read()
+            os.remove(f"{file_prefix}_output.wav")
             state = False
         except:
             time.sleep(0.5)
-
-    # Delete the audio file after reading it
-    os.remove(f"{file_prefix}_output.wav")
 
     return binary_content
 
