@@ -1,4 +1,5 @@
 import os
+import time
 import requests
 import azure.cognitiveservices.speech as speechsdk
 from dotenv import load_dotenv
@@ -157,11 +158,31 @@ def synthesize_speech(text, file_prefix):
 
     speech_synthesis_result = speech_synthesizer.speak_text_async(text).get()
 
-    # Ensure proper handling of the audio file
-    with open(f"{file_prefix}_output.wav", 'rb') as audio_file:
-        binary_content = audio_file.read()
+    # if speech_synthesis_result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
+    #     print("Speech synthesized for text [{}]".format(text))
+        
+    # elif speech_synthesis_result.reason == speechsdk.ResultReason.Canceled:
+    #     cancellation_details = speech_synthesis_result.cancellation_details
+    #     print("Speech synthesis canceled: {}".format(cancellation_details.reason))
+    #     if cancellation_details.reason == speechsdk.CancellationReason.Error:
+    #         if cancellation_details.error_details:
+    #             print("Error details: {}".format(cancellation_details.error_details))
+    #             print("Did you set the speech resource key and region values?")
+
+    # Read the content of the audio file as binary
+    state = True
+    while state:
+        try:
+            with open(f"{file_prefix}_output.wav", 'rb') as audio_file:
+                binary_content = audio_file.read()
+            state = False
+        except:
+            time.sleep(0.5)
 
     # Delete the audio file after reading it
     os.remove(f"{file_prefix}_output.wav")
 
     return binary_content
+
+# Example usage
+# synthesize_speech("I am excited to try text to speech", "123413")
