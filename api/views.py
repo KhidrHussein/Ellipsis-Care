@@ -29,22 +29,27 @@ from rag_implementation.config.database import collection
 
 from io import BytesIO
 import io
+import time
 
 
 # Using Djoser's activation email
 # class UserCreateViewSet(UserViewSet):
 #     def perform_create(self, serializer):
 #         user = serializer.save()
-#         user.is_active = False  # Deactivate the user until they verify their email
-#         user.verification_code = str(random.randint(100000, 999999))  # Generate a 6-digit code
-#         print(f"Generated verification code for {user.email}: {user.verification_code}")  # Print the code
+#         user.is_active = False  # Deactivate the user until they verify the OTP
+#         user.verification_code = str(random.randint(100000, 999999))  # Generate a 6-digit OTP
 #         user.save()
 
-#         # Trigger Djoser's activation email
-#         user_registered.send(sender=self.__class__, user=user, request=self.request)
-#         print("Triggered the user registered signal.")
+#         # Send the OTP via email
+#         send_mail(
+#             'Verify your account',
+#             f'Your OTP verification code is {user.verification_code}',
+#             'noreply@yourdomain.com',  # Change to your sender email
+#             [user.email],
+#             fail_silently=False,
+#         )
 
-#         return Response({'detail': 'Verification code sent to your email.'}, status=status.HTTP_201_CREATED)
+#         return Response({'detail': 'OTP sent to your email.'}, status=status.HTTP_201_CREATED)
 
 
 # Using custom email sending
@@ -60,6 +65,24 @@ class UserCreateViewSet(viewsets.ModelViewSet):
             # Restrict other requests (like GET) to authenticated users only
             return [IsAuthenticated()]
 
+    # def perform_create(self, serializer):
+    #     user = serializer.save()
+    #     user.is_active = False  # Deactivate the user until they verify their email
+    #     user.verification_code = str(random.randint(100000, 999999))  # Generate a 6-digit code
+    #     print(f"Generated verification code for {user.email}: {user.verification_code}")  # Print the code
+    #     user.save()
+
+    #     # Send the verification code via email
+    #     send_mail(
+    #         'Verify your account',
+    #         f'Your verification code is {user.verification_code}',
+    #         'husseinkhidr3@gmail.com',
+    #         [user.email],
+    #         fail_silently=False,
+    #     )
+
+    #     return Response({'detail': 'Verification code sent to your email.'}, status=status.HTTP_201_CREATED)
+
     def perform_create(self, serializer):
         user = serializer.save()
         user.is_active = False  # Deactivate the user until they verify their email
@@ -67,16 +90,22 @@ class UserCreateViewSet(viewsets.ModelViewSet):
         print(f"Generated verification code for {user.email}: {user.verification_code}")  # Print the code
         user.save()
 
-        # Send the verification code via email
-        send_mail(
-            'Verify your account',
-            f'Your verification code is {user.verification_code}',
-            'husseinkhidr3@gmail.com',
-            [user.email],
-            fail_silently=False,
-        )
+        try:
+            # Send the verification code via email
+            send_mail(
+                'Verify your account',
+                f'Your verification code is {user.verification_code}',
+                'husseinkhidr3@gmail.com',
+                [user.email],
+                fail_silently=False,
+            )
+            print("Email sent successfully.")
+
+        except Exception as e:
+            print(f"Error sending email: {e}")
 
         return Response({'detail': 'Verification code sent to your email.'}, status=status.HTTP_201_CREATED)
+
 
 
 class VerifyEmailView(APIView):
@@ -233,7 +262,6 @@ class AudioViewSet(viewsets.ModelViewSet):
     #             os.remove(temp_audio_path)
     #             print(f"Temporary file {temp_audio_path} deleted.")
 
-
     def process_audio(self, instance, mongo_user):
         # Get the uploaded audio file
         audio_file = self.request.FILES.get('audio_file')
@@ -245,17 +273,16 @@ class AudioViewSet(viewsets.ModelViewSet):
         if audio_file.size == 0:
             return Response({'error': 'Audio file is empty'}, status=400)
 
-        # Create a temporary file for the audio
         temp_audio_path = None
         try:
+            # Create a temporary file for the uploaded audio
             with tempfile.NamedTemporaryFile(delete=False, suffix='.opus') as temp_audio_file:
                 temp_audio_path = temp_audio_file.name
                 audio_file.seek(0)
                 temp_audio_file.write(audio_file.read())
                 temp_audio_file.flush()
-                print(f"Temporary file created at: {temp_audio_path}")
 
-            # Transcribe the audio using the temporary file path
+            # Transcribe the audio
             transcription = transcribe_audio(temp_audio_path)
             if not transcription:
                 raise ValueError("Transcription is empty or failed.")
@@ -265,7 +292,7 @@ class AudioViewSet(viewsets.ModelViewSet):
             instance.transcription = transcription
             instance.save()
 
-            # Send transcription to the AI model for response
+            # AI model response
             ai_result = rag_response(
                 user_id=str(mongo_user['_id']),
                 query=transcription,
@@ -279,21 +306,16 @@ class AudioViewSet(viewsets.ModelViewSet):
             instance.ai_response = ai_result['response']
             instance.save()
 
-            # Generate audio response from AI text response
-            synthesized_audio = synthesize_speech(text=ai_result['response'], file_prefix=f"user_{self.request.user.id}")
+            # Synthesize the audio response from the AI response
+            file_prefix = f"user_{self.request.user.id}"
+            synthesized_audio = synthesize_speech(text=ai_result['response'], file_prefix=file_prefix)
             print("Synthesized audio generated.")
 
-            # Send the synthesized audio in the response
-            response = HttpResponse(synthesized_audio, content_type='audio/mpeg')
-            response['Content-Disposition'] = 'inline; filename="response.mp3"'
-
-            # Create a JSON response containing both the transcription and the AI response
-            data = {
-                'transcription': transcription,
-                'ai_response': ai_result['response']
-            }
-
-            return JsonResponse(data, status=200)
+            # Send the synthesized audio as a direct response
+            if synthesized_audio:
+                response = HttpResponse(synthesized_audio, content_type='audio/wav')
+                response['Content-Disposition'] = 'inline; filename="response.wav"'
+                return response
 
         except Exception as e:
             print(f"Error during processing or transcription: {e}")
@@ -302,5 +324,6 @@ class AudioViewSet(viewsets.ModelViewSet):
         finally:
             # Clean up: Delete the temporary audio file after processing
             if temp_audio_path and os.path.exists(temp_audio_path):
+                time.sleep(1)  # Add delay to allow file access release
                 os.remove(temp_audio_path)
                 print(f"Temporary file {temp_audio_path} deleted.")
