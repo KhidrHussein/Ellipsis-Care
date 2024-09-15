@@ -1,4 +1,8 @@
-class AssetStringPath {
+class AssetStrings {
+  static const String manrope = "Manrope";
+  static const String kronaOne = "Krona One";
+  static const String colfax = "Colfax";
+
   static const String logo = "assets/images/applogo.png";
 
   static const String hide = "assets/icons/authentication/hide.svg";

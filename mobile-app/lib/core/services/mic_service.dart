@@ -3,10 +3,10 @@ import 'package:record/record.dart';
 
 import 'package:ellipsis_care/core/utils/extensions.dart';
 
-class AudioService {
-  AudioService._internal();
-  static AudioService instance = AudioService._internal();
-  factory AudioService() => instance;
+class MicrophoneService {
+  MicrophoneService._internal();
+  static MicrophoneService instance = MicrophoneService._internal();
+  factory MicrophoneService() => instance;
 
   final AudioRecorder _mic = AudioRecorder();
 
@@ -18,8 +18,8 @@ class AudioService {
     final tempDir = await getApplicationCacheDirectory();
     try {
       _mic.start(
-        const RecordConfig(),
-        path: "${tempDir.path}/audio_file",
+        const RecordConfig(encoder: AudioEncoder.opus),
+        path: "${tempDir.path}/audio_file.opus",
       );
       "STARTED RECORDING".printLog();
     } catch (e) {
@@ -30,7 +30,7 @@ class AudioService {
   Future<String?> stopRecording() async {
     String? path;
     try {
-      await _mic.stop().then((value) {
+      await _mic.stop().then((value) async {
         path = value;
         "PATH TO FILE: $value".printLog();
       });
@@ -38,11 +38,20 @@ class AudioService {
     } catch (e) {
       "An error occured in $this: $e".printLog();
     }
-    _mic.dispose();
+
     return path;
   }
 
- Stream<RecordState> getRecordState() {
+  Future<void> dispose() async {
+    try {
+      await _mic.cancel();
+      "DISPOSED $this".printLog();
+    } catch (e) {
+      "An error occured in $this: $e".printLog();
+    }
+  }
+
+  Stream<RecordState> getRecordState() {
     return _mic.onStateChanged();
   }
 }

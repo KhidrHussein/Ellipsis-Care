@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "1097324899248",
+    "project_id": "ellipsis-care-d8842",
+    "storage_bucket": "ellipsis-care-d8842.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1097324899248:android:5ea97dbaf8babe71bac475",
+        "android_client_info": {
+          "package_name": "com.ellipsis.ellipsis_care"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1097324899248-4cjc1thahg3m93g9grhks7afvkpon4pc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ellipsis.ellipsis_care",
+            "certificate_hash": "0fcabe0138d8dbe929601175ee9a0c3255101c9b"
+          }
+        },
+        {
+          "client_id": "1097324899248-68i6uqghulodp4rr3k85862lm2u3n3vu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ellipsis.ellipsis_care",
+            "certificate_hash": "c1ead93944116e62a7d62d316327ead896b4ce4b"
+          }
+        },
+        {
+          "client_id": "1097324899248-vvhljp1pp9tp3p7u5ed50j5hjlj5plhq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAswmEfqzlRjB0-nSM-q4CZzZY3dUqzzb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1097324899248-vvhljp1pp9tp3p7u5ed50j5hjlj5plhq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1097324899248-gliehr0unf41i1doulqpjn55k7qhu266.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ellipsis.ellipsiscare"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

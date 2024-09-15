@@ -45,7 +45,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   }
 
   void _initializeAudio() async {
-    final mic = AudioService.instance;
+    final mic = MicrophoneService.instance;
     await mic.checkForPermission().then((value) {
       "$value".printLog();
       slideController.nextPage(duration: Durations.long1, curve: Curves.linear);
@@ -58,5 +58,6 @@ class OnboardingCubit extends Cubit<OnboardingState> {
       "$value".printLog();
       slideController.nextPage(duration: Durations.long1, curve: Curves.linear);
     });
+    //  slideController.nextPage(duration: Durations.long1, curve: Curves.linear);
   }
 }

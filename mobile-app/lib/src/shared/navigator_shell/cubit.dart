@@ -5,19 +5,19 @@ class NavigationRowCubit extends Cubit<String> {
 
   void goToRoute(String nextRoute) {
     switch (nextRoute) {
-      case AssetStringPath.home:
+      case AssetStrings.home:
         UtilHelpers.clearPreviousAndPushRoute(RouteNames.dashboard);
         break;
-      case AssetStringPath.reminders:
+      case AssetStrings.reminders:
         UtilHelpers.clearPreviousAndPushRoute(RouteNames.reminders);
         break;
-      case AssetStringPath.emergency:
+      case AssetStrings.emergency:
         UtilHelpers.clearPreviousAndPushRoute(RouteNames.emergency);
         break;
-      case AssetStringPath.charts:
+      case AssetStrings.charts:
         UtilHelpers.clearPreviousAndPushRoute(RouteNames.charts);
         break;
-      case AssetStringPath.settings:
+      case AssetStrings.settings:
         UtilHelpers.clearPreviousAndPushRoute(RouteNames.settings);
         break;
       default:
@@ -27,9 +27,9 @@ class NavigationRowCubit extends Cubit<String> {
 }
 
 final List<String> navigationRowIconPaths = <String>[
-  AssetStringPath.home,
-  AssetStringPath.reminders,
-  AssetStringPath.emergency,
-  AssetStringPath.charts,
-  AssetStringPath.settings,
+  AssetStrings.home,
+  AssetStrings.reminders,
+  AssetStrings.emergency,
+  AssetStrings.charts,
+  AssetStrings.settings,
 ];

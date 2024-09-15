@@ -29,8 +29,9 @@ class NavigationRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: REdgeInsets.only(bottom: 24),
+      padding: REdgeInsets.only(bottom: 12),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           const Divider(height: 0),
@@ -41,13 +42,9 @@ class NavigationRow extends StatelessWidget {
               (icon) {
                 return BlocBuilder<NavigationRowCubit, String>(
                   builder: (context, state) {
-                    return GestureDetector(
-                      onTap: () =>
-                          context.read<NavigationRowCubit>().goToRoute(icon),
-                      child: NavigationRowItem(
-                        iconPath: icon,
-                        selectedIcon: icon == state,
-                      ),
+                    return NavigationRowItem(
+                      iconPath: icon,
+                      selectedIcon: icon == state,
                     );
                   },
                 );
@@ -72,53 +69,58 @@ class NavigationRowItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50.h,
-      child: Column(
-        children: [
-          if (selectedIcon)
-            Container(
-              width: 54.w,
-              height: 2.h,
-              decoration: BoxDecoration(
-                color: AppColors.black,
-                borderRadius: BorderRadius.circular(24.r),
-              ),
-            ),
-          SizedBox(height: 8.h),
-          if (iconPath == AssetStringPath.emergency)
-            Container(
-              padding: REdgeInsetsDirectional.all(8),
-              decoration: BoxDecoration(
-                color: switch (selectedIcon) {
-                  true => AppColors.black,
-                  false => AppColors.red,
-                },
-                shape: BoxShape.circle,
-              ),
-              child: SvgPicture.asset(
-                iconPath,
-                fit: BoxFit.cover,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.white,
-                  BlendMode.srcIn,
+    return InkWell(
+      onTap: () => context.read<NavigationRowCubit>().goToRoute(iconPath),
+      borderRadius: BorderRadius.circular(20.r),
+      child: SizedBox(
+        height: 50.h,
+        width: 50.h,
+        child: Column(
+          children: [
+            if (selectedIcon)
+              Container(
+                width: 54.w,
+                height: 2.h,
+                decoration: BoxDecoration(
+                  color: AppColors.black,
+                  borderRadius: BorderRadius.circular(24.r),
                 ),
               ),
-            )
-          else
-            SvgPicture.asset(
-              iconPath,
-              width: 24.w,
-              height: 24.h,
-               colorFilter: ColorFilter.mode(
-                switch (selectedIcon) {
-                  true => AppColors.black,
-                  false => AppColors.navigationIconColor,
-                },
-                BlendMode.srcIn,
-              ),
-            )
-        ],
+            SizedBox(height: 10.h),
+            if (iconPath == AssetStrings.emergency)
+              Container(
+                padding: REdgeInsetsDirectional.all(6),
+                decoration: BoxDecoration(
+                  color: switch (selectedIcon) {
+                    true => AppColors.black,
+                    false => AppColors.red,
+                  },
+                  shape: BoxShape.circle,
+                ),
+                child: SvgPicture.asset(
+                  iconPath,
+                  fit: BoxFit.cover,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.white,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              )
+            else
+              SvgPicture.asset(
+                iconPath,
+                width: 24.w,
+                height: 24.h,
+                colorFilter: ColorFilter.mode(
+                  switch (selectedIcon) {
+                    true => AppColors.black,
+                    false => AppColors.navigationIconColor,
+                  },
+                  BlendMode.srcIn,
+                ),
+              )
+          ],
+        ),
       ),
     );
   }

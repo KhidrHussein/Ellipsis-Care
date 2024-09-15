@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ellipsis_care/core/services/mic_service.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/bloc/bloc.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/ai_response.dart';
 import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/animated_oval.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/recording_wave.dart';
 import 'package:ellipsis_care/src/shared/appbar.dart';
 
 class Dashboard extends StatelessWidget {
@@ -13,19 +16,18 @@ class Dashboard extends StatelessWidget {
       child: Column(
         children: [
           const ProfileBar(profileName: "Leonard", showNotifications: true),
-          const AnimatedOval(),
-          TextButton(
-            onPressed: () {
-              AudioService.instance.startRecording();
+          const Spacer(),
+          BlocBuilder<DashboardBloc, DashboardState>(
+            builder: (context, state) {
+              return switch (state) {
+                InitialState() => const AnimatedOval(),
+                LoadingState() => const CircularProgressIndicator.adaptive(),
+                RecordingState() => const RecordingWave(),
+                NotRecordingState(aiResponse: var a) => AiResponse(response: a),
+              };
             },
-            child: const Text("Start"),
           ),
-          TextButton(
-            onPressed: () {
-              AudioService.instance.stopRecording();
-            },
-            child: const Text("Stop"),
-          )
+          const Spacer(),
         ],
       ),
     );

@@ -1,8 +1,9 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
+
 import 'package:ellipsis_care/core/services/contacts_service.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 
 part 'events.dart';

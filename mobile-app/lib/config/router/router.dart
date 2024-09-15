@@ -4,6 +4,7 @@ import 'package:ellipsis_care/src/features/authentication/presentation/view/sign
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signup.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/verify_email.dart';
 import 'package:ellipsis_care/src/features/charts/presentation/views/charts.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/bloc/bloc.dart';
 import 'package:ellipsis_care/src/features/dashboard/presentation/views/dashboard.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/bloc/bloc.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/views/emergency.dart';
@@ -77,8 +78,11 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: '/dashboard',
           name: RouteNames.dashboard,
-          pageBuilder: (context, state) => const MaterialPage<Dashboard>(
-            child: Dashboard(),
+          pageBuilder: (context, state) => MaterialPage<Dashboard>(
+            child: BlocProvider(
+              create: (context) => DashboardBloc(),
+              child: const Dashboard(),
+            ),
           ),
         ),
         GoRoute(

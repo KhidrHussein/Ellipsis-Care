@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ellipsis_care/core/constants/app_state.dart';
+import 'package:ellipsis_care/core/constants/api_state.dart';
 
 part 'event.dart';
 
-class AutheticationBloc extends Bloc<AuthenticationEvent, AppState> {
+class AutheticationBloc extends Bloc<AuthenticationEvent, ApiState> {
   AutheticationBloc() : super(const Data()) {
     on<SignInEvent>(signIn);
     on<SignUpEvent>(signUp);

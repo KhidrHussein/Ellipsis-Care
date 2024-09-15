@@ -26,6 +26,7 @@ class EllipsisCare extends StatelessWidget {
         builder: (context, state) {
           return MaterialApp.router(
             title: "Ellipsis Care",
+            debugShowCheckedModeBanner: false,
             routerConfig: router,
             theme: state,
           );

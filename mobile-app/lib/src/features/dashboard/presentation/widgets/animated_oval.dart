@@ -1,9 +1,14 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:ellipsis_care/core/utils/extensions.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/bloc/bloc.dart';
 import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/oval_clipper.dart';
 
+import '../../../../../core/constants/asset_strings.dart';
 import '../../../../../core/constants/colors.dart';
 
 class AnimatedOval extends StatefulWidget {
@@ -22,12 +27,11 @@ class _AnimatedOvalState extends State<AnimatedOval>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      upperBound: 3,
+      lowerBound: 0,
+      upperBound: 2 * math.pi,
       duration: const Duration(seconds: 3),
     );
-
-    _controller.forward();
-    // _controller.repeat();
+    // _controller.forward();
   }
 
   @override
@@ -38,32 +42,58 @@ class _AnimatedOvalState extends State<AnimatedOval>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Transform.rotate(
-          angle: ((2 * math.pi) / 3) * _controller.value,
-          child: child,
-        );
-      },
-      child: ClipPath(
-        clipper: OvalClipper(),
-        child: Container(
-          height: 220.h,
-          width: 247.w,
-          padding: REdgeInsets.all(10),
-          decoration:
-              const BoxDecoration(gradient: AppColors.animatedOvalGradient),
+    return Column(
+      children: [
+        AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Transform.rotate(angle: _controller.value, child: child);
+          },
           child: ClipPath(
             clipper: OvalClipper(),
             child: Container(
-              color: AppColors.white,
-              alignment: Alignment.center,
-              child: Text("Hi, What can I do for you?".split(" ").join("\n")),
+              height: .27.sh,
+              width: .64.sw,
+              padding: REdgeInsets.all(10),
+              decoration:
+                  const BoxDecoration(gradient: AppColors.animatedOvalGradient),
+              child: ClipPath(
+                clipper: OvalClipper(),
+                child: Container(
+                  color: AppColors.white,
+                  padding: REdgeInsets.all(20),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Welcome to Ellipsis",
+                    textAlign: TextAlign.center,
+                    style: context.textTheme.headlineSmall?.copyWith(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: AssetStrings.kronaOne,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
-      ),
+        SizedBox(height: 72.h),
+        InkWell(
+          onTap: () {
+            context.read<DashboardBloc>().add(StartRecordingEvent());
+          },
+          customBorder: const CircleBorder(),
+          child: Container(
+            width: 76.w,
+            height: 76.h,
+            decoration: BoxDecoration(
+              border: Border.all(width: .5),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.mic_none, size: 48),
+          ),
+        ),
+      ],
     );
   }
 }

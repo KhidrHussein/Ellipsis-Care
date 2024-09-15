@@ -1,3 +1,4 @@
+import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:flutter/widgets.dart';
 
 class Charts extends StatelessWidget {
@@ -5,6 +6,16 @@ class Charts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Coming soon",
+            style: context.textTheme.headlineSmall,
+          )
+        ],
+      ),
+    );
   }
 }

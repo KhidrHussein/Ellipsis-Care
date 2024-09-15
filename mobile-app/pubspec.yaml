@@ -45,13 +45,16 @@ dependencies:
   oktoast: ^3.4.0
   record: ^5.1.2
   flutter_animate: ^4.5.0
-  flutter_native_contact_picker: ^0.0.7
   flutter_svg: ^2.0.10+1
   
   dio: ^5.7.0
   flutter_secure_storage: ^9.2.2
   path_provider: ^2.1.4
   pretty_dio_logger: ^1.4.0
+  google_sign_in: ^6.2.1
+  table_calendar: ^3.1.2
+  firebase_core: ^3.4.1
+  flutter_native_contact_picker: ^0.0.7
 
 dev_dependencies:
   flutter_test:
@@ -99,6 +102,12 @@ flutter:
         - asset: assets/fonts/colfax/Colfax-Regular.otf
         - asset: assets/fonts/colfax/Colfax-Bold.otf
           weight: 700
+
+    - family: Krona One
+      fonts:
+        - asset: assets/fonts/krona_one/KronaOne-Regular.ttf
+
+    
     - family: Manrope
       fonts:
         - asset: assets/fonts/manrope/Manrope-Regular.ttf

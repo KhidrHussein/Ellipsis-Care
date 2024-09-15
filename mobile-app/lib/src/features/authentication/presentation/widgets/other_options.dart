@@ -22,7 +22,7 @@ class AuthenticationOptions extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          icon: SvgPicture.asset(AssetStringPath.google),
+          icon: SvgPicture.asset(AssetStrings.google),
         ),
         SizedBox(height: 16.h),
         OutlinedButton.icon(
@@ -34,7 +34,7 @@ class AuthenticationOptions extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          icon: SvgPicture.asset(AssetStringPath.facebook),
+          icon: SvgPicture.asset(AssetStrings.facebook),
         ),
         SizedBox(height: 16.h),
         OutlinedButton.icon(
@@ -46,7 +46,7 @@ class AuthenticationOptions extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          icon: SvgPicture.asset(AssetStringPath.apple),
+          icon: SvgPicture.asset(AssetStrings.apple),
         )
       ],
     );

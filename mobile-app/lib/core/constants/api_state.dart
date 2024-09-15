@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
-sealed class AppState {}
+abstract class ApiState {}
 
-class Loading implements AppState {}
+class Loading implements ApiState {}
 
-class Data<S> extends Equatable implements AppState {
+class Data<S> extends Equatable implements ApiState {
   const Data({this.data});
   final S? data;
 
@@ -12,7 +12,7 @@ class Data<S> extends Equatable implements AppState {
   List<Object?> get props => [data];
 }
 
-class Error<E> extends Equatable implements AppState {
+class Error<E> extends Equatable implements ApiState {
   const Error({this.error});
   final E? error;
 

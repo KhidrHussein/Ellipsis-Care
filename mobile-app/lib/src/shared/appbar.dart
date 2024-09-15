@@ -16,7 +16,7 @@ class ProfileBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: REdgeInsets.symmetric(horizontal: 16.w),
+      padding: REdgeInsets.only(left: 20, right: 20, top: 16),
       child: Row(
         children: [
           const CircleAvatar(),
