@@ -172,19 +172,20 @@ def synthesize_speech(text, file_prefix):
     # Read the content of the audio file as binary
 
     
-    with open(f"{file_prefix}_output.wav", 'rb') as audio_file:
-        binary_content = audio_file.read()
+    # with open(f"{file_prefix}_output.wav", 'rb') as audio_file:
+    #     binary_content = audio_file.read()
     
-    # Delete the audio file after reading it
-    state = True
-    while state:
-        try:
-            os.remove(f"{file_prefix}_output.wav")
-            state = False
-        except:
-            time.sleep(0.5)
+    # # Delete the audio file after reading it
+    # state = True
+    # while state:
+    #     try:
+    #         os.remove(f"{file_prefix}_output.wav")
+    #         state = False
+    #     except:
+    #         time.sleep(0.5)
 
-    return binary_content
+    # return binary_content
+    return f"{file_prefix}_output.wav"
 
 # Example usage
 # synthesize_speech("I am excited to try text to speech", "123413")
