@@ -1,5 +1,6 @@
 import 'package:ellipsis_care/core/services/contacts_service.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
+import 'package:ellipsis_care/core/utils/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,7 +32,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
         break;
 
       case 4:
-        _addEmergencyContacts();
+        _setupEmergencyContacts();
         break;
 
       case 6:
@@ -39,25 +40,35 @@ class OnboardingCubit extends Cubit<OnboardingState> {
         break;
 
       default:
-        slideController.nextPage(
-            duration: Durations.long1, curve: Curves.linear);
+        _nextStory();
     }
   }
 
   void _initializeAudio() async {
-    final mic = MicrophoneService.instance;
-    await mic.checkForPermission().then((value) {
-      "$value".printLog();
-      slideController.nextPage(duration: Durations.long1, curve: Curves.linear);
+    final mic = injector<MicrophoneService>();
+
+    await mic.checkForPermission().then((hasAudioPermission) {
+      "$hasAudioPermission".printLog();
+      _nextStory();
     });
   }
 
-  void _addEmergencyContacts() async {
-    final service = EmergencyContactsService.instance;
-    await service.pickContact().then((value) {
-      "$value".printLog();
-      slideController.nextPage(duration: Durations.long1, curve: Curves.linear);
+  void _setupEmergencyContacts() async {
+    final service = injector<PhoneContactService>();
+
+    await service.checkForPermission().then((hasContactsPermission) async {
+      "$hasContactsPermission".printLog();
+
+      if (hasContactsPermission) {
+        final contact = await service.pickContact();
+        contact.printLog();
+      }
+
+      _nextStory();
     });
-    //  slideController.nextPage(duration: Durations.long1, curve: Curves.linear);
+  }
+
+  void _nextStory() {
+    slideController.nextPage(duration: Durations.long1, curve: Curves.linear);
   }
 }

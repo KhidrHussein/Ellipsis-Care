@@ -1,6 +1,6 @@
 part of 'bloc.dart';
 
-sealed class DashboardState implements ApiState {}
+sealed class DashboardState {}
 
 class InitialState implements DashboardState {}
 

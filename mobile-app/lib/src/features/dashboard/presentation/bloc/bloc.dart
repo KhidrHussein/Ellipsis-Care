@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:ellipsis_care/core/constants/api_state.dart';
+import 'package:ellipsis_care/core/utils/locator.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,7 +13,7 @@ part 'state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvents, DashboardState> {
   DashboardBloc()
-      : _service = MicrophoneService.instance,
+      : _service = injector<MicrophoneService>(),
         super(InitialState()) {
     on<StartRecordingEvent>(_startRecording);
     on<StopRecordingEvent>(_stopRecording);

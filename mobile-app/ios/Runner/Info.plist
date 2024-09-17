@@ -47,5 +47,7 @@
 		</array>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>Ellipsis Care requires permission to record audio</string>
+		<key>NSContactsUsageDescription</key>
+		<string>Ellipsis Care requires permission to add contacts</string>
 	</dict>
 </plist>

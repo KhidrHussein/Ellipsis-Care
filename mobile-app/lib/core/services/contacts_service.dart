@@ -1,32 +1,31 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
+import 'dart:typed_data';
 
-class EmergencyContactsService {
-  EmergencyContactsService._internal();
-  static EmergencyContactsService instance =
-      EmergencyContactsService._internal();
-  factory EmergencyContactsService() => instance;
+import 'package:flutter_contacts/flutter_contacts.dart';
 
-  final FlutterContactPicker _picker = FlutterContactPicker();
+import 'package:ellipsis_care/core/utils/extensions.dart';
 
-  Future<Contact?> pickContact() async {
+typedef PhoneContact = (
+  String? name,
+  List<String>? phoneNumber,
+  Uint8List? profilePicture,
+);
+
+class PhoneContactService {
+  Future<PhoneContact?> pickContact() async {
     try {
-      final contact = await _picker.selectContact();
-      debugPrint("Contact picked: $contact");
-      return contact;
+      final contact = await FlutterContacts.openExternalPick();
+      final List<String>? phoneNumber =
+          contact?.phones.map((phone) => phone.number).toList();
+
+      return contact != null
+          ? (contact.displayName, phoneNumber, contact.photo)
+          : null;
+          
     } catch (e) {
-      debugPrint("An exception occurred: $e");
+      "An exception occurred: $e".printLog();
       return null;
     }
   }
 
-  Future<List<Contact>?> pickContacts() async {
-    try {
-      final contacts = await _picker.selectContacts();
-      return contacts;
-    } catch (e) {
-      debugPrint("An exception occurred: $e");
-      return null;
-    }
-  }
+  Future<bool> checkForPermission() => FlutterContacts.requestPermission();
 }

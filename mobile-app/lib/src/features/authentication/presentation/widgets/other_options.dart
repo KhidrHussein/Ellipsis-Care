@@ -1,3 +1,5 @@
+import 'package:ellipsis_care/core/services/oauth_service.dart';
+import 'package:ellipsis_care/core/utils/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,7 +16,9 @@ class AuthenticationOptions extends StatelessWidget {
     return Column(
       children: [
         OutlinedButton.icon(
-          onPressed: () {},
+          onPressed: () async {
+            await injector<OAuthService>().googleSignIn();
+          },
           label: Text(
             "Continue with Google",
             style: context.textTheme.bodyMedium?.copyWith(
