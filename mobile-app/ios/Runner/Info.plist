@@ -24,6 +24,17 @@
 		<string>????</string>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
+		<!-- Google Sign-in Section -->
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+                <key>CFBundleURLSchemes</key>
+                <array>
+                    <string>com.googleusercontent.apps.1097324899248-gliehr0unf41i1doulqpjn55k7qhu266</string>
+                </array>
+			</dict>
+		</array>
+		<!-- End of the Google Sign-in Section -->
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
@@ -45,9 +56,12 @@
 			<string>UIInterfaceOrientationLandscapeLeft</string>
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
+		<!-- User Permissions Section -->
 		<key>NSMicrophoneUsageDescription</key>
 		<string>Ellipsis Care requires permission to record audio</string>
+
 		<key>NSContactsUsageDescription</key>
 		<string>Ellipsis Care requires permission to add contacts</string>
+		<!-- End of User Permissions Section -->
 	</dict>
 </plist>

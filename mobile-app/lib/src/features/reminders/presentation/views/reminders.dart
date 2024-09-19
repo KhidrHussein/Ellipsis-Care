@@ -11,25 +11,12 @@ class Reminders extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            "Coming soon",
-            style: context.textTheme.headlineSmall,
+          TableCalendar(
+            focusedDay: DateTime.now(),
+            firstDay: DateTime(1990),
+            lastDay: DateTime(2030),
+            calendarStyle: CalendarStyle(),
           )
-          // CalendarDatePicker(
-          //   initialDate: DateTime(2000),
-          //   firstDate: DateTime(2000),
-          //   lastDate: DateTime(2030),
-          //   currentDate: DateTime.now(),
-          //   onDateChanged: (date) {},
-          // ),
-          // TableCalendar(
-          //   focusedDay: DateTime.now(),
-          //   firstDay: DateTime(1990),
-          //   lastDay: DateTime(2030),
-          //   calendarStyle: CalendarStyle(
-
-          //   ),
-          // )
         ],
       ),
     );

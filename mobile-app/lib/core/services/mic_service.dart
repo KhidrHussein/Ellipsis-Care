@@ -19,7 +19,7 @@ class MicrophoneService {
 
       "STARTED RECORDING".printLog();
     } catch (e) {
-      "An error occured in $this: $e".printLog();
+      "$runtimeType Error: $e".printLog();
     }
   }
 
@@ -34,7 +34,7 @@ class MicrophoneService {
 
       "STOPPED RECORDING".printLog();
     } catch (e) {
-      "An error occured in $this: $e".printLog();
+      "$runtimeType Error: $e".printLog();
     }
 
     return path;
@@ -46,7 +46,7 @@ class MicrophoneService {
 
       "DISPOSED $this".printLog();
     } catch (e) {
-      "An error occured in $this: $e".printLog();
+      "$runtimeType Error: $e".printLog();
     }
   }
 

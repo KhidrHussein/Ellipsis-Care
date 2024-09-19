@@ -10,7 +10,7 @@ class OAuthRepository {
     try {
       await _oAuthService.googleSignIn();
     } catch (e) {
-      "OAuth Repo Exception".printLog();
+      "$runtimeType Error: $e".printLog();
     }
   }
 }

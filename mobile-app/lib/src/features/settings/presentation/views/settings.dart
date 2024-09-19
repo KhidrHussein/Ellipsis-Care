@@ -10,10 +10,7 @@ class Settings extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            "Coming soon",
-            style: context.textTheme.headlineSmall,
-          )
+          Text("Settings")
         ],
       ),
     );

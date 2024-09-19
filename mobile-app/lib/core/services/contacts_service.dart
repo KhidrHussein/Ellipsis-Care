@@ -22,7 +22,7 @@ class PhoneContactService {
           : null;
           
     } catch (e) {
-      "An exception occurred: $e".printLog();
+      "$runtimeType Error: $e".printLog();
       return null;
     }
   }
