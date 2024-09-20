@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-twmmpoch5h^9e#b_cox3ihpmnpn_ep0pf-nvir7ljqce%ipp2&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '3597-102-89-45-14.ngrok-free.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '3597-102-89-45-14.ngrok-free.app', 'hyena-tops-rooster.ngrok-free.app', 'eaf2-102-88-71-205.ngrok-free.app']
 
 
 # Application definition
@@ -67,17 +67,31 @@ AUTH_USER_MODEL = 'api.CustomUser'
 SITE_ID = 1
 
 # Djoser settings for email authentication
+# DJOSER = {
+#     'LOGIN_FIELD': 'email',
+#     'USER_CREATE_PASSWORD_RETYPE': True,
+#     'SEND_CONFIRMATION_EMAIL': False,
+#     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+#     # 'ACTIVATION_URL': 'activate/{uid}/{token}',
+#     'SERIALIZERS': {
+#         'user_create': 'api.serializers.UserSerializer',
+#         'user': 'api.serializers.UserSerializer',
+#     },
+# }
+
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
+    'SEND_ACTIVATION_EMAIL': True,  # Make sure this is enabled
     'SEND_CONFIRMATION_EMAIL': False,
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
-    # 'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'ACTIVATION_URL': 'activate/{uid}/{token}',  # Activation link URL
     'SERIALIZERS': {
         'user_create': 'api.serializers.UserSerializer',
         'user': 'api.serializers.UserSerializer',
     },
 }
+
 
 # REST Framework settings
 REST_FRAMEWORK = {
@@ -102,7 +116,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
-# EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
