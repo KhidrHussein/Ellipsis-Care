@@ -26,6 +26,8 @@ class AppColors {
   static const Color navigationIconColor = Color(0xFFCBCBD4);
   static const Color emergencyBackgroundColor = Color(0xFFECE9E9);
   static const Color emergencyContactNumberColor = Color(0xFF797979);
+  static const Color reminderCalendarBackgroundColor = Color(0xFFF4F4F4);
+  static const Color reminderSheetBorderColor = Color(0xFFBBBBBB);
   static const LinearGradient animatedOvalGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

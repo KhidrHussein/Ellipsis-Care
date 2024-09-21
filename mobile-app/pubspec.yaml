@@ -87,6 +87,7 @@ flutter:
   assets:
     - assets/icons/authentication/
     - assets/icons/dashboard/
+    - assets/icons/settings/
     - assets/images/
     - secrets.env
 
@@ -102,6 +103,12 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/manrope/Manrope-Regular.ttf
+        - asset: assets/fonts/manrope/Manrope-Bold.ttf
+          weight: 700
+          
     - family: Colfax
       fonts:
         - asset: assets/fonts/colfax/Colfax-Regular.otf
@@ -113,11 +120,7 @@ flutter:
         - asset: assets/fonts/krona_one/KronaOne-Regular.ttf
 
     
-    - family: Manrope
-      fonts:
-        - asset: assets/fonts/manrope/Manrope-Regular.ttf
-        - asset: assets/fonts/manrope/Manrope-Bold.ttf
-          weight: 700
+  
       
 
   # For details regarding fonts from package dependencies,
