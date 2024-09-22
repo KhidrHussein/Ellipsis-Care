@@ -1,4 +1,5 @@
 import 'package:ellipsis_care/core/utils/locator.dart';
+import 'package:ellipsis_care/src/features/emergency/domain/emergency_contact.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

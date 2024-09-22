@@ -1,18 +1,19 @@
 import 'package:ellipsis_care/core/constants/colors.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmergencyContactTile extends StatelessWidget {
   final String name;
   final String phoneNumber;
-  final String profilePicture;
+  final Uint8List? profilePicture;
 
   const EmergencyContactTile({
     super.key,
     required this.name,
     required this.phoneNumber,
-    required this.profilePicture,
+    this.profilePicture,
   });
 
   @override
@@ -27,10 +28,13 @@ class EmergencyContactTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundImage: NetworkImage(profilePicture),
-          ),
+          if (profilePicture != null)
+            CircleAvatar(
+              radius: 22,
+              backgroundImage: MemoryImage(profilePicture!),
+            )
+          else
+            const CircleAvatar(),
           SizedBox(width: 12.w),
           Expanded(
             child: Column(

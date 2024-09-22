@@ -44,7 +44,7 @@ class MicrophoneService {
     try {
       await _mic.cancel();
 
-      "DISPOSED $this".printLog();
+      "DISPOSED $runtimeType".printLog();
     } catch (e) {
       "$runtimeType Error: $e".printLog();
     }

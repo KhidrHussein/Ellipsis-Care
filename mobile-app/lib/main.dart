@@ -1,4 +1,3 @@
-import 'package:ellipsis_care/core/utils/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -6,12 +5,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:ellipsis_care/config/router/router.dart';
 import 'package:ellipsis_care/config/theme/controller.dart';
+import 'package:ellipsis_care/core/services/storage_service.dart';
+import 'package:ellipsis_care/core/utils/locator.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized;
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables
   await dotenv.load(fileName: "secrets.env");
+
+  // Initialize services
   initService();
-  
+
+  // Initialize [Hive]
+  await injector<StorageService>().initializeStorage();
+
+  // Register [Storage Service] type adapters
+  injector<StorageService>().registerModels();
+
   runApp(const EllipsisCare());
 }
 

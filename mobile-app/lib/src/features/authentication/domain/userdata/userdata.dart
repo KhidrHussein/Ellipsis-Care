@@ -3,7 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 part 'userdata.g.dart';
 
 @HiveType(typeId: 0)
-class UserData {
+class UserData extends HiveObject{
   UserData({
     required this.enableDarkMode,
     required this.showNotifications,

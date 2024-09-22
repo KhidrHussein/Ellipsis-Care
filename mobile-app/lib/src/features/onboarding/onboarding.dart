@@ -23,7 +23,6 @@ class Onboarding extends StatelessWidget {
                 child: PageView.builder(
                   itemCount: stories.length,
                   controller: cubit.slideController,
-                  physics: const NeverScrollableScrollPhysics(),
                   onPageChanged: (value) => cubit.updateState(value),
                   itemBuilder: (context, index) {
                     return Padding(

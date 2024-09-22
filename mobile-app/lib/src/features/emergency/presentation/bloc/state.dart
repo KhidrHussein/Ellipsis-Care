@@ -3,7 +3,7 @@ part of "bloc.dart";
 sealed class EmergencyContactState extends Equatable {
   const EmergencyContactState({required this.contacts});
 
-  final List<PhoneContact> contacts;
+  final List<EmergencyContact> contacts;
 
   @override
   List<Object?> get props => [contacts];

@@ -2,19 +2,21 @@ part of 'bloc.dart';
 
 sealed class AuthenticationState {}
 
-class Loading implements AuthenticationState {}
+class DefaultState implements AuthenticationState {}
 
-class Data<S> extends Equatable implements AuthenticationState {
-  const Data({this.data});
+class LoadingState implements AuthenticationState {}
+
+class AuthenticationPassed<S> extends Equatable implements AuthenticationState {
+  const AuthenticationPassed({this.data});
   final S? data;
 
   @override
   List<Object?> get props => [data];
 }
 
-class Error<E> extends Equatable implements AuthenticationState {
-  const Error({this.error});
-  final E? error;
+class AuthenticationFailed extends Equatable implements AuthenticationState {
+  const AuthenticationFailed({required this.error});
+  final String error;
 
   @override
   List<Object?> get props => [error];

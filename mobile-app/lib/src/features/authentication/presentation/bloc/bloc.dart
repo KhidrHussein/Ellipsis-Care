@@ -5,7 +5,7 @@ part 'event.dart';
 part 'state.dart';
 
 class AutheticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-  AutheticationBloc() : super(const Data()) {
+  AutheticationBloc() : super(DefaultState()) {
     on<SignInEvent>(_signIn);
     on<SignUpEvent>(_signUp);
     on<OTPVerificationEvent>(_verifyOTP);

@@ -1,4 +1,5 @@
 import 'package:ellipsis_care/core/services/contacts_service.dart';
+import 'package:ellipsis_care/core/services/storage_service.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/core/utils/locator.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,9 @@ import '../../../../core/utils/helpers.dart';
 part 'state.dart';
 
 class OnboardingCubit extends Cubit<OnboardingState> {
-  OnboardingCubit() : super((currentIndex: 0, story: stories.first));
+  OnboardingCubit() : super((currentIndex: 0, story: stories.first)) {
+    injector<StorageService>().initSession();
+  }
 
   final PageController slideController = PageController();
 
@@ -36,12 +39,19 @@ class OnboardingCubit extends Cubit<OnboardingState> {
         break;
 
       case 6:
+        _hasViewedOnboarding();
         UtilHelpers.pushRoute(RouteNames.signup);
         break;
 
       default:
         _nextStory();
     }
+  }
+
+  void _hasViewedOnboarding() async {
+    final session = await injector<StorageService>().getUserData();
+    session?.hasViewedOnboarding = true;
+    await session?.save();
   }
 
   void _initializeAudio() async {

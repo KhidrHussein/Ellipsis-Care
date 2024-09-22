@@ -1,4 +1,6 @@
 import 'package:ellipsis_care/config/router/route_names.dart';
+import 'package:ellipsis_care/core/services/storage_service.dart';
+import 'package:ellipsis_care/core/utils/locator.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/forgot_password.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signin.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signup.dart';
@@ -24,6 +26,13 @@ final GoRouter router = GoRouter(
   initialLocation: "/",
   navigatorKey: _routerKey,
   debugLogDiagnostics: true,
+  redirect: (context, state) async {
+    final userDataSession = await injector<StorageService>().getUserData();
+    if (userDataSession != null && userDataSession.hasViewedOnboarding) {
+      return '/sign-up';
+    }
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/',

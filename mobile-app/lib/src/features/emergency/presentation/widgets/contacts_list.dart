@@ -56,10 +56,10 @@ class EmergencyContactsList extends StatelessWidget {
                       );
                     }
                     return EmergencyContactTile(
-                      name: state.contacts[index].$1 ?? "",
-                      phoneNumber: state.contacts[index].$2?.first ?? "",
-                      profilePicture:
-                          "https://wallpapers.com/images/featured/cool-profile-picture-87h46gcobjl5e4xu.jpg",
+                      name: state.contacts[index].name,
+                      phoneNumber:
+                          state.contacts[index].phoneNumbers?.first ?? "",
+                      profilePicture: state.contacts[index].photo,
                     );
                   },
                 ),
