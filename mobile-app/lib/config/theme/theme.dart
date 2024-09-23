@@ -6,7 +6,6 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     fontFamily: 'Manrope',
     colorSchemeSeed: AppColors.primary,
-  
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
         textStyle: WidgetStatePropertyAll(
@@ -55,7 +54,7 @@ class AppTheme {
         color: AppColors.black.withOpacity(.3),
       ),
       contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      constraints: BoxConstraints(maxHeight: 48.h, maxWidth: 361.w),
+      constraints: BoxConstraints(maxWidth: 361.w),
       border: OutlineInputBorder(
         borderSide:
             const BorderSide(color: AppColors.textfieldBorder, width: .5),

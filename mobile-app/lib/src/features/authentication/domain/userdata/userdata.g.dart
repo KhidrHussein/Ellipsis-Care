@@ -20,19 +20,22 @@ class UserDataAdapter extends TypeAdapter<UserData> {
       enableDarkMode: fields[1] == null ? false : fields[1] as bool,
       showNotifications: fields[0] == null ? true : fields[0] as bool,
       hasViewedOnboarding: fields[2] == null ? false : fields[2] as bool,
+      isLoggedIn: fields[3] == null ? false : fields[3] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserData obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.showNotifications)
       ..writeByte(1)
       ..write(obj.enableDarkMode)
       ..writeByte(2)
-      ..write(obj.hasViewedOnboarding);
+      ..write(obj.hasViewedOnboarding)
+      ..writeByte(3)
+      ..write(obj.isLoggedIn);
   }
 
   @override

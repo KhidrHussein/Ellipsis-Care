@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../widgets/divider.dart';
-import '../widgets/other_options.dart';
+import '../widgets/oauth_options.dart';
 import '../widgets/textfield.dart';
 
 class Signin extends StatefulWidget {
@@ -81,7 +81,7 @@ class _SigninState extends State<Signin> {
               SizedBox(height: 6.h),
               const AuthenticationDivider(),
               SizedBox(height: 6.h),
-              const AuthenticationOptions(),
+              const AuthenticationOptions(currentScopeIsLogin: true),
             ],
           ),
         ),

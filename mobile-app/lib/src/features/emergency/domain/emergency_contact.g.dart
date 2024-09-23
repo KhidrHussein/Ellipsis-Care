@@ -18,7 +18,7 @@ class EmergencyContactAdapter extends TypeAdapter<EmergencyContact> {
     };
     return EmergencyContact(
       name: fields[0] as String,
-      phoneNumbers: (fields[1] as List).cast<String>(),
+      phoneNumbers: (fields[1] as List?)?.cast<String>(),
       photo: fields[2] as Uint8List?,
     );
   }

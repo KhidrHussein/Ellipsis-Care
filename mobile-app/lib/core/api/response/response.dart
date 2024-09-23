@@ -5,7 +5,7 @@ import '../exceptions/exceptions.dart';
 part 'response.freezed.dart';
 part 'response.g.dart';
 
-typedef ApiResult = ({ApiResponse? response, AppExceptions? exception});
+typedef ApiResult<T> = ({ApiResponse<T>? response, AppExceptions? exception});
 
 @Freezed(genericArgumentFactories: true)
 sealed class ApiResponse<T> with _$ApiResponse<T> {

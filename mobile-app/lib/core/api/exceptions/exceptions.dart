@@ -4,23 +4,21 @@ import 'package:dio/dio.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../response/response.dart';
-
 part 'exceptions.freezed.dart';
 
 @freezed
 abstract class AppExceptions with _$AppExceptions implements Exception {
   const factory AppExceptions.requestCancelled() = _RequestCancelled;
-  const factory AppExceptions.unauthorizedRequest(String reason) =
+  const factory AppExceptions.unauthorizedRequest(String? reason) =
       _UnauthorizedRequest;
-  const factory AppExceptions.badRequest(String error) = _BadRequest;
-  const factory AppExceptions.notFound(String reason) = _NotFound;
+  const factory AppExceptions.badRequest(String? error) = _BadRequest;
+  const factory AppExceptions.notFound(String? reason) = _NotFound;
   const factory AppExceptions.methodNotAllowed() = _MethodNotAllowed;
   const factory AppExceptions.notAcceptable() = _NotAcceptable;
   const factory AppExceptions.requestTimeout() = _RequestTimeout;
   const factory AppExceptions.sendTimeout() = _SendTimeout;
   const factory AppExceptions.receiveTimeout() = _ReceiveTimeout;
-  const factory AppExceptions.unprocessableEntity(String reason) =
+  const factory AppExceptions.unprocessableEntity(String? reason) =
       _UnprocessableEntity;
   const factory AppExceptions.conflict() = _Conflict;
   const factory AppExceptions.internalServerError() = _InternalServerError;
@@ -33,32 +31,29 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
   const factory AppExceptions.unexpectedError() = _UnexpectedError;
 
   static AppExceptions _handleResponse(Response<dynamic>? response) {
-    ApiResponse apiResponse =
-        ApiResponse<void>.fromJson(response!.data, (obj) {});
-
     // apiResponse.printLog(
     //   "\nstatus code: ${response.statusCode}\t"
     //   "\nstatus: ${apiResponse.success}\t"
     //   "\nerror: ${apiResponse.error}\t",
     // );
 
-    int statusCode = response.statusCode ?? 0;
+    int statusCode = response?.statusCode ?? 0;
 
     switch (statusCode) {
       case 400:
-        return AppExceptions.badRequest(response.statusMessage ?? "");
+        return AppExceptions.badRequest(response?.statusMessage);
       case 401:
-        return AppExceptions.unauthorizedRequest(response.statusMessage ?? "");
+        return AppExceptions.unauthorizedRequest(response?.statusMessage);
       case 403:
-        return AppExceptions.unauthorizedRequest(response.statusMessage ?? "");
+        return AppExceptions.unauthorizedRequest(response?.statusMessage);
       case 404:
-        return AppExceptions.notFound(response.statusMessage ?? "");
+        return AppExceptions.notFound(response?.statusMessage);
       case 408:
         return const AppExceptions.requestTimeout();
       case 409:
         return const AppExceptions.conflict();
       case 422:
-        return AppExceptions.unprocessableEntity(response.statusMessage ?? "");
+        return AppExceptions.unprocessableEntity(response?.statusMessage);
       case 500:
         return const AppExceptions.internalServerError();
       case 503:
@@ -123,9 +118,9 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
     }
   }
 
-  static String getErrorMessage(AppExceptions networkExceptions) {
-    var errorMessage = "";
-    networkExceptions.when(
+  static String getErrorMessage(AppExceptions appException) {
+    String? errorMessage = "";
+    appException.when(
       notImplemented: () {
         errorMessage = "Not Implemented";
       },
@@ -135,8 +130,8 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
       internalServerError: () {
         errorMessage = "Internal Server Error";
       },
-      notFound: (String reason) {
-        errorMessage = reason;
+      notFound: (String? reason) {
+        errorMessage ??= reason;
       },
       serviceUnavailable: () {
         errorMessage = "Service unavailable";
@@ -147,10 +142,10 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
       badRequest: (value) {
         errorMessage = value;
       },
-      unauthorizedRequest: (String error) {
+      unauthorizedRequest: (String? error) {
         errorMessage = error;
       },
-      unprocessableEntity: (String error) {
+      unprocessableEntity: (String? error) {
         errorMessage = error;
       },
       unexpectedError: () {
@@ -185,6 +180,6 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
         errorMessage = "A receive timeout occurred";
       },
     );
-    return errorMessage;
+    return errorMessage!;
   }
 }

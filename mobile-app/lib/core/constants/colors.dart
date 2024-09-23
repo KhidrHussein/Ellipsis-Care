@@ -28,6 +28,12 @@ class AppColors {
   static const Color emergencyContactNumberColor = Color(0xFF797979);
   static const Color reminderCalendarBackgroundColor = Color(0xFFF4F4F4);
   static const Color reminderSheetBorderColor = Color(0xFFBBBBBB);
+  static const Color alertTitleTextColor = Color(0xFF333333);
+  static const Color alertInfoIconColor = Color(0xFF666666);
+  static const Color alertIndicatorColor = Color(0xFF525252);
+  static const Color alertCancelIconColor = Color(0xFF525252);
+  static const Color alertMessageTextColor = Color(0xFF666666);
+
   static const LinearGradient animatedOvalGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

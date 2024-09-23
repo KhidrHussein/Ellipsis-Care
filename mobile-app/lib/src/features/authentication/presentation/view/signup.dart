@@ -1,12 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:ellipsis_care/config/router/route_names.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/core/utils/helpers.dart';
+import 'package:ellipsis_care/src/features/authentication/presentation/bloc/bloc.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/widgets/divider.dart';
-import 'package:ellipsis_care/src/features/authentication/presentation/widgets/other_options.dart';
+import 'package:ellipsis_care/src/features/authentication/presentation/widgets/oauth_options.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/widgets/textfield.dart';
 
 class Signup extends StatefulWidget {
@@ -17,8 +19,10 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
-  bool _canContinue = false;
-
+  final ValueNotifier<bool> _canContinue = ValueNotifier(false);
+  final ValueNotifier<bool> _hasAcceptedTerms = ValueNotifier(false);
+  final GlobalKey<FormState> _emailKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _firstnameController = TextEditingController();
   final TextEditingController _lastnameController = TextEditingController();
@@ -28,12 +32,13 @@ class _SignupState extends State<Signup> {
 
   @override
   void dispose() {
-    _canContinue = false;
     _emailController.dispose();
     _firstnameController.dispose();
     _lastnameController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _emailKey.currentState?.dispose();
+    _formKey.currentState?.dispose();
     super.dispose();
   }
 
@@ -41,7 +46,7 @@ class _SignupState extends State<Signup> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: REdgeInsets.fromLTRB(16.w, 64.h, 16.w, 32.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -59,15 +64,20 @@ class _SignupState extends State<Signup> {
                 style: context.textTheme.bodyLarge?.copyWith(fontSize: 15.sp),
               ),
               SizedBox(height: 48.h),
-              AnimatedCrossFade(
-                firstChild: _first(),
-                secondChild: _second(),
-                firstCurve: Curves.easeOut,
-                secondCurve: Curves.easeOut,
-                crossFadeState: _canContinue
-                    ? CrossFadeState.showSecond
-                    : CrossFadeState.showFirst,
-                duration: Durations.medium2,
+              ValueListenableBuilder(
+                valueListenable: _canContinue,
+                builder: (context, value, _) {
+                  return AnimatedCrossFade(
+                    firstChild: _first(),
+                    secondChild: _second(),
+                    firstCurve: Curves.easeOut,
+                    secondCurve: Curves.easeOut,
+                    crossFadeState: value
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
+                    duration: Durations.long2,
+                  );
+                },
               )
             ],
           ),
@@ -77,113 +87,148 @@ class _SignupState extends State<Signup> {
   }
 
   Widget _first() {
-    return Column(
-      children: [
-        AuthenticationField(
-          fieldname: "Email",
-          hint: "Input your email",
-          controller: _emailController,
-        ),
-        SizedBox(height: 48.h),
-        FilledButton(
-          onPressed: () {
-            if (_emailController.text.isNotEmpty) {
-              setState(() => _canContinue = true);
-            }
-          },
-          child: const Text("Continue"),
-        ),
-        SizedBox(height: 24.h),
-        RichText(
-          text: TextSpan(
-            text: "Already have an account? ",
-            style: context.textTheme.bodyLarge?.copyWith(fontSize: 14.sp),
-            children: [
-              TextSpan(
-                text: "Sign in",
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () => UtilHelpers.pushRoute(RouteNames.signIn),
-                style: context.textTheme.bodyLarge?.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
+    return Form(
+      key: _emailKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      child: Column(
+        children: [
+          AuthenticationField(
+            fieldname: "Email",
+            hint: "Input your email",
+            controller: _emailController,
+            validator: (input) => UtilHelpers.emailValidator(input),
           ),
-        ),
-        const AuthenticationDivider(),
-        const AuthenticationOptions(),
-      ],
+          SizedBox(height: 48.h),
+          FilledButton(
+            onPressed: () {
+              if (_emailKey.currentState!.validate()) {
+                _canContinue.value = true;
+              }
+            },
+            child: const Text("Continue"),
+          ),
+          SizedBox(height: 24.h),
+          RichText(
+            text: TextSpan(
+              text: "Already have an account? ",
+              style: context.textTheme.bodyLarge?.copyWith(fontSize: 14.sp),
+              children: [
+                TextSpan(
+                  text: "Sign in",
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () => UtilHelpers.pushRoute(RouteNames.signIn),
+                  style: context.textTheme.bodyLarge?.copyWith(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const AuthenticationDivider(),
+          const AuthenticationOptions(),
+        ],
+      ),
     );
   }
 
   Widget _second() {
-    return Column(
-      children: [
-        AuthenticationField(
-          fieldname: "First name",
-          hint: "Input your first name",
-          controller: _firstnameController,
-        ),
-        SizedBox(height: 16.h),
-        AuthenticationField(
-          fieldname: "Last name",
-          hint: "Input your last name",
-          controller: _lastnameController,
-        ),
-        SizedBox(height: 16.h),
-        PasswordField(
-          fieldname: "Password",
-          hint: "Enter your password",
-          controller: _passwordController,
-        ),
-        SizedBox(height: 16.h),
-        PasswordField(
-          fieldname: "Confirm password",
-          hint: "Re-enter your password",
-          controller: _confirmPasswordController,
-        ),
-        SizedBox(height: 24.h),
-        Row(
-          children: [
-            Checkbox.adaptive(
-              value: true,
-              onChanged: (status) {},
-            ),
-            Expanded(
-              child: Text(
-                "I agree with the Terms and Conditions of Ellipsis Care",
-                style: context.textTheme.bodyLarge?.copyWith(fontSize: 15.sp),
-              ),
-            )
-          ],
-        ),
-        SizedBox(height: 24.h),
-        FilledButton(
-          onPressed: () {
-            UtilHelpers.pushRoute(RouteNames.signIn);
-          },
-          child: const Text("Continue"),
-        ),
-        SizedBox(height: 18.h),
-        RichText(
-          text: TextSpan(
-            text: "Already have an account? ",
-            style: context.textTheme.bodyLarge?.copyWith(fontSize: 14.sp),
+    final blocState = context.watch<AuthenticationBloc>().state;
+    return Form(
+      key: _formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      child: Column(
+        children: [
+          AuthenticationField(
+            fieldname: "First name",
+            hint: "Input your first name",
+            controller: _firstnameController,
+            validator: (input) => UtilHelpers.nameValidator(input?.trim()),
+          ),
+          SizedBox(height: 16.h),
+          AuthenticationField(
+            fieldname: "Last name",
+            hint: "Input your last name",
+            controller: _lastnameController,
+            validator: (input) => UtilHelpers.nameValidator(input?.trim()),
+          ),
+          SizedBox(height: 16.h),
+          PasswordField(
+            fieldname: "Password",
+            hint: "Enter your password",
+            controller: _passwordController,
+            validator: (input) => UtilHelpers.passwordValidator(input),
+          ),
+          SizedBox(height: 16.h),
+          PasswordField(
+            fieldname: "Confirm password",
+            hint: "Re-enter your password",
+            controller: _confirmPasswordController,
+            validator: (input) => UtilHelpers.confirmPasswordValidator(
+                input, _passwordController.text),
+          ),
+          SizedBox(height: 24.h),
+          Row(
             children: [
-              TextSpan(
-                text: "Sign in",
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () => UtilHelpers.pushRoute(RouteNames.signIn),
-                style: context.textTheme.bodyLarge?.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w700,
-                ),
+              ValueListenableBuilder<bool>(
+                valueListenable: _hasAcceptedTerms,
+                builder: (context, value, child) {
+                  return Checkbox.adaptive(
+                    value: value,
+                    onChanged: (status) {
+                      _hasAcceptedTerms.value = status!;
+                    },
+                  );
+                },
               ),
+              Expanded(
+                child: Text(
+                  "I agree with the Terms and Conditions of Ellipsis Care",
+                  style: context.textTheme.bodyLarge?.copyWith(fontSize: 15.sp),
+                ),
+              )
             ],
           ),
-        ),
-      ],
+          SizedBox(height: 24.h),
+          FilledButton(
+            onPressed: switch (blocState) {
+              LoadingState() => null,
+              _ => () {
+                  if (_formKey.currentState!.validate()) {
+                    context.read<AuthenticationBloc>().add(
+                          SignUpEvent(
+                            email: _emailController.text,
+                            firstName: _firstnameController.text,
+                            lastName: _lastnameController.text,
+                            password: _passwordController.text,
+                            hasAcceptedTerms: _hasAcceptedTerms.value,
+                          ),
+                        );
+                  }
+                },
+            },
+            child: const Text("Continue"),
+          ),
+          SizedBox(height: 18.h),
+          RichText(
+            text: TextSpan(
+              text: "Already have an account? ",
+              style: context.textTheme.bodyLarge?.copyWith(fontSize: 14.sp),
+              children: [
+                TextSpan(
+                  text: "Sign in",
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () => UtilHelpers.pushRoute(RouteNames.signIn),
+                  style: context.textTheme.bodyLarge?.copyWith(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

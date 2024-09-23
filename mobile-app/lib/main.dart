@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oktoast/oktoast.dart';
 
 import 'package:ellipsis_care/config/router/router.dart';
 import 'package:ellipsis_care/config/theme/controller.dart';
@@ -37,11 +38,14 @@ class EllipsisCare extends StatelessWidget {
       builder: (context, child) => BlocBuilder<ThemeCubit, ThemeData>(
         bloc: ThemeCubit(),
         builder: (context, state) {
-          return MaterialApp.router(
-            title: "Ellipsis Care",
-            debugShowCheckedModeBanner: false,
-            routerConfig: router,
-            theme: state,
+          return OKToast(
+       
+            child: MaterialApp.router(
+              title: "Ellipsis Care",
+              debugShowCheckedModeBanner: false,
+              routerConfig: router,
+              theme: state,
+            ),
           );
         },
       ),

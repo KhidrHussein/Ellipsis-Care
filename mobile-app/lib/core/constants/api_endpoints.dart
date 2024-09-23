@@ -1,5 +1,6 @@
 class ApiUrl {
   static const String signUp = "users/";
+  static const String signIn = "auth/token/login/";
   static const String verifyEmail = "auth/verify-email/";
 
   static const String uploadAudio = "audio/";

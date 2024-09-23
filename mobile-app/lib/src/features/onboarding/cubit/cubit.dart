@@ -67,13 +67,10 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     final service = injector<PhoneContactService>();
 
     await service.checkForPermission().then((hasContactsPermission) async {
-      "$hasContactsPermission".printLog();
-
       if (hasContactsPermission) {
         final contact = await service.pickContact();
-        contact.printLog();
+        injector<StorageService>().storeEmergencyContacts(contact);
       }
-
       _nextStory();
     });
   }
