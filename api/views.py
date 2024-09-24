@@ -53,7 +53,7 @@ class UserCreateViewSet(viewsets.ModelViewSet):
                 "data": {
                     "user": {
                         "email": user.email,
-                        "username": user.username
+                        "username": user.first_name
                     }
                 },
                 "message": "Verification code sent to your email."
