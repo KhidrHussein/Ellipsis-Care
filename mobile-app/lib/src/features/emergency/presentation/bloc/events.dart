@@ -4,4 +4,4 @@ sealed class EmergencyContactEvent {}
 
 class AddContactEvent implements EmergencyContactEvent {}
 
-class AddMultipleContactsEvent implements EmergencyContactEvent {}
+class FetchContactsFromStorageEvent implements EmergencyContactEvent {}

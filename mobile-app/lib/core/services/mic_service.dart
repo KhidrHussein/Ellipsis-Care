@@ -13,8 +13,8 @@ class MicrophoneService {
 
     try {
       _mic.start(
-        const RecordConfig(encoder: AudioEncoder.opus),
-        path: "${tempDir.path}/audio",
+        const RecordConfig(encoder: AudioEncoder.wav),
+        path: "${tempDir.path}/audio.wav",
       );
 
       "STARTED RECORDING".printLog();

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/constants/colors.dart';
 import '../../../../shared/appbar.dart';
 
 class Emergency extends StatelessWidget {
@@ -12,9 +11,8 @@ class Emergency extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: AppColors.emergencyBackgroundColor,
-      child: SafeArea(
+    return SafeArea(
+      child: SingleChildScrollView(
         child: Column(
           children: [
             const ProfileBar(profileName: "Leonard"),

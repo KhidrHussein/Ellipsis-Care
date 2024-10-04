@@ -11,7 +11,7 @@ sealed class EmergencyContactState extends Equatable {
 
 class NoContactState extends EmergencyContactState {
   NoContactState() : super(contacts: []);
-
+  
   @override
   List<Object?> get props => [contacts];
 }

@@ -50,8 +50,8 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
   void _hasViewedOnboarding() async {
     final session = await injector<StorageService>().getUserData();
-    session?.hasViewedOnboarding = true;
-    await session?.save();
+    session!.hasViewedOnboarding = true;
+    await session.save();
   }
 
   void _initializeAudio() async {
@@ -69,7 +69,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     await service.checkForPermission().then((hasContactsPermission) async {
       if (hasContactsPermission) {
         final contact = await service.pickContact();
-        injector<StorageService>().storeEmergencyContacts(contact);
+        injector<StorageService>().storeEmergencyContact(contact);
       }
       _nextStory();
     });

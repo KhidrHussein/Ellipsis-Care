@@ -1,3 +1,9 @@
+import 'dart:developer';
+
+import 'package:dotted_border/dotted_border.dart';
+import 'package:ellipsis_care/core/utils/enums/reminder.dart';
+import 'package:ellipsis_care/core/utils/extensions.dart';
+import 'package:ellipsis_care/src/features/reminders/presentation/widgets/reminder_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -8,9 +14,9 @@ class ReminderSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  DraggableScrollableSheet(
-      minChildSize: .43,
-      initialChildSize: .45,
+    return DraggableScrollableSheet(
+      minChildSize: .35,
+      initialChildSize: .4,
       builder: (context, scrollController) {
         return Container(
           padding: REdgeInsets.only(left: 27.w, right: 27.w, top: 6.h),
@@ -21,8 +27,7 @@ class ReminderSheet extends StatelessWidget {
               topRight: Radius.circular(20.r),
             ),
             border: const Border.symmetric(
-              horizontal:
-                  BorderSide(color: AppColors.reminderSheetBorderColor),
+              horizontal: BorderSide(color: AppColors.reminderSheetBorderColor),
             ),
           ),
           child: Column(
@@ -32,11 +37,23 @@ class ReminderSheet extends StatelessWidget {
                 width: 64.w,
                 color: AppColors.black,
               ),
+              12.sizedBoxHeight,
+              
               Expanded(
                 child: ListView(
                   controller: scrollController,
                   children: [
-                    const Text("data"),
+                    Text(
+                      "data",
+                      style: context.textTheme.headlineSmall?.copyWith(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    10.sizedBoxHeight,
+                    ReminderTile(
+                      reminderType: ReminderType.drug,
+                    )
                   ],
                 ),
               ),

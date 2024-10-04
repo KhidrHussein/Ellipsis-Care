@@ -29,4 +29,7 @@ class AssetStrings {
   static const String contactIcon = 'assets/icons/settings/message.svg';
   static const String feedbackIcon = 'assets/icons/settings/feedback.svg';
   static const String logoutIcon = 'assets/icons/settings/logout.svg';
+
+  static const String food = 'assets/icons/reminder/food.svg';
+  static const String drug = 'assets/icons/reminder/drugs.svg';
 }

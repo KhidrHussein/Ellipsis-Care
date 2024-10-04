@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 extension LogExtension on Object? {
   void printLog([String? message]) {
@@ -28,4 +29,23 @@ extension Validators on String {
         RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
     return passwordRegExp.hasMatch(this);
   }
+}
+
+extension SizedBoxExtensions on num {
+  Widget get sizedBoxHeight => SizedBox(height: h);
+
+  Widget get sizedBoxWidth => SizedBox(width: w);
+
+  EdgeInsetsGeometry get verticalPadding => EdgeInsets.symmetric(vertical: h);
+
+  EdgeInsetsGeometry get horizontalPadding =>
+      EdgeInsets.symmetric(horizontal: w);
+
+  EdgeInsetsGeometry get symmetricPadding =>
+      EdgeInsets.symmetric(vertical: h, horizontal: w);
+}
+
+extension ListPaddingExtension on List<num> {
+  EdgeInsets get symmetricPadding =>
+      EdgeInsets.symmetric(vertical: last.h, horizontal: first.w);
 }

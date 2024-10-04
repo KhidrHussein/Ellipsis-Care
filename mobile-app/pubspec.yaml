@@ -63,6 +63,8 @@ dependencies:
   freezed: ^2.5.7
   json_serializable: ^6.8.0
   json_annotation: ^4.9.0
+  dotted_border: ^2.1.0
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:
@@ -92,6 +94,7 @@ flutter:
   assets:
     - assets/icons/authentication/
     - assets/icons/dashboard/
+    - assets/icons/reminder/
     - assets/icons/settings/
     - assets/images/
     - secrets.env

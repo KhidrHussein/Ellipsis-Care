@@ -30,12 +30,11 @@ final GoRouter router = GoRouter(
   debugLogDiagnostics: true,
   redirect: (context, state) async {
     // final userDataSession = await injector<StorageService>().getUserData();
-    // if (userDataSession != null &&
-    //     userDataSession.hasViewedOnboarding &&
-    //     !userDataSession.isLoggedIn) {
-    //   return '/sign-up';
+    // if (userDataSession!.hasViewedOnboarding) {
+    //   return '/dashboard';
     // }
-    // return null;
+
+    return null;
   },
   routes: [
     GoRoute(
@@ -46,7 +45,9 @@ final GoRouter router = GoRouter(
           child: MultiBlocProvider(
             providers: [
               BlocProvider(create: (context) => OnboardingCubit()),
-              BlocProvider(create: (context) => EmergencyContactBloc())
+              BlocProvider(
+                create: (context) => EmergencyContactBloc(),
+              )
             ],
             child: const Onboarding(),
           ),
@@ -97,10 +98,11 @@ final GoRouter router = GoRouter(
     ),
     ShellRoute(
       navigatorKey: _shellKey,
+
       builder: (context, state, child) {
         return BlocProvider(
           create: (context) => NavigationRowCubit(),
-          child: NavigatorShell(child: child),
+          child: NavigatorShell(routerState: state, child: child),
         );
       },
       routes: [

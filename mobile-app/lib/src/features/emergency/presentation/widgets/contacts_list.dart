@@ -40,12 +40,13 @@ class EmergencyContactsList extends StatelessWidget {
         ),
         SizedBox(height: 8.h),
         BlocBuilder<EmergencyContactBloc, EmergencyContactState>(
-          bloc: context.watch<EmergencyContactBloc>(),
+          bloc: context.watch<EmergencyContactBloc>()..add(FetchContactsFromStorageEvent()),
           builder: (context, state) {
             if (state.contacts.isNotEmpty) {
               return SizedBox(
                 height: .6.sh,
                 child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: state.contacts.length + 1,
                   itemBuilder: (context, index) {
                     if (index == state.contacts.length) {

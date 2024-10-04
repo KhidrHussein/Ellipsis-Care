@@ -33,6 +33,11 @@ class AppColors {
   static const Color alertIndicatorColor = Color(0xFF525252);
   static const Color alertCancelIconColor = Color(0xFF525252);
   static const Color alertMessageTextColor = Color(0xFF666666);
+  static const Color navigatiorBarBorderColor = Color(0xFFBBBBBB);
+  static const Color drugReminderColor = Color(0xFFE9F3EB);
+  static const Color foodReminderColor = Color(0xFFD2FFF4);
+  static const Color drugReminderBorderColor = Color(0xFF4DA880);
+  static const Color foodReminderBorderColor = Color(0xFF3AD3D3);
 
   static const LinearGradient animatedOvalGradient = LinearGradient(
     begin: Alignment.topCenter,

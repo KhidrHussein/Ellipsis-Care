@@ -31,12 +31,6 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
   const factory AppExceptions.unexpectedError() = _UnexpectedError;
 
   static AppExceptions _handleResponse(Response<dynamic>? response) {
-    // apiResponse.printLog(
-    //   "\nstatus code: ${response.statusCode}\t"
-    //   "\nstatus: ${apiResponse.success}\t"
-    //   "\nerror: ${apiResponse.error}\t",
-    // );
-
     int statusCode = response?.statusCode ?? 0;
 
     switch (statusCode) {
