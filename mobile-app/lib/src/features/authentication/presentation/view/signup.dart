@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/config/router/route_names.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
+import '../../../../../config/router/route_names.dart';
+import '../../../../../core/utils/extensions.dart';
+import '../../../../../core/utils/helpers.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/bloc/bloc.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/widgets/divider.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/widgets/oauth_options.dart';

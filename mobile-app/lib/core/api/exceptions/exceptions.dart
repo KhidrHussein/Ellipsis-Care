@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../utils/extensions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'exceptions.freezed.dart';

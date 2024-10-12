@@ -1,5 +1,5 @@
-import 'package:ellipsis_care/core/services/oauth_service.dart';
-import 'package:ellipsis_care/core/utils/locator.dart';
+import '../../../../../core/services/oauth_service.dart';
+import '../../../../../core/utils/locator.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,8 +1,8 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/authentication/domain/userdata/userdata.dart';
-import 'package:ellipsis_care/src/features/emergency/domain/emergency_contact.dart';
+import '../utils/extensions.dart';
+import '../../src/features/authentication/domain/models/userdata/userdata.dart';
+import '../../src/features/emergency/domain/emergency_contact.dart';
 import 'package:uuid/uuid.dart';
 
 class StorageService {

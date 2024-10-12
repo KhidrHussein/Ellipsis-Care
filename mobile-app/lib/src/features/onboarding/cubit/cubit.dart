@@ -1,4 +1,5 @@
-import 'package:ellipsis_care/core/services/contacts_service.dart';
+import '../../../../core/services/contacts_service.dart';
+import '../../../../core/services/speech_service.dart';
 import 'package:ellipsis_care/core/services/storage_service.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/core/utils/locator.dart';
@@ -34,6 +35,10 @@ class OnboardingCubit extends Cubit<OnboardingState> {
         _initializeAudio();
         break;
 
+      case 2:
+        _initializeSpeechToTextService();
+        break;
+
       case 4:
         _setupEmergencyContacts();
         break;
@@ -59,6 +64,15 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
     await mic.checkForPermission().then((hasAudioPermission) {
       "$hasAudioPermission".printLog();
+      _nextStory();
+    });
+  }
+
+  void _initializeSpeechToTextService() async {
+    final speech = injector<SpeechService>();
+
+    await speech.init().then((hasInitialized) {
+      "$hasInitialized".printLog();
       _nextStory();
     });
   }

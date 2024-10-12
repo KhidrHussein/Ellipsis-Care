@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:ellipsis_care/config/router/route_names.dart';
-import 'package:ellipsis_care/core/services/storage_service.dart';
-import 'package:ellipsis_care/core/utils/locator.dart';
+import 'route_names.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/bloc/bloc.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/forgot_password.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signin.dart';

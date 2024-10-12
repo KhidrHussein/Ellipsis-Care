@@ -1,13 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 
-import 'package:ellipsis_care/config/router/router.dart';
-import 'package:ellipsis_care/config/theme/controller.dart';
-import 'package:ellipsis_care/core/services/storage_service.dart';
-import 'package:ellipsis_care/core/utils/locator.dart';
+import 'config/router/router.dart';
+import 'config/theme/controller.dart';
+import 'core/services/storage_service.dart';
+import 'core/utils/locator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,8 @@ void main() async {
   // Register [Storage Service] type adapters
   injector<StorageService>().registerModels();
 
+  await Firebase.initializeApp();
+
   runApp(const EllipsisCare());
 }
 
@@ -34,12 +37,11 @@ class EllipsisCare extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       ensureScreenSize: true,
-      designSize: const Size(393, 852),
+      designSize: const Size(400, 852),
       builder: (context, child) => BlocBuilder<ThemeCubit, ThemeData>(
         bloc: ThemeCubit(),
         builder: (context, state) {
           return OKToast(
-       
             child: MaterialApp.router(
               title: "Ellipsis Care",
               debugShowCheckedModeBanner: false,

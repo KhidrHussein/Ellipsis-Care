@@ -1,52 +1,60 @@
-import 'dart:io';
 
-import 'package:ellipsis_care/core/utils/locator.dart';
+import '../../../../../core/services/speech_service.dart';
+import '../../../../../core/utils/locator.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ellipsis_care/core/services/mic_service.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/dashboard/data/repository.dart';
+import '../../../../../core/utils/extensions.dart';
 
 part 'event.dart';
 part 'state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvents, DashboardState> {
   DashboardBloc()
-      : _service = injector<MicrophoneService>(),
+      : _service = injector<SpeechService>(),
         super(InitialState()) {
     on<StartRecordingEvent>(_startRecording);
     on<StopRecordingEvent>(_stopRecording);
   }
 
-  final MicrophoneService _service;
+  final SpeechService _service;
 
   void _startRecording(
       StartRecordingEvent event, Emitter<DashboardState> handler) async {
-    final bool hasPermission = await _service.checkForPermission();
+    handler.call(RecordingState());
 
-    if (hasPermission) {
-      await _service.startRecording();
-      handler.call(RecordingState());
-    }
+    await _service.listenAndConvertToWords(onResult: (value) {
+      value.printLog();
+    });
 
-    "DashboardBloc:\n Current State: $state".printLog();
+    // final bool hasPermission = await _service.checkForPermission();
+
+    // if (hasPermission) {
+    //   await _service.startRecording();
+    //   handler.call(RecordingState());
+    // }
+
+    "$runtimeType State: $state".printLog();
   }
 
   void _stopRecording(
       StopRecordingEvent event, Emitter<DashboardState> handler) async {
-    await _service.stopRecording().then((value) async {
-      handler.call(LoadingState());
+    await _service.stopListening();
 
-      File data = File(value ?? "");
-      final repository = DashboardRepository();
-      final ai = await repository.sendAudioFile(data);
-      
-      handler.call(
-        NotRecordingState(aiResponse: ai),
-      );
-    });
+    handler.call(const NotRecordingState());
 
-    "DashboardBloc:\n Current State: $state".printLog();
+    // await _service.stopRecording().then((value) async {
+    //   handler.call(LoadingState());
+
+    //   File data = File(value ?? "");
+    //   final repository = DashboardRepository();
+    //   final ai = await repository.sendAudioFile(data);
+
+    //   handler.call(
+    //     NotRecordingState(aiResponse: ai),
+    //   );
+    // });
+
+    "$runtimeType State: $state".printLog();
   }
 }

@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:ellipsis_care/core/constants/api_endpoints.dart';
-import 'package:ellipsis_care/core/services/api_service.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/core/utils/locator.dart';
-import 'package:ellipsis_care/src/features/dashboard/domain/health_tip.dart';
+import '../../../../core/constants/api_endpoints.dart';
+import '../../../../core/services/api_service.dart';
+import '../../../../core/utils/extensions.dart';
+import '../../../../core/utils/locator.dart';
+import '../domain/health_tip.dart';
 
 class DashboardRepository {
   DashboardRepository() : _service = injector<ApiService>();

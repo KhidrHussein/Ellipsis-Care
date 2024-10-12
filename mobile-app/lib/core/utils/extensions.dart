@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -43,6 +44,18 @@ extension SizedBoxExtensions on num {
 
   EdgeInsetsGeometry get symmetricPadding =>
       EdgeInsets.symmetric(vertical: h, horizontal: w);
+}
+
+extension AlignWidgetExtensions on Widget {
+  Widget get alignLeft => Align(
+        alignment: Alignment.centerLeft,
+        child: this,
+      );
+
+  Widget get alignRight => Align(
+        alignment: Alignment.centerRight,
+        child: this,
+      );
 }
 
 extension ListPaddingExtension on List<num> {

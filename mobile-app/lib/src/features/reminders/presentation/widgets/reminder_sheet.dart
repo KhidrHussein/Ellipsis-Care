@@ -1,13 +1,9 @@
-import 'dart:developer';
-
-import 'package:dotted_border/dotted_border.dart';
-import 'package:ellipsis_care/core/utils/enums/reminder.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/reminders/presentation/widgets/reminder_tile.dart';
+import 'package:ellipsis_care/src/features/reminders/presentation/views/add_reminder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/constants/colors.dart';
+import '../../../../../core/utils/extensions.dart';
 
 class ReminderSheet extends StatelessWidget {
   const ReminderSheet({super.key});
@@ -32,31 +28,46 @@ class ReminderSheet extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Container(
-                height: 3.h,
-                width: 64.w,
-                color: AppColors.black,
-              ),
+              Container(height: 3.h, width: 64.w, color: AppColors.black),
               12.sizedBoxHeight,
-              
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  children: [
-                    Text(
-                      "data",
-                      style: context.textTheme.headlineSmall?.copyWith(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    10.sizedBoxHeight,
-                    ReminderTile(
-                      reminderType: ReminderType.drug,
-                    )
-                  ],
+              Text(
+                "data",
+                style: context.textTheme.headlineSmall?.copyWith(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w400,
                 ),
-              ),
+              ).alignLeft,
+              10.sizedBoxHeight,
+              TextButton(
+                onPressed: () {
+                  showAdaptiveDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) => AddReminder(),
+                  );
+                },
+                child: Text("Add Reminder"),
+              )
+              // ConstrainedBox(
+              //   constraints: BoxConstraints(
+              //       maxHeight: scrollController.position.maxScrollExtent),
+              //   child: Timeline.tileBuilder(
+              //     controller: scrollController,
+              //     builder: TimelineTileBuilder(
+              //       itemCount: 4,
+              //       contentsBuilder: (context, index) {
+              //         return const ReminderTile(
+              //             reminderType: ReminderType.drug);
+              //       },
+              //       indicatorPositionBuilder: (context, index) {
+              //         return 0;
+              //       },
+              //       // nodePositionBuilder: (context, index) {
+              //       //   return 30;
+              //       // },
+              //     ),
+              //   ),
+              // )
             ],
           ),
         );

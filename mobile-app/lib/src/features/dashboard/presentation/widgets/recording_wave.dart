@@ -1,7 +1,6 @@
 import 'dart:async';
 
-import 'package:ellipsis_care/config/theme/controller.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/bloc/bloc.dart';
+import '../bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

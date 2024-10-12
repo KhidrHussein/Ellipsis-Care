@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/constants/asset_strings.dart';
-import 'package:ellipsis_care/core/constants/colors.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../../../../core/constants/asset_strings.dart';
+import '../../../../../core/constants/colors.dart';
+import '../../../../../core/utils/extensions.dart';
 
 class ChatBubble extends StatelessWidget {
   final String data;

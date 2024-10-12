@@ -1,7 +1,7 @@
 import 'package:flutter_contacts/flutter_contacts.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/emergency/domain/emergency_contact.dart';
+import '../utils/extensions.dart';
+import '../../src/features/emergency/domain/emergency_contact.dart';
 class PhoneContactService {
   Future<EmergencyContact?> pickContact() async {
     try {

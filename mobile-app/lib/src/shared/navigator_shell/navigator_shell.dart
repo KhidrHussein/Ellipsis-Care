@@ -1,4 +1,4 @@
-import 'package:ellipsis_care/config/router/route_names.dart';
+import '../../../config/router/route_names.dart';
 import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,49 +43,56 @@ class CustomNavigatorBar extends StatelessWidget {
         return SafeArea(
           top: false,
           child: SizedBox(
-            height: 85,
+            height: .1.sh,
+            width: 1.sw,
             child: Stack(
+              alignment: Alignment.center,
               children: [
                 Positioned(
-                  bottom: 72,
-                  left: 12,
-                  right: 12,
+                  top: (.1.sh - 72.h),
+                  left: (1.sw - .92.sw) / 2,
+                  right: (1.sw - .93.sw) / 2,
                   child: CustomPaint(
-                    size: const Size(369, 63),
+                    size: Size(.93.sw, 63.h),
                     painter: _CustomNavigatorBarPainter(),
                     child: Container(),
                   ),
                 ),
-                Positioned(
-                  left: .812.sw / 2,
-                  bottom: 17,
-                  child: NavigatorBarItem(
-                    iconPath: AssetStrings.emergency,
-                    selectedIcon: AssetStrings.emergency == state,
-                  ),
-                ),
                 Align(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       NavigatorBarItem(
                         iconPath: AssetStrings.home,
                         selectedIcon: AssetStrings.home == state,
                       ),
+                      24.horizontalSpace,
                       NavigatorBarItem(
                         iconPath: AssetStrings.reminders,
                         selectedIcon: AssetStrings.reminders == state,
                       ),
+                      16.horizontalSpace,
                       const SizedBox(width: 64),
+                      16.horizontalSpace,
                       NavigatorBarItem(
                         iconPath: AssetStrings.charts,
                         selectedIcon: AssetStrings.charts == state,
                       ),
+                      24.horizontalSpace,
                       NavigatorBarItem(
                         iconPath: AssetStrings.settings,
                         selectedIcon: AssetStrings.settings == state,
                       ),
                     ],
+                  ),
+                ),
+  
+                Positioned(
+              
+                  bottom: 18.h,
+                  child: NavigatorBarItem(
+                    iconPath: AssetStrings.emergency,
+                    selectedIcon: AssetStrings.emergency == state,
                   ),
                 ),
               ],
@@ -119,8 +126,8 @@ class NavigatorBarItem extends StatelessWidget {
           children: [
             if (iconPath == AssetStrings.emergency)
               Container(
-                height: 58.h,
-                width: 58.w,
+                height: 54.h,
+                width: 54.w,
                 padding: REdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: switch (selectedIcon) {

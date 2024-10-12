@@ -12,48 +12,48 @@ class ReminderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: DottedBorder(
-        strokeWidth: 2,
-        dashPattern: const [12, 8],
-        borderType: BorderType.RRect,
-        color: reminderType.borderColor,
-        radius: Radius.circular(10.r),
-        padding: [12, 8].symmetricPadding,
-        child: Row(
-          children: [
-            Container(
-              padding: REdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: reminderType.backgroundColor,
-                borderRadius: BorderRadius.circular(4.r),
-              ),
-              child: SvgPicture.asset(reminderType.icon,
-                  width: 28.w, fit: BoxFit.cover),
+    return DottedBorder(
+      strokeWidth: 2,
+      dashPattern: const [12, 8],
+      borderType: BorderType.RRect,
+      color: reminderType.borderColor,
+      radius: Radius.circular(10.r),
+      padding: [12, 8].symmetricPadding,
+      child: Row(
+        children: [
+          Container(
+            padding: REdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: reminderType.backgroundColor,
+              borderRadius: BorderRadius.circular(4.r),
             ),
-            12.sizedBoxWidth,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "data",
-                    style:
-                        context.textTheme.bodyLarge?.copyWith(fontSize: 15.sp),
+            child: SvgPicture.asset(
+              reminderType.icon,
+              fit: BoxFit.cover,
+              width: 26.w,
+            ),
+          ),
+          12.sizedBoxWidth,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "data",
+                  style:
+                      context.textTheme.bodyLarge?.copyWith(fontSize: 15.sp),
+                ),
+                Text(
+                  "few",
+                  style: context.textTheme.bodySmall?.copyWith(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
                   ),
-                  Text(
-                    "few",
-                    style: context.textTheme.bodySmall?.copyWith(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

@@ -1,5 +1,5 @@
-import 'package:ellipsis_care/core/services/storage_service.dart';
-import 'package:ellipsis_care/core/utils/locator.dart';
+import '../../../../../core/services/storage_service.dart';
+import '../../../../../core/utils/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/utils/enums/reminder.dart';

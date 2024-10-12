@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-import 'package:ellipsis_care/config/secrets.dart';
+import '../../config/secrets.dart';
 
 class ApiService {
   final Dio client = Dio(

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/constants/colors.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/onboarding/cubit/cubit.dart';
+import '../../../core/constants/colors.dart';
+import '../../../core/utils/extensions.dart';
+import 'cubit/cubit.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({super.key});

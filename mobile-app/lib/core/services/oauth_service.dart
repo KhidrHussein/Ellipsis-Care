@@ -1,6 +1,6 @@
 import 'package:google_sign_in/google_sign_in.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../utils/extensions.dart';
 
 typedef OAuthCredentials = ({
   String? displayName,

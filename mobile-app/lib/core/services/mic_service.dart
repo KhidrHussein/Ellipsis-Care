@@ -1,7 +1,7 @@
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../utils/extensions.dart';
 
 class MicrophoneService {
   final AudioRecorder _mic = AudioRecorder();

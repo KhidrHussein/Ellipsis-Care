@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/emergency/presentation/bloc/bloc.dart';
+import '../../../../../core/utils/extensions.dart';
+import '../bloc/bloc.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/widgets/contact_tile.dart';
 
 class EmergencyContactsList extends StatelessWidget {

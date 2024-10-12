@@ -28,10 +28,10 @@
 		<key>CFBundleURLTypes</key>
 		<array>
 			<dict>
-                <key>CFBundleURLSchemes</key>
-                <array>
-                    <string>com.googleusercontent.apps.1097324899248-gliehr0unf41i1doulqpjn55k7qhu266</string>
-                </array>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.1097324899248-gliehr0unf41i1doulqpjn55k7qhu266</string>
+				</array>
 			</dict>
 		</array>
 		<!-- End of the Google Sign-in Section -->
@@ -62,6 +62,9 @@
 
 		<key>NSContactsUsageDescription</key>
 		<string>Ellipsis Care requires permission to add contacts</string>
+
+		<key>NSSpeechRecognitionUsageDescription</key>
+		<string>Speech Recognition is required</string>
 		<!-- End of User Permissions Section -->
 	</dict>
 </plist>

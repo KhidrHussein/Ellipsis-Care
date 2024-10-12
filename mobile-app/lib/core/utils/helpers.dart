@@ -1,7 +1,7 @@
 import 'package:oktoast/oktoast.dart';
 
-import 'package:ellipsis_care/config/router/router.dart' show router;
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../config/router/router.dart' show router;
+import 'extensions.dart';
 
 import '../../src/shared/in_app_alert.dart';
 

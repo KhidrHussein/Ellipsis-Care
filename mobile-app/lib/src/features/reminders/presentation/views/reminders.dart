@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:ellipsis_care/src/features/reminders/presentation/widgets/reminder_bar.dart';
-import 'package:ellipsis_care/src/features/reminders/presentation/widgets/reminder_calendar.dart';
-import 'package:ellipsis_care/src/features/reminders/presentation/widgets/reminder_sheet.dart';
+import '../widgets/reminder_bar.dart';
+import '../widgets/reminder_calendar.dart';
+import '../widgets/reminder_sheet.dart';
 
 class Reminders extends StatelessWidget {
   const Reminders({super.key});

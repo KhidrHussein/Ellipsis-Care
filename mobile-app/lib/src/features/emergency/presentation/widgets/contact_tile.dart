@@ -1,4 +1,4 @@
-import 'package:ellipsis_care/core/constants/colors.dart';
+import '../../../../../core/constants/colors.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
