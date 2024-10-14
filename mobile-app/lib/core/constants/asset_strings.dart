@@ -2,6 +2,7 @@ class AssetStrings {
   static const String manrope = "Manrope";
   static const String kronaOne = "Krona One";
   static const String colfax = "Colfax";
+  static const String visbyRoundCF = "Visby Round CF";
 
   static const String logo = "assets/images/applogo.png";
 
@@ -32,4 +33,6 @@ class AssetStrings {
 
   static const String food = 'assets/icons/reminder/food.svg';
   static const String drug = 'assets/icons/reminder/drugs.svg';
+
+   static const String sosBroadcast = 'assets/icons/sos/broadcast.svg';
 }

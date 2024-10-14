@@ -3,23 +3,41 @@ import 'package:flutter/widgets.dart';
 
 import '../../constants/colors.dart';
 
-enum ReminderInterval { daily, twice, thrice }
+enum ReminderInterval {
+  daily(intervalName: "Daily"),
+  twice(intervalName: "Twice"),
+  thrice(intervalName: "Thrice");
 
-enum ReminderSchedule { morning, afternoon, evening }
+  const ReminderInterval({required this.intervalName});
+  final String intervalName;
+}
 
-enum ReminderInstruction { beforeMeal, afterMeal }
+enum ReminderSchedule {
+  morning(scheduleName: "Morning"),
+  afternoon(scheduleName: "Afternoon"),
+  evening(scheduleName: "Evening");
+
+  const ReminderSchedule({required this.scheduleName});
+  final String scheduleName;
+}
+
+enum ReminderInstruction {
+  beforeMeal(instructionName: "Before Meal"),
+  afterMeal(instructionName: "After Meal");
+
+  const ReminderInstruction({required this.instructionName});
+  final String instructionName;
+}
 
 enum ReminderType {
   food(
     name: "Food",
     icon: AssetStrings.food,
-    isPicked: false,
     borderColor: AppColors.foodReminderBorderColor,
     backgroundColor: AppColors.foodReminderColor,
   ),
   drug(
     name: "Drug",
-    isPicked: false,
     icon: AssetStrings.drug,
     backgroundColor: AppColors.drugReminderColor,
     borderColor: AppColors.drugReminderBorderColor,
@@ -28,14 +46,12 @@ enum ReminderType {
   const ReminderType({
     required this.name,
     required this.icon,
-    required this.isPicked,
     required this.borderColor,
     required this.backgroundColor,
   });
 
   final String name;
   final String icon;
-  final bool isPicked;
   final Color backgroundColor;
   final Color borderColor;
 }

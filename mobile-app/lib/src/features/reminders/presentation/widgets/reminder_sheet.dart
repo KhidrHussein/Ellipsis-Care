@@ -1,15 +1,23 @@
+import 'package:ellipsis_care/core/utils/helpers.dart';
+import 'package:ellipsis_care/src/features/reminders/domain/reminder.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/views/add_reminder.dart';
+import 'package:ellipsis_care/src/features/reminders/presentation/widgets/reminder_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/constants/colors.dart';
 import '../../../../../core/utils/extensions.dart';
+import '../bloc/bloc.dart';
 
 class ReminderSheet extends StatelessWidget {
   const ReminderSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final reminderBloc = context.read<ReminderBloc>();
+    final reminderBlocState = context.watch<ReminderBloc>();
+
     return DraggableScrollableSheet(
       minChildSize: .35,
       initialChildSize: .4,
@@ -26,48 +34,65 @@ class ReminderSheet extends StatelessWidget {
               horizontal: BorderSide(color: AppColors.reminderSheetBorderColor),
             ),
           ),
-          child: Column(
-            children: [
-              Container(height: 3.h, width: 64.w, color: AppColors.black),
-              12.sizedBoxHeight,
-              Text(
-                "data",
-                style: context.textTheme.headlineSmall?.copyWith(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w400,
+          child: CustomScrollView(
+            controller: scrollController,
+            slivers: [
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    Container(height: 3.h, width: 64.w, color: AppColors.black),
+                    12.sizedBoxHeight,
+                    Text(
+                      UtilHelpers.dateFormatter2(
+                          reminderBlocState.state.selectedDate),
+                      style: context.textTheme.headlineSmall?.copyWith(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ).alignLeft,
+                    10.sizedBoxHeight,
+                    TextButton(
+                      onPressed: () async {
+                        final result = await showAdaptiveDialog<ReminderModel>(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (context) => const AddReminder(),
+                        );
+
+                        reminderBloc.add(
+                          CreateReminder(
+                            name: result!.name,
+                            dosage: result.dosage,
+                            type: result.type,
+                            interval: result.interval,
+                            schedule: result.schedule,
+                            instruction: result.instruction,
+                            startDate: result.startDate,
+                            endDate: result.endDate,
+                          ),
+                        );
+                      },
+                      child: Text("Add Reminder"),
+                    ),
+                  ],
                 ),
-              ).alignLeft,
-              10.sizedBoxHeight,
-              TextButton(
-                onPressed: () {
-                  showAdaptiveDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (context) => AddReminder(),
-                  );
+              ),
+              BlocBuilder<ReminderBloc, ReminderState>(
+                bloc: reminderBlocState,
+                builder: (context, state) {
+                  return switch (state) {
+                    InitialState() =>
+                      const SliverToBoxAdapter(child: SizedBox()),
+                    CreatedReminder(reminders: var reminders) =>
+                      SliverList.builder(
+                        itemCount: reminders.length,
+                        itemBuilder: (context, index) {
+                          return ReminderTile(reminder: reminders[index]);
+                        },
+                      ),
+                  };
                 },
-                child: Text("Add Reminder"),
               )
-              // ConstrainedBox(
-              //   constraints: BoxConstraints(
-              //       maxHeight: scrollController.position.maxScrollExtent),
-              //   child: Timeline.tileBuilder(
-              //     controller: scrollController,
-              //     builder: TimelineTileBuilder(
-              //       itemCount: 4,
-              //       contentsBuilder: (context, index) {
-              //         return const ReminderTile(
-              //             reminderType: ReminderType.drug);
-              //       },
-              //       indicatorPositionBuilder: (context, index) {
-              //         return 0;
-              //       },
-              //       // nodePositionBuilder: (context, index) {
-              //       //   return 30;
-              //       // },
-              //     ),
-              //   ),
-              // )
             ],
           ),
         );

@@ -1,7 +1,25 @@
 part of 'bloc.dart';
 
-sealed class ReminderState {}
+sealed class ReminderState extends Equatable {
+  const ReminderState({required this.selectedDate, required this.reminders});
 
-class NoReminder implements ReminderState {}
+  final DateTime selectedDate;
+  final List<ReminderModel> reminders;
 
-class CompletedReminders implements ReminderState {}
+  @override
+  List<Object?> get props => [selectedDate, reminders];
+
+  @override
+  bool? get stringify => true;
+}
+
+class InitialState extends ReminderState {
+  InitialState() : super(selectedDate: DateTime.now(), reminders: []);
+}
+
+class CreatedReminder extends ReminderState {
+  const CreatedReminder({
+    required super.selectedDate,
+    required super.reminders,
+  });
+}

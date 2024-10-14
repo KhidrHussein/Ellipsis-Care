@@ -1,7 +1,10 @@
+import 'package:ellipsis_care/src/features/emergency/presentation/views/emergency_call.dart';
+import 'package:ellipsis_care/src/features/emergency/presentation/views/sos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../src/features/reminders/presentation/bloc/bloc.dart';
 import 'route_names.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/bloc/bloc.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/forgot_password.dart';
@@ -96,7 +99,6 @@ final GoRouter router = GoRouter(
     ),
     ShellRoute(
       navigatorKey: _shellKey,
-
       builder: (context, state, child) {
         return BlocProvider(
           create: (context) => NavigationRowCubit(),
@@ -117,19 +119,44 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: '/reminders',
           name: RouteNames.reminders,
-          pageBuilder: (context, state) => const MaterialPage<Reminders>(
-            child: Reminders(),
+          pageBuilder: (context, state) => MaterialPage<Reminders>(
+            child: BlocProvider(
+              create: (context) => ReminderBloc(),
+              child: const Reminders(),
+            ),
           ),
         ),
         GoRoute(
-          path: '/emergency',
-          name: RouteNames.emergency,
-          pageBuilder: (context, state) => MaterialPage<Emergency>(
-            child: BlocProvider(
-              create: (context) => EmergencyContactBloc(),
-              child: const Emergency(),
-            ),
+          path: '/sos',
+          name: RouteNames.sos,
+          pageBuilder: (context, state) => const MaterialPage<SosPage>(
+            child: SosPage(),
           ),
+          routes: [
+            GoRoute(
+              path: 'emergency',
+              name: RouteNames.emergency,
+              pageBuilder: (context, state) => MaterialPage<Emergency>(
+                child: BlocProvider(
+                  create: (context) => EmergencyContactBloc(),
+                  child: const Emergency(),
+                ),
+              ),
+              routes: [
+                GoRoute(
+                  path: 'emergency_call',
+                  parentNavigatorKey: _routerKey,
+                  name: RouteNames.emergencyCall,
+                  pageBuilder: (context, state) => MaterialPage<EmergencyCall>(
+                    child: BlocProvider(
+                      create: (context) => EmergencyContactBloc(),
+                      child: const EmergencyCall(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
         GoRoute(
           path: '/charts',

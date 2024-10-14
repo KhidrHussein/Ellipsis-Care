@@ -5,7 +5,30 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
     fontFamily: 'Manrope',
-    colorSchemeSeed: AppColors.primary,
+    colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+    radioTheme: RadioThemeData(
+      splashRadius: 16,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      fillColor: const WidgetStatePropertyAll(AppColors.black),
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+    ),
+    checkboxTheme: CheckboxThemeData(
+      splashRadius: 16,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      fillColor: WidgetStateProperty.resolveWith(
+        (states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.black;
+          }
+          return AppColors.white;
+        },
+      ),
+      checkColor: const WidgetStatePropertyAll(AppColors.white),
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5.r),
+      ),
+    ),
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
         textStyle: WidgetStatePropertyAll(
@@ -53,11 +76,22 @@ class AppTheme {
         fontWeight: FontWeight.w500,
         color: AppColors.black.withOpacity(.3),
       ),
+      constraints: BoxConstraints(maxWidth: 362.w),
       contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      constraints: BoxConstraints(maxWidth: 361.w),
-      border: OutlineInputBorder(
-        borderSide:
-            const BorderSide(color: AppColors.textfieldBorder, width: .5),
+      errorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: AppColors.red),
+        borderRadius: BorderRadius.circular(5.r),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: AppColors.red),
+        borderRadius: BorderRadius.circular(5.r),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: AppColors.black),
+        borderRadius: BorderRadius.circular(5.r),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: AppColors.textfieldBorder),
         borderRadius: BorderRadius.circular(5.r),
       ),
     ),

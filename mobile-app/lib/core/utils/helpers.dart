@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 
 import '../../config/router/router.dart' show router;
@@ -14,8 +15,8 @@ class UtilHelpers {
     router.goNamed(routeName);
   }
 
-  static void popRoute() {
-    router.pop();
+  static void popRoute<T>([T? result]) {
+    router.pop(result);
   }
 
   static String? nameValidator(String? name) {
@@ -52,6 +53,15 @@ class UtilHelpers {
     }
     return null;
   }
+
+  static String dateFormatter1(DateTime date) =>
+      DateFormat("d/MM/y").format(date);
+
+  static String dateFormatter2(DateTime date) =>
+      DateFormat("d MMMM y").format(date);
+
+  static String timeFormatter1(DateTime date) =>
+      DateFormat("h:mm a").format(date);
 
   static void showAlert({required String title, required String message}) {
     const Duration duration = Duration(milliseconds: 1500);

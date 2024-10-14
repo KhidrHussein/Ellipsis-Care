@@ -11,6 +11,8 @@ extension LogExtension on Object? {
 
 extension BuildContextExtensions on BuildContext {
   TextTheme get textTheme => Theme.of(this).textTheme;
+
+  ButtonStyle? get filledButtonTheme => Theme.of(this).filledButtonTheme.style;
 }
 
 extension Validators on String {
@@ -54,6 +56,11 @@ extension AlignWidgetExtensions on Widget {
 
   Widget get alignRight => Align(
         alignment: Alignment.centerRight,
+        child: this,
+      );
+
+  Widget get alignCenter => Align(
+        alignment: Alignment.center,
         child: this,
       );
 }

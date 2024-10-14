@@ -25,9 +25,10 @@ class NavigatorShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: child,
-      backgroundColor: routerState.matchedLocation == '/emergency'
-          ? AppColors.emergencyBackgroundColor
-          : AppColors.white,
+      backgroundColor: switch (routerState.matchedLocation) {
+        '/sos/emergency' => AppColors.emergencyBackgroundColor,
+        _ => AppColors.white
+      },
       bottomNavigationBar: const CustomNavigatorBar(),
     );
   }
@@ -86,9 +87,7 @@ class CustomNavigatorBar extends StatelessWidget {
                     ],
                   ),
                 ),
-  
                 Positioned(
-              
                   bottom: 18.h,
                   child: NavigatorBarItem(
                     iconPath: AssetStrings.emergency,

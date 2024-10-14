@@ -12,7 +12,7 @@ class NavigationRowCubit extends Cubit<String> {
         UtilHelpers.clearPreviousAndPushRoute(RouteNames.reminders);
         break;
       case AssetStrings.emergency:
-        UtilHelpers.clearPreviousAndPushRoute(RouteNames.emergency);
+        UtilHelpers.clearPreviousAndPushRoute(RouteNames.sos);
         break;
       case AssetStrings.charts:
         UtilHelpers.clearPreviousAndPushRoute(RouteNames.charts);

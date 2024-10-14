@@ -1,3 +1,6 @@
+import 'package:ellipsis_care/core/utils/helpers.dart';
+
+import '../../../../../config/router/route_names.dart';
 import '../../../../../core/constants/colors.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:flutter/material.dart';
@@ -18,48 +21,51 @@ class EmergencyContactTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: REdgeInsets.only(bottom: 4, left: 18, right: 18),
-      padding: REdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(15.r),
-        border: Border.all(color: AppColors.outlinedButtonBorder),
-      ),
-      child: Row(
-        children: [
-          if (profilePicture != null)
-            CircleAvatar(
-              radius: 22,
-              backgroundImage: MemoryImage(profilePicture!),
+    return GestureDetector(
+      onTap: () => UtilHelpers.pushRoute(RouteNames.emergencyCall),
+      child: Container(
+        margin: REdgeInsets.only(bottom: 4, left: 18, right: 18),
+        padding: REdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(15.r),
+          border: Border.all(color: AppColors.outlinedButtonBorder),
+        ),
+        child: Row(
+          children: [
+            if (profilePicture != null)
+              CircleAvatar(
+                radius: 22,
+                backgroundImage: MemoryImage(profilePicture!),
+              )
+            else
+              const CircleAvatar(),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    phoneNumber,
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.emergencyContactNumberColor,
+                    ),
+                  )
+                ],
+              ),
             )
-          else
-            const CircleAvatar(),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: context.textTheme.bodyLarge?.copyWith(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  phoneNumber,
-                  style: context.textTheme.bodyLarge?.copyWith(
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.emergencyContactNumberColor,
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -71,7 +77,7 @@ class AddEmergencyContact extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: addContact,
       child: Container(
         margin: REdgeInsets.symmetric(horizontal: 16),

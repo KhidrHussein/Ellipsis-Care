@@ -72,6 +72,8 @@ dependencies:
   table_calendar: ^3.1.2
   dotted_border: ^2.1.0
   timelines_plus: ^1.0.3
+  pulsator: ^1.0.0+2
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
@@ -103,6 +105,7 @@ flutter:
     - assets/icons/dashboard/
     - assets/icons/reminder/
     - assets/icons/settings/
+    - assets/icons/sos/
     - assets/images/
     - secrets.env
 
@@ -128,6 +131,12 @@ flutter:
       fonts:
         - asset: assets/fonts/colfax/Colfax-Regular.otf
         - asset: assets/fonts/colfax/Colfax-Bold.otf
+          weight: 700
+
+    - family: Visby Round CF
+      fonts:
+        - asset: assets/fonts/visby_round/VisbyRoundCF-Regular.otf
+        - asset: assets/fonts/visby_round/VisbyRoundCF-Bold.otf
           weight: 700
 
     - family: Krona One

@@ -24,9 +24,9 @@ class AppColors {
   static const Color outlinedButtonBorder = Color(0xFFD0D5DD);
   static const Color disabledButton = Color(0xFFE1E3E2);
   static const Color navigationIconColor = Color(0xFFCBCBD4);
+  static const Color emergencyCallBgColor = Color(0xFFEE7571);
   static const Color emergencyBackgroundColor = Color(0xFFECE9E9);
   static const Color emergencyContactNumberColor = Color(0xFF797979);
-  static const Color reminderCalendarBackgroundColor = Color(0xFFF4F4F4);
   static const Color reminderSheetBorderColor = Color(0xFFBBBBBB);
   static const Color alertTitleTextColor = Color(0xFF333333);
   static const Color alertInfoIconColor = Color(0xFF666666);
@@ -38,6 +38,9 @@ class AppColors {
   static const Color foodReminderColor = Color(0xFFD2FFF4);
   static const Color drugReminderBorderColor = Color(0xFF4DA880);
   static const Color foodReminderBorderColor = Color(0xFF3AD3D3);
+
+  static const Color reminderTileCheckColor = Color(0xFFD9D9D9);
+  static const Color calendarArrowBgColor = Color(0xFFF1F1F1);
 
   static const LinearGradient animatedOvalGradient = LinearGradient(
     begin: Alignment.topCenter,
