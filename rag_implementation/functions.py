@@ -146,8 +146,51 @@ def qa_response(prompt):
         engine="Voicetask",  # Replace with your Azure OpenAI deployment name
         # prompt=formatted_prompt,
         messages=[
-            {"role": "system", "content": "You are a health expert and experienced medical practitioner. Use the contexts and chat history to answer the user's question.  Never mention that you are an AI."},
+            {"role": "system", "content": "You are a health expert and experienced medical practitioner. Use the contexts and chat history to answer the user's question. Generate your responses on a personal level and not third person. Never mention that you are an AI."},
             {"role": "user", "content": prompt}
+        ],
+        # max_tokens=50,
+        temperature=0.5
+    )
+    
+    # Extract and return the summary from the response
+    return response.choices[0].message['content']
+
+
+def reminder_notification_prompt(reminder, history):
+    template = """
+    Use the following medication details (delimited by <ctx></ctx>) and the chat history (delimited by <hs></hs>) to generate a personalised reminder message.
+    ------
+    <ctx>
+    {medication}
+    </ctx>
+    ------
+    <hs>
+    {history}
+    </hs>
+    
+    Personalised reminder message:
+    """
+
+    prompt = PromptTemplate(
+        input_variables=["history", "medication"],
+        template=template,
+    )
+    medication = "\n".join([f"{k.capitalize()}: {v}" for k, v in reminder.items()])
+    return prompt.format(history=history, medication=medication)
+
+
+def reminder_message(reminder, history):
+    # Get the conversation summary prompt
+    formatted_prompt = reminder_notification_prompt(reminder, history)
+
+    # Query the Azure OpenAI LLM with the formatted prompt
+    response = openai.ChatCompletion.create(
+        engine="Voicetask",  # Replace with your Azure OpenAI deployment name
+        # prompt=formatted_prompt,
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": formatted_prompt}
         ],
         # max_tokens=50,
         temperature=0.5
