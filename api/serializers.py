@@ -67,3 +67,25 @@ class AudioSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Audio.objects.create(**validated_data)
+
+
+from rest_framework import serializers
+
+class ReminderSerializer(serializers.Serializer):
+    user_id = serializers.CharField(required=True)
+    reminder = serializers.DictField(required=True)
+
+    def validate_reminder(self, value):
+        required_fields = ['name', 'type', 'schedule', 'interval', 'dosage', 'duration', 'instruction', 'time']
+        
+        # Check if all required fields are present
+        for field in required_fields:
+            if field not in value:
+                raise serializers.ValidationError(f"'{field}' field is missing in the reminder details.")
+        
+        # Validate the 'duration' field
+        if 'duration' in value:
+            if 'start' not in value['duration'] or 'end' not in value['duration']:
+                raise serializers.ValidationError("Both 'start' and 'end' dates must be provided in 'duration'.")
+        
+        return value
