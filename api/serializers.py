@@ -3,30 +3,23 @@ from rest_framework import serializers
 from .models import UserProfile, Medication, HealthCondition, MealPlan, Meal, Appointment, Audio, CustomUser
 
 
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = CustomUser
-#         fields = ['email', 'username', 'password']  # Include the fields you need
-#         extra_kwargs = {'password': {'write_only': True}}
-
-#     def create(self, validated_data):
-#         user = CustomUser.objects.create_user(**validated_data)
-#         user.is_active = False  # Deactivate the user until they verify their email
-#         user.save()
-#         return user
-
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'first_name', 'last_name', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
+        # fields = ['id', 'email', 'first_name', 'last_name', 'password']
+        fields = '__all__'
+        extra_kwargs = {
+            'password': {'write_only': True, 'required': True},  # Password is required
+            'email': {'required': True},  # Email is required
+            'first_name': {'required': False},  # First name is optional
+            'last_name': {'required': False},  # Last name is optional
+        }
 
     def create(self, validated_data):
         # Automatically set the username as the first name
         validated_data['username'] = validated_data.get('first_name')
         user = CustomUser(**validated_data)
-        user.set_password(validated_data['password'])
+        user.set_password(validated_data['password'])  # Hash the password
         user.save()
         return user
 

@@ -26,8 +26,13 @@ SECRET_KEY = 'django-insecure-twmmpoch5h^9e#b_cox3ihpmnpn_ep0pf-nvir7ljqce%ipp2&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '3597-102-89-45-14.ngrok-free.app', 'hyena-tops-rooster.ngrok-free.app', 'eaf2-102-88-71-205.ngrok-free.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'hyena-tops-rooster.ngrok-free.app',]
 
+# Allow specific origin
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5175",
+]
 
 # Application definition
 
@@ -47,6 +52,7 @@ INSTALLED_APPS = [
     # 'django_celery_beat',
     # 'django_q',
     'django_apscheduler',
+    'corsheaders',
 
     # authentication
     'rest_framework.authtoken',
@@ -150,6 +156,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     "allauth.account.middleware.AccountMiddleware",
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    #Middleware I added
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'EllipsisCare.urls'

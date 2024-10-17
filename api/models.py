@@ -19,7 +19,7 @@ from .managers import CustomUserManager
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    username = models.CharField(max_length=30, unique=True, null=True, blank=True)
+    username = models.CharField(max_length=30, null=True, blank=True)
     first_name = models.CharField(max_length=30, blank=True, null=True)  # Optional
     last_name = models.CharField(max_length=30, blank=True, null=True)   # Optional
     is_active = models.BooleanField(default=False)  # Set default to False
