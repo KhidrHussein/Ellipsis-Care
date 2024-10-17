@@ -3,7 +3,7 @@ from pydantic import BaseModel, EmailStr
 # from .functions import elementary_db, junior_db, senior_db, prompt_setup
 from .functions import prompt_setup
 from .functions import context_document_retreival_similarity, get_conversation_summary
-from .functions import qa_response
+from .functions import qa_response, reminder_message
 from .config.database import collection
 from .schemas.schema import serializer
 
@@ -80,6 +80,8 @@ def update_user(user_id: str, user: UpdateUser):
     collection.update_one({"_id": ObjectId(user_id)}, {"$set": update_data})
 
 def rag_response(user_id: str, query: str, knowledge_base: str):
+    import time
+    start = time.time()
     current_user = get_user(user_id)
     # print(current_user)
     full_history = current_user["full_history"]
@@ -114,5 +116,10 @@ def rag_response(user_id: str, query: str, knowledge_base: str):
     result = dict()
     result['response'] = response
     result['references'] = sources
-
+    print("Time taken:", time.time()-start)
     return result
+
+def reminder_message_full(user_id: str, reminder):
+    current_user = get_user(user_id)
+    buffer_history = current_user["buffer_history"]
+    return reminder_message(reminder, "\n".join(buffer_history))
