@@ -17,7 +17,6 @@ class SpeechService {
           "$runtimeType ${errorNotification.errorMsg}".printLog();
         },
       );
-      "$hasPermission".printLog();
 
       return hasPermission;
     } catch (e) {

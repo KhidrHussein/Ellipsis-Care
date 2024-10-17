@@ -1,4 +1,6 @@
+import 'package:ellipsis_care/core/services/notification_service.dart';
 import 'package:ellipsis_care/core/utils/helpers.dart';
+import 'package:ellipsis_care/core/utils/locator.dart';
 import 'package:ellipsis_care/src/features/reminders/domain/reminder.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/views/add_reminder.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/widgets/reminder_tile.dart';
@@ -53,24 +55,25 @@ class ReminderSheet extends StatelessWidget {
                     10.sizedBoxHeight,
                     TextButton(
                       onPressed: () async {
-                        final result = await showAdaptiveDialog<ReminderModel>(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (context) => const AddReminder(),
-                        );
-
-                        reminderBloc.add(
-                          CreateReminder(
-                            name: result!.name,
-                            dosage: result.dosage,
-                            type: result.type,
-                            interval: result.interval,
-                            schedule: result.schedule,
-                            instruction: result.instruction,
-                            startDate: result.startDate,
-                            endDate: result.endDate,
-                          ),
-                        );
+                        // final result = await showAdaptiveDialog<ReminderModel>(
+                        //   context: context,
+                        //   barrierDismissible: true,
+                        //   builder: (context) => const AddReminder(),
+                        // );
+                        // if (result != null) {
+                        //   reminderBloc.add(
+                        //     CreateReminder(
+                        //       name: result.name,
+                        //       dosage: result.dosage,
+                        //       type: result.type,
+                        //       interval: result.interval,
+                        //       schedule: result.schedule,
+                        //       instruction: result.instruction,
+                        //       startDate: result.startDate,
+                        //       endDate: result.endDate,
+                        //     ),
+                        //   );
+                        // }
                       },
                       child: Text("Add Reminder"),
                     ),
@@ -81,8 +84,6 @@ class ReminderSheet extends StatelessWidget {
                 bloc: reminderBlocState,
                 builder: (context, state) {
                   return switch (state) {
-                    InitialState() =>
-                      const SliverToBoxAdapter(child: SizedBox()),
                     CreatedReminder(reminders: var reminders) =>
                       SliverList.builder(
                         itemCount: reminders.length,
@@ -90,6 +91,7 @@ class ReminderSheet extends StatelessWidget {
                           return ReminderTile(reminder: reminders[index]);
                         },
                       ),
+                    _ => const SliverToBoxAdapter(child: SizedBox()),
                   };
                 },
               )

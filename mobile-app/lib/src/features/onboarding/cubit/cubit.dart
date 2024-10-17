@@ -1,3 +1,5 @@
+import 'package:ellipsis_care/core/services/notification_service.dart';
+
 import '../../../../core/services/contacts_service.dart';
 import '../../../../core/services/speech_service.dart';
 import 'package:ellipsis_care/core/services/storage_service.dart';
@@ -36,6 +38,10 @@ class OnboardingCubit extends Cubit<OnboardingState> {
         break;
 
       case 2:
+        _initializeDeviceCalendarService();
+        break;
+
+      case 3:
         _initializeSpeechToTextService();
         break;
 
@@ -62,8 +68,8 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   void _initializeAudio() async {
     final mic = injector<MicrophoneService>();
 
-    await mic.checkForPermission().then((hasAudioPermission) {
-      "$hasAudioPermission".printLog();
+    await mic.checkForPermission().then((hasPermission) {
+      "${mic.runtimeType} has permission? $hasPermission".printLog();
       _nextStory();
     });
   }
@@ -72,19 +78,32 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     final speech = injector<SpeechService>();
 
     await speech.init().then((hasInitialized) {
-      "$hasInitialized".printLog();
+      "${speech.runtimeType} has initialized? $hasInitialized".printLog();
+      _nextStory();
+    });
+  }
+
+  void _initializeDeviceCalendarService() async {
+    final deviceCalendar = injector<NotificationService>();
+
+    await deviceCalendar.checkForPermission().then((hasPermission) async {
+      
+      "${deviceCalendar.runtimeType} has permission? $hasPermission".printLog();
       _nextStory();
     });
   }
 
   void _setupEmergencyContacts() async {
-    final service = injector<PhoneContactService>();
+    final phoneService = injector<PhoneContactService>();
 
-    await service.checkForPermission().then((hasContactsPermission) async {
-      if (hasContactsPermission) {
-        final contact = await service.pickContact();
+    await phoneService.checkForPermission().then((hasPermission) async {
+      "${phoneService.runtimeType} has permission? $hasPermission".printLog();
+
+      if (hasPermission) {
+        final contact = await phoneService.pickContact();
         injector<StorageService>().storeEmergencyContact(contact);
       }
+
       _nextStory();
     });
   }

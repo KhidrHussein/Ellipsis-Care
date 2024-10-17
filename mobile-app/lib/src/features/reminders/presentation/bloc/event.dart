@@ -6,6 +6,12 @@ class FetchRemindersFromStorage implements ReminderEvent {}
 
 class EditReminder implements ReminderEvent {}
 
+class SelectDate implements ReminderEvent {
+  SelectDate({required this.newDate});
+
+  final DateTime newDate;
+}
+
 class CreateReminder implements ReminderEvent {
   CreateReminder({
     required this.name,

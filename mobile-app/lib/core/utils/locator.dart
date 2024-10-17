@@ -1,3 +1,4 @@
+import '../services/notification_service.dart';
 import '../services/speech_service.dart';
 import '../../src/features/authentication/data/firebase_auth_repo.dart';
 import '../../src/features/authentication/domain/repository/authentication_repo.dart';
@@ -18,6 +19,8 @@ void initService() {
   injector.registerLazySingleton<StorageService>(() => StorageService());
   injector
       .registerLazySingleton<PhoneContactService>(() => PhoneContactService());
+  injector.registerLazySingleton<NotificationService>(
+      () => NotificationService());
   injector.registerLazySingleton<MicrophoneService>(() => MicrophoneService());
   injector.registerLazySingleton<SpeechService>(() => SpeechService());
 

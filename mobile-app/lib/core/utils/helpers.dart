@@ -7,6 +7,8 @@ import 'extensions.dart';
 import '../../src/shared/in_app_alert.dart';
 
 class UtilHelpers {
+  UtilHelpers._();
+
   static void pushRoute(String routeName) {
     router.pushNamed(routeName);
   }

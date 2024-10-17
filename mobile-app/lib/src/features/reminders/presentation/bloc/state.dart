@@ -23,3 +23,10 @@ class CreatedReminder extends ReminderState {
     required super.reminders,
   });
 }
+
+class UpdatedDate extends ReminderState {
+  const UpdatedDate({
+    required super.selectedDate,
+    required super.reminders,
+  });
+}

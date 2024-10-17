@@ -15,6 +15,7 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
         super(InitialState()) {
     // on<FetchRemindersFromStorage>(_loadReminderEvents);
     on<CreateReminder>(_createReminder);
+    on<SelectDate>(_updateSelectedDate);
   }
   // ignore: unused_field
   final StorageService _storageService;
@@ -38,6 +39,15 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
       CreatedReminder(
         selectedDate: state.selectedDate,
         reminders: [...state.reminders, reminder],
+      ),
+    );
+  }
+
+  void _updateSelectedDate(SelectDate event, Emitter<ReminderState> handler) {
+    handler.call(
+      UpdatedDate(
+        selectedDate: event.newDate,
+        reminders: state.reminders,
       ),
     );
   }
