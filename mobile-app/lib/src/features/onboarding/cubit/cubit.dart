@@ -38,7 +38,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
         break;
 
       case 2:
-        _initializeDeviceCalendarService();
+        _initializeNotificationServiceChannel();
         break;
 
       case 3:
@@ -83,12 +83,12 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     });
   }
 
-  void _initializeDeviceCalendarService() async {
-    final deviceCalendar = injector<NotificationService>();
+  void _initializeNotificationServiceChannel() async {
+    final notificationService = injector<NotificationService>();
 
-    await deviceCalendar.checkForPermission().then((hasPermission) async {
+    await notificationService.checkForPermission().then((hasPermission) async {
       
-      "${deviceCalendar.runtimeType} has permission? $hasPermission".printLog();
+      "${notificationService.runtimeType} has permission? $hasPermission".printLog();
       _nextStory();
     });
   }

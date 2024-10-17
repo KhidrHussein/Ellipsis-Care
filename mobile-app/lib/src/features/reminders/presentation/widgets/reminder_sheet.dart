@@ -55,6 +55,8 @@ class ReminderSheet extends StatelessWidget {
                     10.sizedBoxHeight,
                     TextButton(
                       onPressed: () async {
+                        await injector<NotificationService>()
+                            .createReminderNotification();
                         // final result = await showAdaptiveDialog<ReminderModel>(
                         //   context: context,
                         //   barrierDismissible: true,

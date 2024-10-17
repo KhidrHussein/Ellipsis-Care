@@ -90,14 +90,14 @@ class ReminderCalendar extends StatelessWidget {
               // selectedDecoration: const BoxDecoration(
               //     color: AppColors.black, shape: BoxShape.circle),
             ),
-            eventLoader: (date) {
-              if (reminderBloc.state.selectedDate != date) {
-                date.printLog();
-                return reminderBlocState.state.reminders;
-              } else {
-                return [];
-              }
-            },
+            // eventLoader: (date) {
+            //   if (reminderBloc.state.selectedDate != date) {
+            //     date.printLog();
+            //     return reminderBlocState.state.reminders;
+            //   } else {
+            //     return [];
+            //   }
+            // },
             // onHeaderTapped: (focusedDay) {
             //   focusedDay.printLog();
             // },

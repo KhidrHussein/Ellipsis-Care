@@ -1,3 +1,4 @@
+import 'package:ellipsis_care/core/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +25,8 @@ void main() async {
 
   // Register [Storage Service] type adapters
   injector<StorageService>().registerModels();
+
+  await injector<NotificationService>().init();
 
   await Firebase.initializeApp();
 
