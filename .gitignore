@@ -10,3 +10,4 @@ pyvenv.cfg
 *.wav
 *.DS_Store
 /C:/
+/extracted_data/
