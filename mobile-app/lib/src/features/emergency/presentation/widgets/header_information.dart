@@ -11,7 +11,7 @@ class HeaderInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const ProfileBar(profileName: "Leonard"),
+        const ProfileBar(),
         SizedBox(height: 24.h),
         Text(
           "Emergency Contacts",

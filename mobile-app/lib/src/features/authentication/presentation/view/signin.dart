@@ -1,3 +1,6 @@
+import 'package:ellipsis_care/src/features/authentication/presentation/bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../../config/router/route_names.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/helpers.dart';
@@ -28,6 +31,8 @@ class _SigninState extends State<Signin> {
 
   @override
   Widget build(BuildContext context) {
+    final authenticationBloc = context.read<AuthenticationBloc>();
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -72,16 +77,39 @@ class _SigninState extends State<Signin> {
                 ),
               ),
               SizedBox(height: 12.h),
-              FilledButton(
-                onPressed: () {
-                  UtilHelpers.pushRoute(RouteNames.dashboard);
+              BlocConsumer<AuthenticationBloc, AuthenticationState>(
+                bloc: authenticationBloc,
+                listener: (context, state) {
+                  switch (state) {
+                    case AuthenticationPassed():
+                      UtilHelpers.pushRoute(RouteNames.dashboard);
+                    case AuthenticationFailed(error: var error):
+                      UtilHelpers.showAlert(
+                          title: "Error", message: "$error");
+                    default:
+                  }
                 },
-                child: const Text("Continue"),
+                builder: (context, state) {
+                  return FilledButton(
+                    onPressed: switch (state) {
+                      LoadingState() => null,
+                      _ => () {
+                          authenticationBloc.add(
+                            SignInEvent(
+                                email: _emailController.text,
+                                password: _passwordController.text),
+                          );
+                          // UtilHelpers.pushRoute(RouteNames.dashboard);
+                        }
+                    },
+                    child: const Text("Continue"),
+                  );
+                },
               ),
               SizedBox(height: 6.h),
               const AuthenticationDivider(),
               SizedBox(height: 6.h),
-              const AuthenticationOptions(currentScopeIsLogin: true),
+              const AuthenticationOptions(),
             ],
           ),
         ),

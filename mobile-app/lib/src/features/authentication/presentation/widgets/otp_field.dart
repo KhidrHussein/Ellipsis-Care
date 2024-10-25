@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -26,33 +25,47 @@ class _OtpFieldState extends State<OtpField> {
       _controllers[i].addListener(() {
         if (_controllers[i].text.isNotEmpty && _nodes[i].hasFocus) {
           FocusScope.of(context).nextFocus();
+        } else {
+          FocusScope.of(context).requestFocus();
         }
       });
     }
   }
 
   @override
+  void dispose() {
+    for (int i = 0; i < (_controllers.length - 1); i++) {
+      _controllers[i].dispose();
+      _nodes[i].dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildTextField(_controllers[0], _nodes[0]),
-        SizedBox(width: 8.w),
-        _buildTextField(_controllers[1], _nodes[1]),
-        SizedBox(width: 8.w),
-        _buildTextField(_controllers[2], _nodes[2]),
-        SizedBox(width: 6.w),
-        Text(
-          "-",
-          style: context.textTheme.displayMedium,
-        ),
-        SizedBox(width: 6.w),
-        _buildTextField(_controllers[3], _nodes[3]),
-        SizedBox(width: 8.w),
-        _buildTextField(_controllers[4], _nodes[4]),
-        SizedBox(width: 8.w),
-        _buildTextField(_controllers[5], _nodes[5]),
-      ],
+    return IgnorePointer(
+      ignoring: false,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildTextField(_controllers[0], _nodes[0]),
+          SizedBox(width: 8.w),
+          _buildTextField(_controllers[1], _nodes[1]),
+          SizedBox(width: 8.w),
+          _buildTextField(_controllers[2], _nodes[2]),
+          SizedBox(width: 6.w),
+          Text(
+            "-",
+            style: context.textTheme.displayMedium,
+          ),
+          SizedBox(width: 6.w),
+          _buildTextField(_controllers[3], _nodes[3]),
+          SizedBox(width: 8.w),
+          _buildTextField(_controllers[4], _nodes[4]),
+          SizedBox(width: 8.w),
+          _buildTextField(_controllers[5], _nodes[5]),
+        ],
+      ),
     );
   }
 

@@ -9,12 +9,37 @@ typedef OAuthCredentials = ({
 });
 
 class OAuthService {
-  Future<OAuthCredentials?> googleSignIn() async {
-    final GoogleSignIn oAuth = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+  Future<OAuthCredentials?> signInWithGoogle() async {
     try {
-      final account = await oAuth.signIn();
-      "$account".printLog();
+      final account = await _googleSignIn.signIn();
+      "Signed in: $account".printLog();
+
+      return (
+        displayName: account?.displayName,
+        email: account?.email,
+        photoUrl: account?.photoUrl
+      );
+    } catch (e) {
+      "$runtimeType Error: $e".printLog();
+      return null;
+    }
+  }
+
+  Future<bool?> checkIfSignedInWithGoogle() async {
+    try {
+      return await _googleSignIn.isSignedIn();
+    } catch (e) {
+      "$runtimeType Error: $e".printLog();
+      return null;
+    }
+  }
+
+  Future<OAuthCredentials?> signOutFromGoogle() async {
+    try {
+      final account = await _googleSignIn.signOut();
+      "Signed out: $account".printLog();
 
       return (
         displayName: account?.displayName,

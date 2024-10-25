@@ -27,13 +27,7 @@ class DashboardBloc extends Bloc<DashboardEvents, DashboardState> {
       value.printLog();
     });
 
-    // final bool hasPermission = await _service.checkForPermission();
-
-    // if (hasPermission) {
-    //   await _service.startRecording();
-    //   handler.call(RecordingState());
-    // }
-
+   
     "$runtimeType State: $state".printLog();
   }
 

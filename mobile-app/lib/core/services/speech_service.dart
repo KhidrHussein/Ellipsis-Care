@@ -32,7 +32,7 @@ class SpeechService {
         "$runtimeType Speech is available:${_speech.isAvailable}".printLog();
         await _speech.listen(
           onResult: (value) {
-            "$value".printLog();
+            // "$value".printLog();
             onResult(value.recognizedWords);
           },
         );

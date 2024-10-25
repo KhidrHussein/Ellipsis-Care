@@ -23,6 +23,7 @@ class InAppAlert extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: .9.sw,
       constraints: BoxConstraints.loose(const Size(300, 94)),
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -35,7 +36,7 @@ class InAppAlert extends StatelessWidget {
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
             padding: REdgeInsets.fromLTRB(15, 9, 15, 15),

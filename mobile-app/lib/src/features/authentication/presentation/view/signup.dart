@@ -126,14 +126,15 @@ class _SignupState extends State<Signup> {
             ),
           ),
           const AuthenticationDivider(),
-          const AuthenticationOptions(),
+          const AuthenticationOptions(isNewUser: true),
         ],
       ),
     );
   }
 
   Widget _second() {
-    final blocState = context.watch<AuthenticationBloc>().state;
+    final authenticationBloc = context.read<AuthenticationBloc>();
+
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -173,11 +174,9 @@ class _SignupState extends State<Signup> {
               ValueListenableBuilder<bool>(
                 valueListenable: _hasAcceptedTerms,
                 builder: (context, value, child) {
-                  return Checkbox.adaptive(
+                  return Checkbox(
                     value: value,
-                    onChanged: (status) {
-                      _hasAcceptedTerms.value = status!;
-                    },
+                    onChanged: (status) => _hasAcceptedTerms.value = status!,
                   );
                 },
               ),
@@ -190,24 +189,40 @@ class _SignupState extends State<Signup> {
             ],
           ),
           SizedBox(height: 24.h),
-          FilledButton(
-            onPressed: switch (blocState) {
-              LoadingState() => null,
-              _ => () {
-                  if (_formKey.currentState!.validate()) {
-                    context.read<AuthenticationBloc>().add(
-                          SignUpEvent(
-                            email: _emailController.text,
-                            firstName: _firstnameController.text,
-                            lastName: _lastnameController.text,
-                            password: _passwordController.text,
-                            hasAcceptedTerms: _hasAcceptedTerms.value,
-                          ),
-                        );
-                  }
-                },
+          BlocConsumer<AuthenticationBloc, AuthenticationState>(
+            bloc: authenticationBloc,
+            listener: (context, state) {
+              switch (state) {
+                case AuthenticationPassed():
+                  UtilHelpers.pushRoute(RouteNames.verifyEmail);
+                case AuthenticationFailed(error: var error):
+                  UtilHelpers.showAlert(title: "Error", message: "$error");
+                default:
+              }
             },
-            child: const Text("Continue"),
+            builder: (context, state) {
+              return FilledButton(
+                onPressed: switch (state) {
+                  LoadingState() => null,
+                  _ => () {
+                      // if (_formKey.currentState!.validate()) {
+                      //   authenticationBloc.add(
+                      //     SignUpEvent(
+                      //       email: _emailController.text,
+                      //       firstName: _firstnameController.text,
+                      //       lastName: _lastnameController.text,
+                      //       password: _passwordController.text,
+                      //       hasAcceptedTerms: _hasAcceptedTerms.value,
+                      //     ),
+                      //   );
+                      // }
+
+                      UtilHelpers.pushRoute(RouteNames.verifyEmail);
+                    }
+                },
+                child: const Text("Continue"),
+              );
+            },
           ),
           SizedBox(height: 18.h),
           RichText(

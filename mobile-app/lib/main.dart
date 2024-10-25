@@ -40,7 +40,7 @@ class EllipsisCare extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       ensureScreenSize: true,
-      designSize: const Size(400, 852),
+      designSize: const Size(393, 852),
       builder: (context, child) => BlocBuilder<ThemeCubit, ThemeData>(
         bloc: ThemeCubit(),
         builder: (context, state) {

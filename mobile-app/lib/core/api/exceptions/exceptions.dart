@@ -112,68 +112,73 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
     }
   }
 
-  static String getErrorMessage(AppExceptions appException) {
+  static String getErrorMessage(AppExceptions? appException) {
     String? errorMessage = "";
-    appException.when(
-      notImplemented: () {
-        errorMessage = "Not Implemented";
-      },
-      requestCancelled: () {
-        errorMessage = "Request Cancelled";
-      },
-      internalServerError: () {
-        errorMessage = "Internal Server Error";
-      },
-      notFound: (String? reason) {
-        errorMessage ??= reason;
-      },
-      serviceUnavailable: () {
-        errorMessage = "Service unavailable";
-      },
-      methodNotAllowed: () {
-        errorMessage = "Method Allowed";
-      },
-      badRequest: (value) {
-        errorMessage = value;
-      },
-      unauthorizedRequest: (String? error) {
-        errorMessage = error;
-      },
-      unprocessableEntity: (String? error) {
-        errorMessage = error;
-      },
-      unexpectedError: () {
-        errorMessage = "Unexpected error occurred";
-      },
-      requestTimeout: () {
-        errorMessage = "Connection request timeout";
-      },
-      noInternetConnection: () {
-        errorMessage = "No internet connection";
-      },
-      conflict: () {
-        errorMessage = "Error due to a conflict";
-      },
-      sendTimeout: () {
-        errorMessage = "Send timeout in connection with API server";
-      },
-      unableToProcess: () {
-        errorMessage = "This credentials does not meet any of our records, "
-            "please make sure you have entered the right credentials";
-      },
-      defaultError: (error) {
-        errorMessage = error ?? "";
-      },
-      formatException: () {
-        errorMessage = "Unexpected error occurred";
-      },
-      notAcceptable: () {
-        errorMessage = "Not acceptable";
-      },
-      receiveTimeout: () {
-        errorMessage = "A receive timeout occurred";
-      },
-    );
+    if (appException != null) {
+      appException.when(
+        notImplemented: () {
+          errorMessage = "Not Implemented";
+        },
+        requestCancelled: () {
+          errorMessage = "Request Cancelled";
+        },
+        internalServerError: () {
+          errorMessage = "Internal Server Error";
+        },
+        notFound: (String? reason) {
+          errorMessage ??= reason;
+        },
+        serviceUnavailable: () {
+          errorMessage = "Service unavailable";
+        },
+        methodNotAllowed: () {
+          errorMessage = "Method Allowed";
+        },
+        badRequest: (value) {
+          errorMessage = value;
+        },
+        unauthorizedRequest: (String? error) {
+          errorMessage = error;
+        },
+        unprocessableEntity: (String? error) {
+          errorMessage = error;
+        },
+        unexpectedError: () {
+          errorMessage = "Unexpected error occurred";
+        },
+        requestTimeout: () {
+          errorMessage = "Connection request timeout";
+        },
+        noInternetConnection: () {
+          errorMessage = "No internet connection";
+        },
+        conflict: () {
+          errorMessage = "Error due to a conflict";
+        },
+        sendTimeout: () {
+          errorMessage = "Send timeout in connection with API server";
+        },
+        unableToProcess: () {
+          errorMessage = "This credentials does not meet any of our records, "
+              "please make sure you have entered the right credentials";
+        },
+        defaultError: (error) {
+          errorMessage = error ?? "";
+        },
+        formatException: () {
+          errorMessage = "Unexpected error occurred";
+        },
+        notAcceptable: () {
+          errorMessage = "Not acceptable";
+        },
+        receiveTimeout: () {
+          errorMessage = "A receive timeout occurred";
+        },
+      );
+    } else {
+      errorMessage = "Oops!, we ran into technical difficulties. Try again later.";
+    }
+
     return errorMessage!;
   }
 }

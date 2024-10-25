@@ -1,25 +1,18 @@
-import '../../domain/health_tip.dart';
+
 import '../bloc/bloc.dart';
 import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AiResponse extends StatelessWidget {
-  final HealthTip? response;
-  const AiResponse({super.key, this.response});
+class ChatHistory extends StatelessWidget {
+  const ChatHistory({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (response != null)
-          Column(
-            children: [
-              ChatBubble(data: response!.transcription),
-              ChatBubble(data: response!.ai_response, isUser: false),
-            ],
-          ),
+
         SizedBox(height: 72.h),
         InkWell(
           onTap: () {

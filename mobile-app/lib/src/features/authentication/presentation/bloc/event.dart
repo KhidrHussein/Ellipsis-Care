@@ -21,7 +21,7 @@ class SignUpEvent extends AuthenticationEvent {
 }
 
 class SignInEvent extends AuthenticationEvent {
-  SignInEvent({required this.email, this.password});
+  SignInEvent({required this.email, required this.password});
 
   final String? email;
   final String? password;
@@ -29,7 +29,6 @@ class SignInEvent extends AuthenticationEvent {
 
 class ForgotPasswordEvent extends AuthenticationEvent {
   ForgotPasswordEvent({required this.email});
-
   final String email;
 }
 
@@ -37,3 +36,12 @@ class OTPVerificationEvent implements AuthenticationEvent {
   const OTPVerificationEvent({required this.otpCode});
   final String otpCode;
 }
+
+class GoogleOAuthEvent extends AuthenticationEvent {
+  GoogleOAuthEvent({required this.isNewUser});
+  final bool isNewUser;
+}
+
+class FacebookOAuthEvent extends AuthenticationEvent {}
+
+class AppleOAuthEvent extends AuthenticationEvent {}
