@@ -7,6 +7,7 @@ import '../../../../core/utils/locator.dart';
 
 import '../../../../core/api/exceptions/exceptions.dart';
 import '../../../../core/api/response/response.dart';
+import '../models/user/user.dart';
 
 class AuthenticationRepository {
   AuthenticationRepository()
@@ -16,29 +17,41 @@ class AuthenticationRepository {
   final ApiService _service;
   final OAuthService _oAuthService;
 
-  Future<ApiResult<String>> signUp(Map<String, dynamic> payload) async {
+  Future<ApiResult<SuccessfulApiResponse<User>?, AppExceptions>> signUp(
+      Map<String, dynamic> payload) async {
     try {
       final response = await _service.client.post(ApiUrl.signUp, data: payload);
 
-      return (response: response.data as String, exception: null);
-    } on Exception catch (e) {
+      final apiResult = SuccessfulApiResponse<User>.fromJson(
+        response.data["user"],
+        (json) => User.fromJson(json as Map<String, dynamic>),
+      );
+
+      return (response: apiResult, exception: null);
+    } catch (e) {
       final exception = AppExceptions.handleExceptions(e);
       return (response: null, exception: exception);
     }
   }
 
-  Future<ApiResult<String>> signIn(Map<String, dynamic> payload) async {
+  Future<ApiResult<SuccessfulApiResponse?, AppExceptions>> signIn(
+      Map<String, dynamic> payload) async {
     try {
       final response = await _service.client.post(ApiUrl.signIn, data: payload);
 
-      return (response: response.data as String, exception: null);
+      final apiResult = SuccessfulApiResponse<User>.fromJson(
+        response.data["user"],
+        (json) => User.fromJson(json as Map<String, dynamic>),
+      );
+
+      return (response: apiResult, exception: null);
     } on Exception catch (e) {
       final exception = AppExceptions.handleExceptions(e);
       return (response: null, exception: exception);
     }
   }
 
-  Future<ApiResult<OAuthCredentials>> signInWithGoogle() async {
+  Future<ApiResult<OAuthCredentials, AppExceptions>> signInWithGoogle() async {
     try {
       final result = await _oAuthService.signInWithGoogle();
 
@@ -51,7 +64,7 @@ class AuthenticationRepository {
     }
   }
 
-  Future<ApiResult<OAuthCredentials>> signOutFromGoogle() async {
+  Future<ApiResult<OAuthCredentials, AppExceptions>> signOutFromGoogle() async {
     try {
       final result = await _oAuthService.signOutFromGoogle();
 

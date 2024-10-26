@@ -1,7 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../utils/extensions.dart';
-import '../../src/features/authentication/domain/models/userdata/userdata.dart';
+import '../../src/features/authentication/models/userdata/userdata.dart';
 import '../../src/features/emergency/domain/emergency_contact.dart';
 import 'package:uuid/uuid.dart';
 

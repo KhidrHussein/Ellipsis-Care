@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/authentication/presentation/bloc/bloc.dart';
+import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth_bloc.dart';
 
 import '../../../../../core/constants/asset_strings.dart';
 

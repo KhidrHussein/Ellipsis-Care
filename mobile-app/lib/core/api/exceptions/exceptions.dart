@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import '../../utils/extensions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import '../response/failed_api_response/failed_api_response.dart';
+import '../../utils/extensions.dart';
 
 part 'exceptions.freezed.dart';
 
@@ -32,22 +34,23 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
 
   static AppExceptions _handleResponse(Response<dynamic>? response) {
     int statusCode = response?.statusCode ?? 0;
+    final badResponse = FailedApiResponse.fromJson(response?.data);
 
     switch (statusCode) {
       case 400:
-        return AppExceptions.badRequest(response?.statusMessage);
+        return AppExceptions.badRequest(badResponse.error);
       case 401:
-        return AppExceptions.unauthorizedRequest(response?.statusMessage);
+        return AppExceptions.unauthorizedRequest(badResponse.error);
       case 403:
-        return AppExceptions.unauthorizedRequest(response?.statusMessage);
+        return AppExceptions.unauthorizedRequest(badResponse.error);
       case 404:
-        return AppExceptions.notFound(response?.statusMessage);
+        return AppExceptions.notFound(badResponse.error);
       case 408:
         return const AppExceptions.requestTimeout();
       case 409:
         return const AppExceptions.conflict();
       case 422:
-        return AppExceptions.unprocessableEntity(response?.statusMessage);
+        return AppExceptions.unprocessableEntity(badResponse.error);
       case 500:
         return const AppExceptions.internalServerError();
       case 503:
@@ -104,7 +107,7 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
       }
     } else {
       if (error.toString().contains("is not a subtype of")) {
-        error.printLog();
+        error.toString().printLog();
         return const AppExceptions.unableToProcess();
       } else {
         return const AppExceptions.unexpectedError();
@@ -176,7 +179,8 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
         },
       );
     } else {
-      errorMessage = "Oops!, we ran into technical difficulties. Try again later.";
+      errorMessage =
+          "Oops!, we ran into technical difficulties. Try again later.";
     }
 
     return errorMessage!;

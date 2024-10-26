@@ -1,9 +1,8 @@
-
-import '../bloc/bloc.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../bloc/dashboard_bloc.dart';
 
 class ChatHistory extends StatelessWidget {
   const ChatHistory({super.key});
@@ -15,8 +14,11 @@ class ChatHistory extends StatelessWidget {
 
         SizedBox(height: 72.h),
         InkWell(
+          onLongPress: () {
+             context.read<DashboardBloc>().add(StartMicrophoneEvent());
+          },
           onTap: () {
-            context.read<DashboardBloc>().add(StartRecordingEvent());
+           
           },
           customBorder: const CircleBorder(),
           child: Container(

@@ -1,5 +1,6 @@
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
+import 'package:uuid/uuid.dart';
 
 import '../utils/extensions.dart';
 
@@ -14,7 +15,7 @@ class MicrophoneService {
     try {
       _mic.start(
         const RecordConfig(encoder: AudioEncoder.wav),
-        path: "${tempDir.path}/audio.wav",
+        path: "${tempDir.path}/${const Uuid().v4()}.wav",
       );
 
       "STARTED RECORDING".printLog();

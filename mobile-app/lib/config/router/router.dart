@@ -6,13 +6,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../src/features/reminders/presentation/bloc/bloc.dart';
 import 'route_names.dart';
-import 'package:ellipsis_care/src/features/authentication/presentation/bloc/bloc.dart';
+import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/forgot_password.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signin.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signup.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/verify_email.dart';
 import 'package:ellipsis_care/src/features/charts/presentation/views/charts.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/bloc/bloc.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:ellipsis_care/src/features/dashboard/presentation/views/dashboard.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/bloc/bloc.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/views/emergency.dart';

@@ -1,13 +1,12 @@
-import '../../../../../core/api/exceptions/exceptions.dart';
-import '../../../../../core/utils/locator.dart';
-import '../../data/auth_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/utils/helpers.dart';
+import '../../../../../core/api/exceptions/exceptions.dart';
+import '../../../../../core/utils/locator.dart';
+import '../../data/auth_repository.dart';
 
-part 'event.dart';
-part 'state.dart';
+part 'auth_event.dart';
+part 'auth_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
@@ -59,10 +58,11 @@ class AuthenticationBloc
 
     if (result.response != null) {
       handler.call(
-        AuthenticationPassed(data: result.response!),
+        AuthenticationPassed(data: result.response!.data),
       );
     } else {
-      final String errorMessage = AppExceptions.getErrorMessage(result.exception!);
+      final String errorMessage =
+          AppExceptions.getErrorMessage(result.exception!);
       handler.call(AuthenticationFailed(error: errorMessage));
     }
   }
@@ -82,13 +82,16 @@ class AuthenticationBloc
           "first_name": names?.first,
           "last_name": names?.last,
         };
+        
         final apiResponse = await _apiRepository.signUp(payload);
+        
         if (apiResponse.response != null) {
           handler.call(
             AuthenticationPassed(data: apiResponse.response!),
           );
         } else {
-          final String errorMessage = AppExceptions.getErrorMessage(result.exception);
+          final String errorMessage =
+              AppExceptions.getErrorMessage(result.exception);
           handler.call(AuthenticationFailed(error: errorMessage));
         }
       } else {
@@ -101,7 +104,8 @@ class AuthenticationBloc
             AuthenticationPassed(data: apiResponse.response!),
           );
         } else {
-          final String errorMessage = AppExceptions.getErrorMessage(result.exception);
+          final String errorMessage =
+              AppExceptions.getErrorMessage(result.exception);
           handler.call(AuthenticationFailed(error: errorMessage));
         }
       }

@@ -1,4 +1,4 @@
-part of 'bloc.dart';
+part of 'auth_bloc.dart';
 
 sealed class AuthenticationEvent {}
 

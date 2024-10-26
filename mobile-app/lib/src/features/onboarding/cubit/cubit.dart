@@ -1,7 +1,7 @@
 import 'package:ellipsis_care/core/services/notification_service.dart';
 
 import '../../../../core/services/contacts_service.dart';
-import '../../../../core/services/speech_service.dart';
+import '../../../../core/services/voice_command_service.dart';
 import 'package:ellipsis_care/core/services/storage_service.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/core/utils/locator.dart';
@@ -75,10 +75,11 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   }
 
   void _initializeSpeechToTextService() async {
-    final speech = injector<SpeechService>();
+    final voiceCommandService = injector<VoiceCommandService>();
 
-    await speech.init().then((hasInitialized) {
-      "${speech.runtimeType} has initialized? $hasInitialized".printLog();
+    await voiceCommandService.init().then((hasInitialized) {
+      "${voiceCommandService.runtimeType} has permission? $hasInitialized"
+          .printLog();
       _nextStory();
     });
   }
@@ -87,8 +88,8 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     final notificationService = injector<NotificationService>();
 
     await notificationService.checkForPermission().then((hasPermission) async {
-      
-      "${notificationService.runtimeType} has permission? $hasPermission".printLog();
+      "${notificationService.runtimeType} has permission? $hasPermission"
+          .printLog();
       _nextStory();
     });
   }

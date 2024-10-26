@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../config/router/route_names.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/authentication/presentation/bloc/bloc.dart';
+import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/widgets/divider.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/widgets/oauth_options.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/widgets/textfield.dart';
@@ -205,19 +205,19 @@ class _SignupState extends State<Signup> {
                 onPressed: switch (state) {
                   LoadingState() => null,
                   _ => () {
-                      // if (_formKey.currentState!.validate()) {
-                      //   authenticationBloc.add(
-                      //     SignUpEvent(
-                      //       email: _emailController.text,
-                      //       firstName: _firstnameController.text,
-                      //       lastName: _lastnameController.text,
-                      //       password: _passwordController.text,
-                      //       hasAcceptedTerms: _hasAcceptedTerms.value,
-                      //     ),
-                      //   );
-                      // }
+                      if (_formKey.currentState!.validate()) {
+                        authenticationBloc.add(
+                          SignUpEvent(
+                            email: _emailController.text,
+                            firstName: _firstnameController.text,
+                            lastName: _lastnameController.text,
+                            password: _passwordController.text,
+                            hasAcceptedTerms: _hasAcceptedTerms.value,
+                          ),
+                        );
+                      }
 
-                      UtilHelpers.pushRoute(RouteNames.verifyEmail);
+                      // UtilHelpers.pushRoute(RouteNames.verifyEmail);
                     }
                 },
                 child: const Text("Continue"),

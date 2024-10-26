@@ -2,7 +2,7 @@ import '../utils/extensions.dart';
 
 import 'package:speech_to_text/speech_to_text.dart';
 
-class SpeechService {
+class VoiceCommandService {
   final SpeechToText _speech = SpeechToText();
 
   Future<bool?> init() async {
@@ -11,10 +11,11 @@ class SpeechService {
         debugLogging: true,
         finalTimeout: const Duration(seconds: 30),
         onStatus: (status) {
-          "$runtimeType $status".printLog();
+          "Status: $status".printLog();
         },
         onError: (errorNotification) {
-          "$runtimeType ${errorNotification.errorMsg}".printLog();
+          "Error: ${errorNotification.errorMsg}, type: ${errorNotification.permanent}"
+              .printLog();
         },
       );
 
@@ -25,20 +26,20 @@ class SpeechService {
     }
   }
 
-  Future<void> listenAndConvertToWords(
-      {required Function(String text) onResult}) async {
+  Future<String?> listenAndConvertToWords() async {
+    String? recognizedWords;
     try {
-      if (_speech.isAvailable) {
-        "$runtimeType Speech is available:${_speech.isAvailable}".printLog();
-        await _speech.listen(
-          onResult: (value) {
-            // "$value".printLog();
-            onResult(value.recognizedWords);
-          },
-        );
-      }
+      await _speech.listen(
+        onResult: (value) {
+          value.recognizedWords.printLog();
+          recognizedWords = value.recognizedWords;
+        },
+      );
+
+      return recognizedWords;
     } catch (e) {
-      "$runtimeType Error: $e\n".printLog();
+      "$runtimeType Error: ${e.toString()}\n".printLog();
+      return recognizedWords;
     }
   }
 

@@ -1,10 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 
 import '../../config/router/router.dart' show router;
-import 'extensions.dart';
-
+import '../../src/features/reminders/domain/reminder.dart';
 import '../../src/shared/in_app_alert.dart';
+import '../constants/voice_commands.dart';
+import 'extensions.dart';
 
 class UtilHelpers {
   UtilHelpers._();
@@ -72,5 +74,14 @@ class UtilHelpers {
       position: ToastPosition.top,
       duration: duration,
     );
+  }
+
+  static void scanVoicedText(String voicedText) async {
+    switch (voicedText) {
+      case VoiceCommands.addReminder:
+        
+      case VoiceCommands.speakToDoctor:
+      default:
+    }
   }
 }
