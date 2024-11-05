@@ -1,10 +1,14 @@
+import 'package:ellipsis_care/src/features/dashboard/presentation/controller/cubit/dashboard_cubit.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/views/prompt_responses.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/views/recording_page.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/views/response_history.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/views/emergency_call.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/views/sos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../src/features/reminders/presentation/bloc/bloc.dart';
+import '../../src/features/reminders/presentation/bloc/reminder_bloc.dart';
 import 'route_names.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/forgot_password.dart';
@@ -12,7 +16,7 @@ import 'package:ellipsis_care/src/features/authentication/presentation/view/sign
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signup.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/verify_email.dart';
 import 'package:ellipsis_care/src/features/charts/presentation/views/charts.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/controller/bloc/dashboard_bloc.dart';
 import 'package:ellipsis_care/src/features/dashboard/presentation/views/dashboard.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/bloc/bloc.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/views/emergency.dart';
@@ -76,12 +80,14 @@ final GoRouter router = GoRouter(
       ),
       routes: [
         GoRoute(
-          path: 'verify-email',
+          path: 'verify-email/:email',
           name: RouteNames.verifyEmail,
           pageBuilder: (context, state) => MaterialPage<VerifyEmail>(
             child: BlocProvider(
               create: (context) => AuthenticationBloc(),
-              child: const VerifyEmail(),
+              child: VerifyEmail(
+                email: Uri.decodeComponent(state.pathParameters["email"] ?? ""),
+              ),
             ),
           ),
         ),
@@ -115,6 +121,46 @@ final GoRouter router = GoRouter(
               child: const Dashboard(),
             ),
           ),
+          routes: [
+            GoRoute(
+              path: 'response-history',
+              name: RouteNames.responseHistory,
+              parentNavigatorKey: _routerKey,
+              pageBuilder: (context, state) => MaterialPage<ResponseHistory>(
+                child: BlocProvider(
+                  create: (context) => DashboardBloc(),
+                  child: const ResponseHistory(),
+                ),
+              ),
+            ),
+            GoRoute(
+              path: 'recording',
+              name: RouteNames.recording,
+              parentNavigatorKey: _routerKey,
+              pageBuilder: (context, state) => MaterialPage<RecordingPage>(
+                child: MultiBlocProvider(
+                  providers: [
+                    BlocProvider(create: (context) => DashboardCubit()),
+                    BlocProvider(create: (context) => DashboardBloc()),
+                  ],
+                  child: const RecordingPage(),
+                ),
+              ),
+              routes: [
+                GoRoute(
+                  path: 'prompt-responses',
+                  name: RouteNames.promptResponses,
+                  pageBuilder: (context, state) =>
+                      MaterialPage<PromptResponses>(
+                    child: BlocProvider(
+                      create: (context) => DashboardBloc(),
+                      child: const PromptResponses(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
         GoRoute(
           path: '/reminders',

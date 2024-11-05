@@ -91,7 +91,7 @@ class AppTheme {
         borderRadius: BorderRadius.circular(5.r),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: AppColors.textfieldBorder),
+        borderSide: const BorderSide(color: AppColors.generalOutlineBorder),
         borderRadius: BorderRadius.circular(5.r),
       ),
     ),
@@ -192,7 +192,7 @@ class AppTheme {
       constraints: BoxConstraints(maxHeight: 48.h, maxWidth: 361.w),
       border: OutlineInputBorder(
         borderSide:
-            const BorderSide(color: AppColors.textfieldBorder, width: .5),
+            const BorderSide(color: AppColors.generalOutlineBorder, width: .5),
         borderRadius: BorderRadius.circular(5.r),
       ),
     ),

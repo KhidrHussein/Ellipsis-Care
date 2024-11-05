@@ -38,19 +38,19 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
 
     switch (statusCode) {
       case 400:
-        return AppExceptions.badRequest(badResponse.error);
+        return AppExceptions.badRequest(badResponse.message);
       case 401:
-        return AppExceptions.unauthorizedRequest(badResponse.error);
+        return AppExceptions.unauthorizedRequest(badResponse.message);
       case 403:
-        return AppExceptions.unauthorizedRequest(badResponse.error);
+        return AppExceptions.unauthorizedRequest(badResponse.message);
       case 404:
-        return AppExceptions.notFound(badResponse.error);
+        return AppExceptions.notFound(badResponse.message);
       case 408:
         return const AppExceptions.requestTimeout();
       case 409:
         return const AppExceptions.conflict();
       case 422:
-        return AppExceptions.unprocessableEntity(badResponse.error);
+        return AppExceptions.unprocessableEntity(badResponse.message);
       case 500:
         return const AppExceptions.internalServerError();
       case 503:
@@ -116,7 +116,7 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
   }
 
   static String getErrorMessage(AppExceptions? appException) {
-    String? errorMessage = "";
+    String? errorMessage;
     if (appException != null) {
       appException.when(
         notImplemented: () {
@@ -183,6 +183,6 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
           "Oops!, we ran into technical difficulties. Try again later.";
     }
 
-    return errorMessage!;
+    return errorMessage ?? "";
   }
 }

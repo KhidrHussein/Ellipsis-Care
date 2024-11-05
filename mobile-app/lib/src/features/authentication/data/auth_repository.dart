@@ -51,6 +51,23 @@ class AuthenticationRepository {
     }
   }
 
+  Future<ApiResult<SuccessfulApiResponse?, AppExceptions>> verifyEmail(
+      Map<String, dynamic> payload) async {
+    try {
+      final response = await _service.client.post(ApiUrl.verifyEmail, data: payload);
+
+      final apiResult = SuccessfulApiResponse.fromJson(
+        response.data,
+        (json) {},
+      );
+
+      return (response: apiResult, exception: null);
+    } catch (e) {
+      final exception = AppExceptions.handleExceptions(e);
+      return (response: null, exception: exception);
+    }
+  }
+
   Future<ApiResult<OAuthCredentials, AppExceptions>> signInWithGoogle() async {
     try {
       final result = await _oAuthService.signInWithGoogle();

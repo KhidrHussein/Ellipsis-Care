@@ -24,7 +24,7 @@ class InAppAlert extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: .9.sw,
-      constraints: BoxConstraints.loose(const Size(300, 94)),
+      constraints: BoxConstraints.loose(const Size(300, 120)),
       decoration: BoxDecoration(
         color: AppColors.white,
         boxShadow: [

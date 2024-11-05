@@ -20,7 +20,7 @@ class AppColors {
   static const Color backgroundGrey3 = Color(0xFFFAFAFA);
 
   static const Color pageviewIndicator = Color(0xFFD9D9D9);
-  static const Color textfieldBorder = Color(0xFFD0D5DD);
+  static const Color generalOutlineBorder = Color(0xFFD0D5DD);
   static const Color outlinedButtonBorder = Color(0xFFD0D5DD);
   static const Color disabledButton = Color(0xFFE1E3E2);
   static const Color navigationIconColor = Color(0xFFCBCBD4);
@@ -38,6 +38,10 @@ class AppColors {
   static const Color foodReminderColor = Color(0xFFD2FFF4);
   static const Color drugReminderBorderColor = Color(0xFF4DA880);
   static const Color foodReminderBorderColor = Color(0xFF3AD3D3);
+  static const Color dashboardActionBgColor = Color(0xFFE5E5EA);
+  static const Color dashboardActionFontColor = Color(0xFF797979);
+  static const Color pauseIconBgColor = Color(0xFF444444);
+  static const Color stopIconBgColor = Color(0xFFFE0001);
 
   static const Color reminderTileCheckColor = Color(0xFFD9D9D9);
   static const Color calendarArrowBgColor = Color(0xFFF1F1F1);

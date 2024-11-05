@@ -33,8 +33,13 @@ class ForgotPasswordEvent extends AuthenticationEvent {
 }
 
 class OTPVerificationEvent implements AuthenticationEvent {
-  const OTPVerificationEvent({required this.otpCode});
-  final String otpCode;
+  const OTPVerificationEvent({
+    required this.email,
+    required this.verificationCode,
+  });
+  
+  final String email;
+  final String verificationCode;
 }
 
 class GoogleOAuthEvent extends AuthenticationEvent {

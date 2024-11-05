@@ -5,6 +5,10 @@ import 'package:uuid/uuid.dart';
 import '../utils/extensions.dart';
 
 class MicrophoneService {
+  MicrophoneService() {
+    _getRecordState();
+  }
+
   final AudioRecorder _mic = AudioRecorder();
 
   Future<bool> checkForPermission() => _mic.hasPermission();
@@ -13,32 +17,38 @@ class MicrophoneService {
     final tempDir = await getApplicationCacheDirectory();
 
     try {
-      _mic.start(
+      await _mic.start(
         const RecordConfig(encoder: AudioEncoder.wav),
-        path: "${tempDir.path}/${const Uuid().v4()}.wav",
+        path: "${tempDir.path}/${const Uuid().v4()}",
       );
+    } catch (e) {
+      "$runtimeType Error: $e".printLog();
+    }
+  }
 
-      "STARTED RECORDING".printLog();
+  Future<void> pauseRecording() async {
+    try {
+      await _mic.pause();
+    } catch (e) {
+      "$runtimeType Error: $e".printLog();
+    }
+  }
+
+  Future<void> resumeRecording() async {
+    try {
+      await _mic.resume();
     } catch (e) {
       "$runtimeType Error: $e".printLog();
     }
   }
 
   Future<String?> stopRecording() async {
-    String? path;
-
     try {
-      await _mic.stop().then((value) async {
-        path = value;
-        "PATH TO FILE: $value".printLog();
-      });
-
-      "STOPPED RECORDING".printLog();
+      return await _mic.stop();
     } catch (e) {
       "$runtimeType Error: $e".printLog();
+      return null;
     }
-
-    return path;
   }
 
   Future<void> dispose() async {
@@ -51,7 +61,14 @@ class MicrophoneService {
     }
   }
 
-  Stream<RecordState> getRecordState() {
-    return _mic.onStateChanged();
+  void _getRecordState() {
+    _mic.onStateChanged().listen(
+      (RecordState recordState) {
+        printLog("$runtimeType state: $recordState");
+      },
+      onError: (error, stacktrace) {
+        printLog("$runtimeType error: $error");
+      },
+    );
   }
 }

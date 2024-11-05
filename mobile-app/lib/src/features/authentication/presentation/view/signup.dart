@@ -194,7 +194,10 @@ class _SignupState extends State<Signup> {
             listener: (context, state) {
               switch (state) {
                 case AuthenticationPassed():
-                  UtilHelpers.pushRoute(RouteNames.verifyEmail);
+                  UtilHelpers.pushRoute(
+                    RouteNames.verifyEmail,
+                    {"email": _emailController.text},
+                  );
                 case AuthenticationFailed(error: var error):
                   UtilHelpers.showAlert(title: "Error", message: "$error");
                 default:
@@ -205,19 +208,22 @@ class _SignupState extends State<Signup> {
                 onPressed: switch (state) {
                   LoadingState() => null,
                   _ => () {
-                      if (_formKey.currentState!.validate()) {
-                        authenticationBloc.add(
-                          SignUpEvent(
-                            email: _emailController.text,
-                            firstName: _firstnameController.text,
-                            lastName: _lastnameController.text,
-                            password: _passwordController.text,
-                            hasAcceptedTerms: _hasAcceptedTerms.value,
-                          ),
-                        );
-                      }
+                      // if (_formKey.currentState!.validate()) {
+                      //   authenticationBloc.add(
+                      //     SignUpEvent(
+                      //       email: _emailController.text,
+                      //       firstName: _firstnameController.text,
+                      //       lastName: _lastnameController.text,
+                      //       password: _passwordController.text,
+                      //       hasAcceptedTerms: _hasAcceptedTerms.value,
+                      //     ),
+                      //   );
+                      // }
 
-                      // UtilHelpers.pushRoute(RouteNames.verifyEmail);
+                      UtilHelpers.pushRoute(
+                        RouteNames.verifyEmail,
+                        {"email": _emailController.text},
+                      );
                     }
                 },
                 child: const Text("Continue"),

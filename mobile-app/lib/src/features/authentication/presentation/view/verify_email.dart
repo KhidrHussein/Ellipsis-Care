@@ -1,3 +1,6 @@
+import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../../config/router/route_names.dart';
 import '../../../../../core/utils/helpers.dart';
 import 'package:flutter/material.dart';
@@ -8,25 +11,26 @@ import 'package:ellipsis_care/core/utils/extensions.dart';
 import '../widgets/otp_field.dart';
 
 class VerifyEmail extends StatefulWidget {
-  const VerifyEmail({super.key});
+  final String email;
+  const VerifyEmail({super.key, required this.email});
 
   @override
   State<VerifyEmail> createState() => _VerifyEmailState();
 }
 
 class _VerifyEmailState extends State<VerifyEmail> {
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
 
   @override
   void dispose() {
-    _emailController.dispose();
     _otpController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final authenticationBloc = context.read<AuthenticationBloc>();
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -50,12 +54,41 @@ class _VerifyEmailState extends State<VerifyEmail> {
               SizedBox(height: 24.h),
               OtpField(controller: _otpController),
               SizedBox(height: 36.h),
-              FilledButton(
-                onPressed: () {
-                  debugPrint(_otpController.text);
-                  UtilHelpers.clearPreviousAndPushRoute(RouteNames.signIn);
+              BlocConsumer<AuthenticationBloc, AuthenticationState>(
+                bloc: authenticationBloc,
+                listener: (context, state) {
+                  switch (state) {
+                    case AuthenticationPassed():
+                      UtilHelpers.clearPreviousAndPushRoute(
+                          RouteNames.dashboard);
+                      break;
+                    case AuthenticationFailed(error: var error):
+                      UtilHelpers.showAlert(title: "Error", message: "$error");
+                      break;
+                    default:
+                      break;
+                  }
                 },
-                child: const Text("Continue"),
+                builder: (context, state) {
+                  return FilledButton(
+                    onPressed: switch (state) {
+                      LoadingState() => null,
+                      _ => () {
+                          // authenticationBloc.add(
+                          //   OTPVerificationEvent(
+                          //     email: widget.email,
+                          //     verificationCode: _otpController.text,
+                          //   ),
+                          // );
+
+                          debugPrint(_otpController.text);
+                          UtilHelpers.clearPreviousAndPushRoute(
+                              RouteNames.dashboard);
+                        }
+                    },
+                    child: const Text("Continue"),
+                  );
+                },
               ),
             ],
           ),

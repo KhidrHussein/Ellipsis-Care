@@ -17,7 +17,7 @@ class DatePicker extends StatelessWidget {
       child: Container(
         padding: REdgeInsets.symmetric(horizontal: 10, vertical: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.textfieldBorder),
+          border: Border.all(color: AppColors.generalOutlineBorder),
           borderRadius: BorderRadius.circular(5.r),
         ),
         child: Row(

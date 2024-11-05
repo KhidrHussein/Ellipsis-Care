@@ -1,7 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:ellipsis_care/core/constants/colors.dart';
 import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/reminders/domain/reminder.dart';
+import 'package:ellipsis_care/src/features/reminders/models/reminder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:ellipsis_care/config/router/route_names.dart';
+import 'package:ellipsis_care/core/utils/helpers.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/controller/bloc/dashboard_bloc.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/views/not_recording.dart';
 
 import '../../../../shared/appbar.dart';
 
@@ -18,32 +20,18 @@ class Dashboard extends StatelessWidget {
         children: [
           const ProfileBar(),
           const Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  dashboardBloc.add(ActivateVoiceCommandEvent());
-                },
-                child: const Text("Voice Command System"),
-              ),
-              20.sizedBoxWidth,
-              ElevatedButton(
-                onPressed: () {
-                  dashboardBloc.add(StartMicrophoneEvent());
-                },
-                child: const Text("Record Voice"),
-              ),
-            ],
-            
-          ),
-           ElevatedButton(
-            onPressed: () {
-              dashboardBloc.add(EndMicrophoneEvent());
+          BlocConsumer<DashboardBloc, DashboardState>(
+            bloc: dashboardBloc,
+            listener: (context, state) {
+              switch (state) {
+                case StartRecordingState():
+                  UtilHelpers.pushRoute(RouteNames.recording);
+                  break;
+                default:
+              }
             },
-            child: const Text("End Voice"),
+            builder: (context, state) => const NotRecording(),
           ),
-          const Spacer(),
         ],
       ),
     );

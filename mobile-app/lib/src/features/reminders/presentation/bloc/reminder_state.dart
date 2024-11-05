@@ -1,4 +1,4 @@
-part of 'bloc.dart';
+part of 'reminder_bloc.dart';
 
 sealed class ReminderState extends Equatable {
   const ReminderState({required this.selectedDate, required this.reminders});

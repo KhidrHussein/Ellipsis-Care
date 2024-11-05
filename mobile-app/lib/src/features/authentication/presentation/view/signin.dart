@@ -88,10 +88,13 @@ class _SigninState extends State<Signin> {
                     switch (state) {
                       case AuthenticationPassed():
                         UtilHelpers.pushRoute(RouteNames.dashboard);
+                        break;
                       case AuthenticationFailed(error: var error):
                         UtilHelpers.showAlert(
                             title: "Error", message: "$error");
+                        break;
                       default:
+                        break;
                     }
                   },
                   builder: (context, state) {

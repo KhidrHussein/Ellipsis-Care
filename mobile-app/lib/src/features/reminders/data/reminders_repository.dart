@@ -1,30 +1,18 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
-
 import '../../../../core/api/exceptions/exceptions.dart';
 import '../../../../core/api/response/response.dart';
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/services/api_service.dart';
 import '../../../../core/utils/locator.dart';
 
-class DashboardRepository {
-  DashboardRepository() : _apiService = injector<ApiService>();
-
+class ReminderRepository {
+  ReminderRepository() : _apiService = injector<ApiService>();
   final ApiService _apiService;
 
-  Future<ApiResult<SuccessfulApiResponse?, AppExceptions>> uploadAudio(
-      File audio) async {
-    final data = FormData.fromMap({
-      "audio_file": await MultipartFile.fromFile(
-        audio.path,
-        contentType: DioMediaType("audio", "wav"),
-      ),
-    });
-
+  Future<ApiResult<SuccessfulApiResponse?, AppExceptions>> addReminder(
+      Map<String, dynamic> payload) async {
     try {
       final response =
-          await _apiService.client.post(ApiUrl.uploadAudio, data: data);
+          await _apiService.client.post(ApiUrl.addReminder, data: payload);
 
       final apiResult = SuccessfulApiResponse.fromJson(
         response.data,

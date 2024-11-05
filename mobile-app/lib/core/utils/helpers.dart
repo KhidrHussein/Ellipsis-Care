@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 
 import '../../config/router/router.dart' show router;
-import '../../src/features/reminders/domain/reminder.dart';
 import '../../src/shared/in_app_alert.dart';
 import '../constants/voice_commands.dart';
 import 'extensions.dart';
@@ -11,8 +9,8 @@ import 'extensions.dart';
 class UtilHelpers {
   UtilHelpers._();
 
-  static void pushRoute(String routeName) {
-    router.pushNamed(routeName);
+  static void pushRoute(String routeName, [Map<String, String>? pathParams]) {
+    router.pushNamed(routeName, pathParameters: pathParams ?? {});
   }
 
   static void clearPreviousAndPushRoute(String routeName) {
@@ -28,6 +26,15 @@ class UtilHelpers {
       return 'Enter a name';
     } else if (!name.isValidName) {
       return 'Enter a valid name';
+    }
+    return null;
+  }
+
+  static String? otpValidator(String? otp) {
+    if (otp == null) {
+      return 'Enter OTP code';
+    } else if (otp.length != 6) {
+      return 'Enter a valid otp';
     }
     return null;
   }
@@ -68,7 +75,7 @@ class UtilHelpers {
       DateFormat("h:mm a").format(date);
 
   static void showAlert({required String title, required String message}) {
-    const Duration duration = Duration(milliseconds: 1500);
+    const Duration duration = Duration(milliseconds: 2500);
     showToastWidget(
       InAppAlert(title: title, message: message, duration: duration),
       position: ToastPosition.top,
@@ -79,7 +86,6 @@ class UtilHelpers {
   static void scanVoicedText(String voicedText) async {
     switch (voicedText) {
       case VoiceCommands.addReminder:
-        
       case VoiceCommands.speakToDoctor:
       default:
     }

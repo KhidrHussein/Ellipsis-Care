@@ -4,10 +4,10 @@ part 'failed_api_response.g.dart';
 
 @JsonSerializable()
 class FailedApiResponse {
-  const FailedApiResponse({required this.status, this.error});
+  const FailedApiResponse({required this.status, this.message});
 
   final String status;
-  final String? error;
+  final String? message;
 
   factory FailedApiResponse.fromJson(Map<String, dynamic> json) =>
       _$FailedApiResponseFromJson(json);

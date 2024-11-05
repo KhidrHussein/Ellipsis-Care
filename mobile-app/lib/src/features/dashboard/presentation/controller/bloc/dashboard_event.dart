@@ -4,6 +4,6 @@ sealed class DashboardEvents {}
 
 class ActivateVoiceCommandEvent extends DashboardEvents {}
 
-class StartMicrophoneEvent extends DashboardEvents {}
+class StartRecordingEvent extends DashboardEvents {}
 
-class EndMicrophoneEvent extends DashboardEvents {}
+class EndRecordingEvent extends DashboardEvents {}

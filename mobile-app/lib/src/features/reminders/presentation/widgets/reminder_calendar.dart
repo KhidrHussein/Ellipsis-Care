@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../../core/constants/colors.dart';
-import '../bloc/bloc.dart';
+import '../bloc/reminder_bloc.dart';
 
 class ReminderCalendar extends StatelessWidget {
   const ReminderCalendar({super.key});

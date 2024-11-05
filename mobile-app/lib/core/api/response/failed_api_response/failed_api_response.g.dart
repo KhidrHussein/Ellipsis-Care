@@ -9,11 +9,11 @@ part of 'failed_api_response.dart';
 FailedApiResponse _$FailedApiResponseFromJson(Map<String, dynamic> json) =>
     FailedApiResponse(
       status: json['status'] as String,
-      error: json['error'] as String?,
+      message: json['message'] as String?,
     );
 
 Map<String, dynamic> _$FailedApiResponseToJson(FailedApiResponse instance) =>
     <String, dynamic>{
       'status': instance.status,
-      'error': instance.error,
+      'message': instance.message,
     };

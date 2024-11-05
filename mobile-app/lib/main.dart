@@ -1,4 +1,3 @@
-import 'package:ellipsis_care/core/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +7,7 @@ import 'package:oktoast/oktoast.dart';
 
 import 'config/router/router.dart';
 import 'config/theme/controller.dart';
+import 'core/services/notification_service.dart';
 import 'core/services/storage_service.dart';
 import 'core/utils/locator.dart';
 

@@ -1,8 +1,6 @@
-part of 'bloc.dart';
+part of 'reminder_bloc.dart';
 
 sealed class ReminderEvent {}
-
-class FetchRemindersFromStorage implements ReminderEvent {}
 
 class EditReminder implements ReminderEvent {}
 

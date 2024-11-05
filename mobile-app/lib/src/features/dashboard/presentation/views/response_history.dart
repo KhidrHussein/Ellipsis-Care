@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class PromptHistory extends StatelessWidget {
-  const PromptHistory({super.key});
+class ResponseHistory extends StatelessWidget {
+  const ResponseHistory({super.key});
 
   @override
   Widget build(BuildContext context) {

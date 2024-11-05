@@ -6,14 +6,12 @@ class DefaultState implements DashboardState {}
 
 class LoadingState implements DashboardState {}
 
-class StartedRecordingState implements DashboardState {}
+class StartRecordingState implements DashboardState {}
 
-class EndedRecordingState<T> extends Equatable implements DashboardState {
-  const EndedRecordingState({this.transcribedResult});
+class EndRecordingState<T> extends Equatable implements DashboardState {
+  const EndRecordingState({this.transcribedResult});
 
   final T? transcribedResult;
   @override
   List<Object?> get props => [transcribedResult];
 }
-
-

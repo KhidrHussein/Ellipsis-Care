@@ -1,7 +1,7 @@
 import 'package:ellipsis_care/core/services/notification_service.dart';
 import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:ellipsis_care/core/utils/locator.dart';
-import 'package:ellipsis_care/src/features/reminders/domain/reminder.dart';
+import 'package:ellipsis_care/src/features/reminders/models/reminder.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/views/add_reminder.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/widgets/reminder_tile.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/constants/colors.dart';
 import '../../../../../core/utils/extensions.dart';
-import '../bloc/bloc.dart';
+import '../bloc/reminder_bloc.dart';
 
 class ReminderSheet extends StatelessWidget {
   const ReminderSheet({super.key});
@@ -53,32 +53,32 @@ class ReminderSheet extends StatelessWidget {
                       ),
                     ).alignLeft,
                     10.sizedBoxHeight,
-                    TextButton(
-                      onPressed: () async {
-                        await injector<NotificationService>()
-                            .createReminderNotification();
-                        // final result = await showAdaptiveDialog<ReminderModel>(
-                        //   context: context,
-                        //   barrierDismissible: true,
-                        //   builder: (context) => const AddReminder(),
-                        // );
-                        // if (result != null) {
-                        //   reminderBloc.add(
-                        //     CreateReminder(
-                        //       name: result.name,
-                        //       dosage: result.dosage,
-                        //       type: result.type,
-                        //       interval: result.interval,
-                        //       schedule: result.schedule,
-                        //       instruction: result.instruction,
-                        //       startDate: result.startDate,
-                        //       endDate: result.endDate,
-                        //     ),
-                        //   );
-                        // }
-                      },
-                      child: Text("Add Reminder"),
-                    ),
+                    // TextButton(
+                    //   onPressed: () async {
+                    //     await injector<NotificationService>()
+                    //         .createReminderNotification();
+                    //     // final result = await showAdaptiveDialog<ReminderModel>(
+                    //     //   context: context,
+                    //     //   barrierDismissible: true,
+                    //     //   builder: (context) => const AddReminder(),
+                    //     // );
+                    //     // if (result != null) {
+                    //     //   reminderBloc.add(
+                    //     //     CreateReminder(
+                    //     //       name: result.name,
+                    //     //       dosage: result.dosage,
+                    //     //       type: result.type,
+                    //     //       interval: result.interval,
+                    //     //       schedule: result.schedule,
+                    //     //       instruction: result.instruction,
+                    //     //       startDate: result.startDate,
+                    //     //       endDate: result.endDate,
+                    //     //     ),
+                    //     //   );
+                    //     // }
+                    //   },
+                    //   child: Text("Add Reminder"),
+                    // ),
                   ],
                 ),
               ),

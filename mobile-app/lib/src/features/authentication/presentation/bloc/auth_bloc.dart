@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:ellipsis_care/core/utils/extensions.dart';
+
 import '../../../../../core/api/exceptions/exceptions.dart';
 import '../../../../../core/utils/locator.dart';
 import '../../data/auth_repository.dart';
@@ -82,9 +84,9 @@ class AuthenticationBloc
           "first_name": names?.first,
           "last_name": names?.last,
         };
-        
+
         final apiResponse = await _apiRepository.signUp(payload);
-        
+
         if (apiResponse.response != null) {
           handler.call(
             AuthenticationPassed(data: apiResponse.response!),
@@ -115,19 +117,29 @@ class AuthenticationBloc
   void _forgotPassword(
       ForgotPasswordEvent event, Emitter<AuthenticationState> handler) async {
     handler.call(LoadingState());
-    // final result = await _repository.forgotPassword(event.email);
-
-    // if (result.response != null) {
-    //   handler.call(
-    //     AuthenticationPassed(data: result.response!),
-    //   );
-    // } else {
-    //   handler.call(AuthenticationFailed());
-    //   UtilHelpers.showAlert(
-    //       title: "Error", message: "Failed to create an account");
-    // }
   }
 
   void _verifyOTP(
-      OTPVerificationEvent event, Emitter<AuthenticationState> handler) async {}
+      OTPVerificationEvent event, Emitter<AuthenticationState> handler) async {
+    "Attemp to register event".printLog();
+
+    final Map<String, dynamic> payload = {
+      "email": event.email,
+      "verification_code": event.verificationCode,
+    };
+
+    handler.call(LoadingState());
+
+    final result = await _apiRepository.verifyEmail(payload);
+
+    if (result.response != null) {
+      handler.call(
+        AuthenticationPassed(data: result.response!.data),
+      );
+    } else {
+      final String errorMessage =
+          AppExceptions.getErrorMessage(result.exception!);
+      handler.call(AuthenticationFailed(error: errorMessage));
+    }
+  }
 }

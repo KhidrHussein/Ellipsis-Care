@@ -73,6 +73,7 @@ dependencies:
   pulsator: ^1.0.0+2
   intl: ^0.19.0
   audioplayers: ^6.1.0
+  mocktail: ^1.0.4
 
 dev_dependencies:
   flutter_test:
@@ -101,7 +102,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/icons/authentication/
-    - assets/icons/dashboard/
+    - assets/icons/dashboard/nav_bar/
+    - assets/icons/dashboard/actions/
     - assets/icons/reminder/
     - assets/icons/settings/
     - assets/icons/sos/

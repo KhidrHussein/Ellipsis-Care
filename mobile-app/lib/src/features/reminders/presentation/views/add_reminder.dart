@@ -12,7 +12,7 @@ import 'package:ellipsis_care/src/features/reminders/presentation/widgets/picker
 import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/radio_type_picker.dart';
 
 import '../../../../../core/constants/colors.dart';
-import '../../domain/reminder.dart';
+import '../../models/reminder.dart';
 
 class AddReminder extends StatefulWidget {
   const AddReminder({super.key});
@@ -140,7 +140,8 @@ class _AddReminderState extends State<AddReminder> {
                     sectionName: "Interval (Daily)",
                     subsection: DecoratedBox(
                       decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.textfieldBorder),
+                        border:
+                            Border.all(color: AppColors.generalOutlineBorder),
                         borderRadius: BorderRadius.circular(5.r),
                       ),
                       child: ValueListenableBuilder(

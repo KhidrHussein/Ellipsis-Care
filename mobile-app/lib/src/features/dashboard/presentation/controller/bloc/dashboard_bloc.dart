@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,9 +8,9 @@ import 'package:ellipsis_care/core/services/audio_player_service.dart';
 import 'package:ellipsis_care/core/services/mic_service.dart';
 import 'package:ellipsis_care/src/features/dashboard/data/dashboard_repository.dart';
 
-import '../../../../../core/api/exceptions/exceptions.dart';
-import '../../../../../core/services/voice_command_service.dart';
-import '../../../../../core/utils/locator.dart';
+import '../../../../../../core/api/exceptions/exceptions.dart';
+import '../../../../../../core/services/voice_command_service.dart';
+import '../../../../../../core/utils/locator.dart';
 
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
@@ -21,8 +22,8 @@ class DashboardBloc extends Bloc<DashboardEvents, DashboardState> {
         _dashboardRepository = injector<DashboardRepository>(),
         super(DefaultState()) {
     on<ActivateVoiceCommandEvent>(_activateVoiceCommand);
-    on<StartMicrophoneEvent>(_startRecording);
-    on<EndMicrophoneEvent>(_stopRecording);
+    on<StartRecordingEvent>(_startRecording);
+    on<EndRecordingEvent>(_stopRecording);
   }
 
   final VoiceCommandService _voiceCommandService;
@@ -35,17 +36,17 @@ class DashboardBloc extends Bloc<DashboardEvents, DashboardState> {
   }
 
   void _startRecording(
-      StartMicrophoneEvent event, Emitter<DashboardState> handler) async {
-    handler.call(StartedRecordingState());
-
-    await _microphoneService.startRecording();
+      StartRecordingEvent event, Emitter<DashboardState> handler) async {
+    await _microphoneService.startRecording().then((value) {
+      handler.call(StartRecordingState());
+    });
   }
 
   void _stopRecording(
-      EndMicrophoneEvent event, Emitter<DashboardState> handler) async {
-    await _microphoneService.stopRecording();
-
+      EndRecordingEvent event, Emitter<DashboardState> handler) async {
     final filePath = await _microphoneService.stopRecording();
+
+    printLog("${_microphoneService.runtimeType} value: $filePath");
 
     if (filePath != null) {
       File audioFile = File(filePath);
@@ -53,20 +54,18 @@ class DashboardBloc extends Bloc<DashboardEvents, DashboardState> {
       final apiResult = await _dashboardRepository.uploadAudio(audioFile);
 
       if (apiResult.response != null) {
-        final audioPlayer = injector<AudioPlayerService>();
+        // final audioPlayer = injector<AudioPlayerService>();
+        // await audioPlayer.playAudio(apiResult.response!.data);
 
-        await audioPlayer.playAudio(apiResult.response!.data);
-
-        handler.call(const EndedRecordingState());
+        handler.call(const EndRecordingState());
       } else {
-        // FIXME: Modify to show the appropriate state for a failed api response
-        handler.call(const EndedRecordingState());
+        
         final String errorMessage =
             AppExceptions.getErrorMessage(apiResult.exception!);
-        handler.call(const EndedRecordingState());
+        handler.call(const EndRecordingState());
       }
     } else {
-      handler.call(const EndedRecordingState());
+      handler.call(const EndRecordingState());
     }
   }
 }
