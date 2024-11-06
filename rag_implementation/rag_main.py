@@ -1,6 +1,5 @@
 from typing import Optional
 from pydantic import BaseModel, EmailStr
-# from .functions import elementary_db, junior_db, senior_db, prompt_setup
 from .functions import prompt_setup
 from .functions import context_document_retreival_similarity, get_conversation_summary
 from .functions import qa_response, reminder_message
