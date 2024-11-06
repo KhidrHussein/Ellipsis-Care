@@ -1,10 +1,10 @@
 from typing import Optional
 from pydantic import BaseModel, EmailStr
-from functions import prompt_setup
-from functions import context_document_retreival_similarity, get_conversation_summary
-from functions import qa_response, reminder_message
-from config.database import collection
-from schemas.schema import serializer
+from .functions import prompt_setup
+from .functions import context_document_retreival_similarity, get_conversation_summary
+from .functions import qa_response, reminder_message
+from .config.database import collection
+from .schemas.schema import serializer
 
 from bson import ObjectId
 
@@ -122,8 +122,3 @@ def reminder_message_full(user_id: str, reminder):
     current_user = get_user(user_id)
     buffer_history = current_user["buffer_history"]
     return reminder_message(reminder, "\n".join(buffer_history))
-
-
-
-if __name__ == "__main__":
-    print(rag_response("66e20bf6070cbfb0abab1f23", "How can I combat swollen legs? And what could be the cause", "junior"))
