@@ -1,6 +1,52 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 from .models import UserProfile, Medication, HealthCondition, MealPlan, Meal, Appointment, Audio, CustomUser
+
+from djoser.serializers import TokenCreateSerializer
+from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import ValidationError
+
+
+class CustomTokenCreateSerializer(TokenCreateSerializer):
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+        print(f"Attempting to authenticate user with email: {email}")
+
+        # Authenticate using the email as the username
+        user = authenticate(username=email, password=password)
+
+        # Check if the authentication failed
+        if user is None:
+            print("Authentication failed.")
+            raise ValidationError({
+                "message": "Invalid credentials.",
+                "email": ["No user found with this email address or password is incorrect."]
+            })
+
+        # Check if the user is inactive
+        if not user.is_active:
+            raise ValidationError({
+                "message": "Account inactive.",
+                "email": ["Your account has not been verified. Please check your email for the verification link."]
+            })
+
+        print("Authentication succeeded. User ID:", user.id)
+
+        # Create or get the existing auth token for the user
+        token, created = Token.objects.get_or_create(user=user)
+
+        # Ensure the token has a user associated
+        if not user or token.user is None:
+            print("Token creation failed. User is not associated with the token.")
+            raise ValidationError({
+                "message": "Token generation failed.",
+                "detail": ["Token could not be created. Please try again."]
+            })
+
+        print("Token generated:", token.key)
+        return {'auth_token': token.key}
+
 
 
 class UserSerializer(serializers.ModelSerializer):

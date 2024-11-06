@@ -40,42 +40,89 @@ subscription_key = os.getenv('SUBSCRIPTION_KEY')
 
 
 
+# def transcribe_audio(audio_path):
+#     # Set up headers with your subscription key
+#     # subscription_key = 'YourSubscriptionKey'
+#     headers = {
+#         'Ocp-Apim-Subscription-Key': subscription_key,
+#         'Accept': 'application/json'
+#     }
+
+#     # Define the files and data for the request
+#     files = {
+#         'audio': open(audio_path, 'rb')  # Replace with your audio file path
+#     }
+#     data = {
+#         'definition': '''
+#         {
+#             "locales": ["en-US"],
+#             "profanityFilterMode": "Masked"
+#         }
+#         '''
+#     }
+#     # "channels": [0, 1]
+
+#     # Make the POST request
+#     response = requests.post(url, headers=headers, files=files, data=data)
+
+#     # Check the response
+#     if response.status_code == 200:
+#         # print('Success!')
+#         # print(response.json())
+#         # print(response.json()['combinedPhrases'][0]['text'])
+#         return response.json()['combinedPhrases'][0]['text']
+#     else:
+#         # print('Error:', response.status_code)
+#         # print(response.text)
+#         error_message = "Error: " + str(response.status_code) + "\n" + response.text
+#         return error_message
+
+
+import requests
+
 def transcribe_audio(audio_path):
-    # Set up headers with your subscription key
-    # subscription_key = 'YourSubscriptionKey'
     headers = {
         'Ocp-Apim-Subscription-Key': subscription_key,
         'Accept': 'application/json'
     }
 
     # Define the files and data for the request
-    files = {
-        'audio': open(audio_path, 'rb')  # Replace with your audio file path
-    }
-    data = {
-        'definition': '''
-        {
-            "locales": ["en-US"],
-            "profanityFilterMode": "Masked"
+    with open(audio_path, 'rb') as audio_file:
+        files = {
+            'audio': audio_file
         }
-        '''
-    }
-    # "channels": [0, 1]
+        data = {
+            'definition': '''
+            {
+                "locales": ["en-US"],
+                "profanityFilterMode": "Masked"
+            }
+            '''
+        }
 
-    # Make the POST request
-    response = requests.post(url, headers=headers, files=files, data=data)
+        try:
+            # Make the POST request
+            response = requests.post(url, headers=headers, files=files, data=data)
 
-    # Check the response
-    if response.status_code == 200:
-        # print('Success!')
-        # print(response.json())
-        # print(response.json()['combinedPhrases'][0]['text'])
-        return response.json()['combinedPhrases'][0]['text']
-    else:
-        # print('Error:', response.status_code)
-        # print(response.text)
-        error_message = "Error: " + str(response.status_code) + "\n" + response.text
-        return error_message
+            # If successful, return the transcribed text
+            if response.status_code == 200:
+                try:
+                    transcription_text = response.json()['combinedPhrases'][0]['text']
+                    return transcription_text
+                except (KeyError, IndexError, ValueError) as parse_error:
+                    error_message = f"Error parsing response JSON: {parse_error}"
+                    print(error_message)
+                    return error_message
+            else:
+                # Log and return the exact error message if the request fails
+                error_message = f"Error: {response.status_code} - {response.text}"
+                print(error_message)
+                return error_message
+
+        except requests.exceptions.RequestException as e:
+            # Catch network-related errors (e.g., timeout, connection error)
+            print(f"Request error: {e}")
+            return f"Request error: {e}"
 
 
 # def synthesize_speech(text, file_prefix):
@@ -196,6 +243,41 @@ import tempfile
 import os
 import time
 
+# def synthesize_speech(text):
+#     # Set up the speech configuration with the specified voice name
+#     speech_config = speechsdk.SpeechConfig(subscription=os.getenv("SPEECH_KEY"), region=os.getenv("SPEECH_REGION"))
+#     speech_config.speech_synthesis_voice_name = 'en-NG-EzinneNeural'  # Set the voice to 'en-NG-EzinneNeural'
+    
+#     # Use a temporary file to hold the audio data
+#     with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_audio_file:
+#         # Configure the audio output to save the synthesized speech to the temp file
+#         audio_config = speechsdk.audio.AudioOutputConfig(filename=temp_audio_file.name)
+
+#         # Create the synthesizer with the specified configuration
+#         synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
+
+#         # Start the speech synthesis
+#         try:
+#             print(f"Starting speech synthesis for text: {text[:50]}...")  # Log a part of the text to indicate synthesis
+#             result = synthesizer.speak_text_async(text).get()
+            
+#             # Check if synthesis was successful
+#             if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
+#                 print(f"Speech synthesized to file: {temp_audio_file.name}")
+#                 return temp_audio_file.name  # Return the path to the audio file
+#             else:
+#                 print(f"Speech synthesis failed: {result.reason}")
+#                 if result.reason == speechsdk.ResultReason.Canceled:
+#                     cancellation_details = result.cancellation_details
+#                     print(f"Cancellation reason: {cancellation_details.reason}")
+#                     if cancellation_details.error_details:
+#                         print(f"Error details: {cancellation_details.error_details}")
+#                 return None
+#         except Exception as e:
+#             print(f"Error during speech synthesis: {e}")
+#             return None
+
+
 def synthesize_speech(text):
     # Set up the speech configuration with the specified voice name
     speech_config = speechsdk.SpeechConfig(subscription=os.getenv("SPEECH_KEY"), region=os.getenv("SPEECH_REGION"))
@@ -219,13 +301,15 @@ def synthesize_speech(text):
                 print(f"Speech synthesized to file: {temp_audio_file.name}")
                 return temp_audio_file.name  # Return the path to the audio file
             else:
-                print(f"Speech synthesis failed: {result.reason}")
+                # Raise an error if synthesis fails
+                error_message = f"Speech synthesis failed with reason: {result.reason}"
                 if result.reason == speechsdk.ResultReason.Canceled:
                     cancellation_details = result.cancellation_details
-                    print(f"Cancellation reason: {cancellation_details.reason}")
+                    error_message += f", Cancellation reason: {cancellation_details.reason}"
                     if cancellation_details.error_details:
-                        print(f"Error details: {cancellation_details.error_details}")
-                return None
+                        error_message += f", Error details: {cancellation_details.error_details}"
+                print(error_message)
+                raise RuntimeError(error_message)
         except Exception as e:
             print(f"Error during speech synthesis: {e}")
-            return None
+            raise
