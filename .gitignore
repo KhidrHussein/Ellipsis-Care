@@ -9,5 +9,7 @@ pyvenv.cfg
 /Ellipsis-Care-Chroma-Vector-DB/
 *.wav
 *.DS_Store
-/C:/
+*C:/
 /extracted_data/
+*.pyc
+*/__pycache__/
