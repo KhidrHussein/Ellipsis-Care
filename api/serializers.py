@@ -6,12 +6,20 @@ from .models import UserProfile, Medication, HealthCondition, MealPlan, Meal, Ap
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['email', 'username', 'password']  # Include the fields you need
-        extra_kwargs = {'password': {'write_only': True}}
+        # fields = ['id', 'email', 'first_name', 'last_name', 'password']
+        fields = '__all__'
+        extra_kwargs = {
+            'password': {'write_only': True, 'required': True},  # Password is required
+            'email': {'required': True},  # Email is required
+            'first_name': {'required': False},  # First name is optional
+            'last_name': {'required': False},  # Last name is optional
+        }
 
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(**validated_data)
-        user.is_active = False  # Deactivate the user until they verify their email
+        # Automatically set the username as the first name
+        validated_data['username'] = validated_data.get('first_name')
+        user = CustomUser(**validated_data)
+        user.set_password(validated_data['password'])  # Hash the password
         user.save()
         return user
 
@@ -59,3 +67,25 @@ class AudioSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Audio.objects.create(**validated_data)
+
+
+from rest_framework import serializers
+
+class ReminderSerializer(serializers.Serializer):
+    user_id = serializers.CharField(required=True)
+    reminder = serializers.DictField(required=True)
+
+    def validate_reminder(self, value):
+        required_fields = ['name', 'type', 'schedule', 'interval', 'dosage', 'duration', 'instruction', 'time']
+        
+        # Check if all required fields are present
+        for field in required_fields:
+            if field not in value:
+                raise serializers.ValidationError(f"'{field}' field is missing in the reminder details.")
+        
+        # Validate the 'duration' field
+        if 'duration' in value:
+            if 'start' not in value['duration'] or 'end' not in value['duration']:
+                raise serializers.ValidationError("Both 'start' and 'end' dates must be provided in 'duration'.")
+        
+        return value
