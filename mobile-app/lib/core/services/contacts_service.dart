@@ -1,7 +1,9 @@
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:uuid/uuid.dart';
 
 import '../utils/extensions.dart';
 import '../../src/features/emergency/domain/emergency_contact.dart';
+
 class PhoneContactService {
   Future<EmergencyContact?> pickContact() async {
     try {
@@ -11,8 +13,9 @@ class PhoneContactService {
 
       return contact != null
           ? EmergencyContact(
+              id: const Uuid().v4(),
               name: contact.displayName,
-              phoneNumbers: phoneNumber,
+              phoneNumber: phoneNumber?.first,
               photo: contact.photoOrThumbnail,
             )
           : null;

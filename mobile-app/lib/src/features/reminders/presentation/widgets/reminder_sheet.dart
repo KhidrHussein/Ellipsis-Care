@@ -33,7 +33,7 @@ class ReminderSheet extends StatelessWidget {
               topRight: Radius.circular(20.r),
             ),
             border: const Border.symmetric(
-              horizontal: BorderSide(color: AppColors.reminderSheetBorderColor),
+              horizontal: BorderSide(color: AppColors.outlineBorderColor),
             ),
           ),
           child: CustomScrollView(

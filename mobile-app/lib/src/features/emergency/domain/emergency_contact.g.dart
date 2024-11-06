@@ -17,21 +17,24 @@ class EmergencyContactAdapter extends TypeAdapter<EmergencyContact> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return EmergencyContact(
-      name: fields[0] as String,
-      phoneNumbers: (fields[1] as List?)?.cast<String>(),
-      photo: fields[2] as Uint8List?,
+      id: fields[0] as String,
+      name: fields[1] as String,
+      phoneNumber: fields[2] as String?,
+      photo: fields[3] as Uint8List?,
     );
   }
 
   @override
   void write(BinaryWriter writer, EmergencyContact obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.name)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.phoneNumbers)
+      ..write(obj.name)
       ..writeByte(2)
+      ..write(obj.phoneNumber)
+      ..writeByte(3)
       ..write(obj.photo);
   }
 

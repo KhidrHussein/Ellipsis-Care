@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../widgets/settings_bar.dart';
-import '../widgets/settings_options.dart';
+import '../widgets/user_profile.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -11,10 +10,7 @@ class Settings extends StatelessWidget {
     return const SafeArea(
       child: Column(
         children: [
-          SettingsBar(),
-          Expanded(
-            child: SettingsOptions(),
-          )
+          UserProfile(),
         ],
       ),
     );

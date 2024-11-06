@@ -1,4 +1,4 @@
-part of "bloc.dart";
+part of "emergency_bloc.dart";
 
 sealed class EmergencyContactState extends Equatable {
   const EmergencyContactState({required this.contacts});

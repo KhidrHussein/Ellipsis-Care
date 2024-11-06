@@ -20,7 +20,7 @@ class ReminderCalendar extends StatelessWidget {
       decoration: const BoxDecoration(
         color: AppColors.white,
         border: BorderDirectional(
-          top: BorderSide(color: AppColors.reminderSheetBorderColor),
+          top: BorderSide(color: AppColors.outlineBorderColor),
         ),
       ),
       child: BlocBuilder<ReminderBloc, ReminderState>(

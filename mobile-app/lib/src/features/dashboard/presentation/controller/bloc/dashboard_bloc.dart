@@ -4,7 +4,6 @@ import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ellipsis_care/core/services/audio_player_service.dart';
 import 'package:ellipsis_care/core/services/mic_service.dart';
 import 'package:ellipsis_care/src/features/dashboard/data/dashboard_repository.dart';
 
@@ -54,9 +53,7 @@ class DashboardBloc extends Bloc<DashboardEvents, DashboardState> {
       final apiResult = await _dashboardRepository.uploadAudio(audioFile);
 
       if (apiResult.response != null) {
-        // final audioPlayer = injector<AudioPlayerService>();
-        // await audioPlayer.playAudio(apiResult.response!.data);
-
+        
         handler.call(const EndRecordingState());
       } else {
         

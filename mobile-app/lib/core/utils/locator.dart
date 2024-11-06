@@ -1,4 +1,3 @@
-import 'package:ellipsis_care/core/services/audio_player_service.dart';
 import 'package:ellipsis_care/src/features/authentication/data/auth_repository.dart';
 import 'package:ellipsis_care/src/features/dashboard/data/dashboard_repository.dart';
 import 'package:ellipsis_care/src/features/reminders/data/reminders_repository.dart';
@@ -27,8 +26,6 @@ void initService() {
       .registerLazySingleton<PhoneContactService>(() => PhoneContactService());
   injector
       .registerLazySingleton<NotificationService>(() => NotificationService());
-  injector
-      .registerLazySingleton<AudioPlayerService>(() => AudioPlayerService());
 
   injector.registerLazySingleton<AuthenticationRepository>(
       () => AuthenticationRepository());

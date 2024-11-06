@@ -66,7 +66,9 @@ class RecordingPage extends StatelessWidget {
                   listener: (context, state) {
                     switch (state) {
                       case EndRecordingState():
+                        UtilHelpers.popRoute();
                         UtilHelpers.pushRoute(RouteNames.promptResponses);
+
                         break;
                       default:
                     }

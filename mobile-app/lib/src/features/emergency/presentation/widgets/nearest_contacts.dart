@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/src/features/emergency/presentation/bloc/bloc.dart';
+import 'package:ellipsis_care/src/features/emergency/presentation/bloc/emergency_bloc.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/widgets/help_circle.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pulsator/pulsator.dart';
@@ -22,9 +22,10 @@ class NearestContacts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final emergencyContactBloc = context.read<EmergencyContactBloc>();
+
     return BlocBuilder<EmergencyContactBloc, EmergencyContactState>(
-      bloc: context.watch<EmergencyContactBloc>()
-        ..add(FetchContactsFromStorageEvent()),
+      bloc: emergencyContactBloc..add(FetchContactsEvent()),
       builder: (context, state) {
         return SizedBox(
           height: 257.h,

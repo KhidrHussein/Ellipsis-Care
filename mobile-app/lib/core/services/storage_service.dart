@@ -3,11 +3,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../utils/extensions.dart';
 import '../../src/features/authentication/models/userdata/userdata.dart';
 import '../../src/features/emergency/domain/emergency_contact.dart';
-import 'package:uuid/uuid.dart';
 
 class StorageService {
-  final Uuid _id = const Uuid();
-
   Future<void> initializeStorage() => Hive.initFlutter();
 
   void registerModels() async {
@@ -48,14 +45,14 @@ class StorageService {
         final contactsBox =
             await Hive.openBox<EmergencyContact>('emergency_contacts');
 
-        await contactsBox.put('contact${_id.v4()}', contact);
+        await contactsBox.put(contact.id, contact);
       } catch (e) {
         "$runtimeType Error: $e".printLog();
       }
     }
   }
 
-  Future<List<EmergencyContact>?> getEmegencyContacts() async {
+  Future<List<EmergencyContact>?> getEmergencyContacts() async {
     try {
       final contactsBox =
           await Hive.openBox<EmergencyContact>('emergency_contacts');
@@ -64,6 +61,28 @@ class StorageService {
     } catch (e) {
       "$runtimeType Error: $e".printLog();
       return null;
+    }
+  }
+
+  Future<void> editContactInformation(EmergencyContact contact) async {
+    try {
+      final contactsBox =
+          await Hive.openBox<EmergencyContact>('emergency_contacts');
+
+      await contactsBox.put(contact.id, contact);
+    } catch (e) {
+      "$runtimeType Error: $e".printLog();
+    }
+  }
+
+  Future<void> deleteEmergencyContact(String id) async {
+    try {
+      final contactsBox =
+          await Hive.openBox<EmergencyContact>('emergency_contacts');
+
+      await contactsBox.delete(id);
+    } catch (e) {
+      "$runtimeType Error: $e".printLog();
     }
   }
 }

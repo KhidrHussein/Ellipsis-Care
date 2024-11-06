@@ -11,9 +11,7 @@ class RouteNames {
   static const String responseHistory = "response_history_page";
 
   static const String sos = "sos_page";
-  // FIXME: There is no longer an emergency page
-  static const String emergency = "emergency_page";
-  static const String emergencyCall = "emergency_call_page";
+  static const String callEmergencyContacts = "call_emergency_contacts_page";
 
   static const String settings = "settings_page";
   static const String complianceScore = "compliance_score_page";

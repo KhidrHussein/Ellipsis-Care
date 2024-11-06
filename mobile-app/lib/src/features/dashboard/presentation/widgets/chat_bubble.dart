@@ -15,55 +15,43 @@ class ChatBubble extends StatelessWidget {
     return Padding(
       padding: REdgeInsets.only(left: 16, right: 16, bottom: 16),
       child: Row(
-        children: isUser
-            ? [
-                Expanded(
-                  child: Container(
-                    padding: REdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.outlinedButtonBorder),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10.r),
-                        topRight: Radius.circular(10.r),
-                        bottomLeft: Radius.circular(10.r),
-                      ),
-                    ),
-                    child: Text(
-                      data,
-                      style:
-                          context.textTheme.bodyMedium?.copyWith(fontSize: 15.sp),
-                    ),
-                  ),
+        mainAxisAlignment:
+            isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          if (isUser)
+            Container(
+              constraints: BoxConstraints(minWidth: 314.w),
+              padding: REdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              decoration: BoxDecoration(
+                color: AppColors.chatBubbleBgColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.r),
+                  topRight: Radius.circular(10.r),
+                  bottomLeft: Radius.circular(10.r),
                 ),
-                SizedBox(width: 8.w),
-                const CircleAvatar()
-              ]
-            : [
-                const CircleAvatar(
-                  backgroundColor: AppColors.white,
-                  backgroundImage: AssetImage(AssetStrings.logo),
-                ),
-                SizedBox(width: 8.w),
-                Expanded(
-                  child: Container(
-                    padding: REdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE1E3E2),
-                      border: Border.all(color: AppColors.outlinedButtonBorder),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10.r),
-                        topRight: Radius.circular(10.r),
-                        bottomRight: Radius.circular(10.r),
-                      ),
-                    ),
-                    child: Text(
-                      data,
-                      style:
-                          context.textTheme.bodyMedium?.copyWith(fontSize: 15.sp),
-                    ),
-                  ),
-                ),
-              ],
+              ),
+              child: Text(
+                data,
+                style: context.textTheme.bodyMedium?.copyWith(fontSize: 15.sp),
+              ),
+            )
+          else ...[
+            const CircleAvatar(
+              backgroundColor: AppColors.white,
+              maxRadius: 20,
+              backgroundImage: AssetImage(AssetStrings.logo),
+            ),
+            SizedBox(width: 8.w),
+            Container(
+              constraints: BoxConstraints(minWidth: 290.w),
+              padding: REdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: Text(
+                data,
+                style: context.textTheme.bodyMedium?.copyWith(fontSize: 15.sp),
+              ),
+            ),
+          ]
+        ],
       ),
     );
   }

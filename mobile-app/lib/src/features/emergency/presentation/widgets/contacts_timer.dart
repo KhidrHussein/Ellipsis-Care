@@ -6,7 +6,7 @@ import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:pulsator/pulsator.dart';
 
 import '../../../../../core/constants/colors.dart';
-import '../bloc/bloc.dart';
+import '../bloc/emergency_bloc.dart';
 
 class ContactsTimer extends StatelessWidget {
   const ContactsTimer({super.key});

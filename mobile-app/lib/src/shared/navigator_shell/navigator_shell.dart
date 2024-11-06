@@ -27,7 +27,7 @@ class NavigatorShell extends StatelessWidget {
     return Scaffold(
       body: child,
       backgroundColor: switch (routerState.matchedLocation) {
-        '/sos/emergency' => AppColors.emergencyBackgroundColor,
+        '/settings' => AppColors.settingsBgColor,
         _ => AppColors.white
       },
       bottomNavigationBar: const CustomNavigatorBar(),
@@ -195,7 +195,7 @@ class _CustomNavigatorBarPainter extends CustomPainter {
     path_1.close();
 
     Paint pathOneFill = Paint()
-      ..color = AppColors.white
+      ..color = Colors.transparent
       ..style = PaintingStyle.fill;
     canvas.drawPath(path_1, pathOneFill);
 

@@ -8,13 +8,19 @@ import 'extensions.dart';
 
 class UtilHelpers {
   UtilHelpers._();
-
   static void pushRoute(String routeName, [Map<String, String>? pathParams]) {
-    router.pushNamed(routeName, pathParameters: pathParams ?? {});
+    router.pushNamed(
+      routeName,
+      pathParameters: pathParams ?? {},
+    );
   }
 
   static void clearPreviousAndPushRoute(String routeName) {
     router.goNamed(routeName);
+  }
+
+  static void pushReplacementRoute(String routeName) {
+    router.pushReplacementNamed(routeName);
   }
 
   static void popRoute<T>([T? result]) {
