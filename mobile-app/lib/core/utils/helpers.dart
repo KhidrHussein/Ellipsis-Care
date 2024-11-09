@@ -61,8 +61,8 @@ class UtilHelpers {
     return null;
   }
 
-  static String? confirmPasswordValidator(
-      String? newPassword, String? oldPassword) {
+  static String? confirmPasswordValidator(String? newPassword,
+      {required String oldPassword}) {
     if (newPassword != oldPassword) {
       return 'The passwords are not the same.';
     } else if (newPassword!.isEmpty) {

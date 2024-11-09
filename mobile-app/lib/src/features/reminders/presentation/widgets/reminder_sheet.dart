@@ -53,32 +53,31 @@ class ReminderSheet extends StatelessWidget {
                       ),
                     ).alignLeft,
                     10.sizedBoxHeight,
-                    // TextButton(
-                    //   onPressed: () async {
-                    //     await injector<NotificationService>()
-                    //         .createReminderNotification();
-                    //     // final result = await showAdaptiveDialog<ReminderModel>(
-                    //     //   context: context,
-                    //     //   barrierDismissible: true,
-                    //     //   builder: (context) => const AddReminder(),
-                    //     // );
-                    //     // if (result != null) {
-                    //     //   reminderBloc.add(
-                    //     //     CreateReminder(
-                    //     //       name: result.name,
-                    //     //       dosage: result.dosage,
-                    //     //       type: result.type,
-                    //     //       interval: result.interval,
-                    //     //       schedule: result.schedule,
-                    //     //       instruction: result.instruction,
-                    //     //       startDate: result.startDate,
-                    //     //       endDate: result.endDate,
-                    //     //     ),
-                    //     //   );
-                    //     // }
-                    //   },
-                    //   child: Text("Add Reminder"),
-                    // ),
+                    TextButton(
+                      onPressed: () async {
+    
+                        final result = await showAdaptiveDialog<ReminderModel>(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (context) => const AddReminder(),
+                        );
+                        if (result != null) {
+                          reminderBloc.add(
+                            CreateReminder(
+                              name: result.name,
+                              dosage: result.dosage,
+                              type: result.type,
+                              interval: result.interval,
+                              schedule: result.schedule,
+                              instruction: result.instruction,
+                              startDate: result.startDate,
+                              endDate: result.endDate,
+                            ),
+                          );
+                        }
+                      },
+                      child: Text("Add Reminder"),
+                    ),
                   ],
                 ),
               ),

@@ -8,7 +8,7 @@ import '../../../../../core/utils/helpers.dart';
 import '../bloc/auth_bloc.dart';
 import '../widgets/divider.dart';
 import '../widgets/oauth_options.dart';
-import '../widgets/textfield.dart';
+import '../../../../shared/textfield.dart';
 
 class Signin extends StatefulWidget {
   const Signin({super.key});
@@ -56,7 +56,7 @@ class _SigninState extends State<Signin> {
                   style: context.textTheme.bodyLarge?.copyWith(fontSize: 15.sp),
                 ),
                 SizedBox(height: 48.h),
-                AuthenticationField(
+                AppTextField(
                   fieldname: "Email",
                   hint: "Input your email",
                   controller: _emailController,

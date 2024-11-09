@@ -1,17 +1,17 @@
-import '../../../../../core/utils/extensions.dart';
+import '../../core/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AuthenticationField extends StatelessWidget {
+class AppTextField extends StatelessWidget {
   final String fieldname;
-  final String hint;
+  final String? hint;
   final TextEditingController controller;
   final String? Function(String?)? validator;
 
-  const AuthenticationField({
+  const AppTextField({
     super.key,
     this.validator,
-    required this.hint,
+    this.hint,
     required this.fieldname,
     required this.controller,
   });
@@ -41,14 +41,14 @@ class AuthenticationField extends StatelessWidget {
 
 class PasswordField extends StatefulWidget {
   final String fieldname;
-  final String hint;
+  final String? hint;
   final TextEditingController controller;
   final String? Function(String?)? validator;
 
   const PasswordField({
     super.key,
     this.validator,
-    required this.hint,
+    this.hint,
     required this.fieldname,
     required this.controller,
   });

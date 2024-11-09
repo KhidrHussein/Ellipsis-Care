@@ -1,3 +1,4 @@
+import 'package:ellipsis_care/config/theme/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,21 +39,26 @@ class EllipsisCare extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      ensureScreenSize: true,
-      designSize: const Size(393, 852),
-      builder: (context, child) => BlocBuilder<ThemeCubit, ThemeData>(
-        bloc: ThemeCubit(),
-        builder: (context, state) {
-          return OKToast(
-            child: MaterialApp.router(
-              title: "Ellipsis Care",
-              debugShowCheckedModeBanner: false,
-              routerConfig: router,
-              theme: state,
-            ),
-          );
-        },
+    return BlocProvider(
+      create: (context) => ThemeCubit(),
+      child: ScreenUtilInit(
+        ensureScreenSize: true,
+        designSize: const Size(393, 852),
+        builder: (context, child) => BlocBuilder<ThemeCubit, ThemeMode>(
+          bloc: context.read<ThemeCubit>(),
+          builder: (context, state) {
+            return OKToast(
+              child: MaterialApp.router(
+                title: "Ellipsis Care",
+                routerConfig: router,
+                themeMode: state,
+                theme: AppTheme.lightTheme,
+                darkTheme: AppTheme.darkTheme,
+                debugShowCheckedModeBanner: false,
+              ),
+            );
+          },
+        ),
       ),
     );
   }

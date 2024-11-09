@@ -77,8 +77,8 @@ class CustomNavigatorBar extends StatelessWidget {
                           const SizedBox(width: 72),
                           16.horizontalSpace,
                           NavigatorBarItem(
-                            iconPath: AssetStrings.charts,
-                            selectedIcon: AssetStrings.charts == state,
+                            iconPath: AssetStrings.dashboard,
+                            selectedIcon: AssetStrings.dashboard == state,
                           ),
                           24.horizontalSpace,
                           NavigatorBarItem(

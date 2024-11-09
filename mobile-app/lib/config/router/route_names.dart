@@ -5,7 +5,7 @@ class RouteNames {
   static const String verifyEmail = "verify_email_page";
   static const String forgotPassword = "forgot_password_page";
 
-  static const String dashboard = "dashboard_page";
+  static const String home = "home_page";
   static const String recording = "recording_page";
   static const String promptResponses = "prompt_responses_page";
   static const String responseHistory = "response_history_page";
@@ -24,5 +24,5 @@ class RouteNames {
 
   static const String reminders = "reminders_page";
 
-  static const String charts = "charts_page";
+  static const String dashboard = "dashboard_page";
 }

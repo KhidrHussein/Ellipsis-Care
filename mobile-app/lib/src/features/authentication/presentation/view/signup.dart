@@ -9,7 +9,7 @@ import '../../../../../core/utils/helpers.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/widgets/divider.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/widgets/oauth_options.dart';
-import 'package:ellipsis_care/src/features/authentication/presentation/widgets/textfield.dart';
+import 'package:ellipsis_care/src/shared/textfield.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -92,7 +92,7 @@ class _SignupState extends State<Signup> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
-          AuthenticationField(
+          AppTextField(
             fieldname: "Email",
             hint: "Input your email",
             controller: _emailController,
@@ -140,14 +140,14 @@ class _SignupState extends State<Signup> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
-          AuthenticationField(
+          AppTextField(
             fieldname: "First name",
             hint: "Input your first name",
             controller: _firstnameController,
             validator: (input) => UtilHelpers.nameValidator(input?.trim()),
           ),
           SizedBox(height: 16.h),
-          AuthenticationField(
+          AppTextField(
             fieldname: "Last name",
             hint: "Input your last name",
             controller: _lastnameController,
@@ -165,8 +165,8 @@ class _SignupState extends State<Signup> {
             fieldname: "Confirm password",
             hint: "Re-enter your password",
             controller: _confirmPasswordController,
-            validator: (input) => UtilHelpers.confirmPasswordValidator(
-                input, _passwordController.text),
+            validator: (input) => UtilHelpers.confirmPasswordValidator(input,
+                oldPassword: _passwordController.text),
           ),
           SizedBox(height: 24.h),
           Row(

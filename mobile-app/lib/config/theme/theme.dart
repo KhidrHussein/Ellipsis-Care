@@ -5,7 +5,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
     fontFamily: 'Manrope',
+    brightness: Brightness.light,
+    scaffoldBackgroundColor: AppColors.white,
     colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+    switchTheme: const SwitchThemeData(
+      splashRadius: 16,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      thumbColor: WidgetStatePropertyAll(AppColors.black),
+      trackColor: WidgetStatePropertyAll(AppColors.white),
+      trackOutlineColor:
+          WidgetStatePropertyAll(AppColors.switchTrackOutlineColor),
+    ),
     radioTheme: RadioThemeData(
       splashRadius: 16,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -145,6 +155,8 @@ class AppTheme {
 
   static ThemeData darkTheme = ThemeData(
     fontFamily: 'Manrope',
+    brightness: Brightness.dark,
+    scaffoldBackgroundColor: AppColors.darkThemeMode,
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
         textStyle: WidgetStatePropertyAll(
@@ -199,46 +211,46 @@ class AppTheme {
     textTheme: TextTheme(
       headlineLarge: TextStyle(
         fontSize: 36.sp,
-        color: AppColors.black,
+        color: AppColors.white,
         fontWeight: FontWeight.w500,
       ),
       headlineMedium: TextStyle(
         fontSize: 32.sp,
-        color: AppColors.black,
+        color: AppColors.white,
         fontWeight: FontWeight.w500,
       ),
       headlineSmall: TextStyle(
         fontSize: 30.sp,
-        color: AppColors.black,
+        color: AppColors.white,
         fontWeight: FontWeight.w500,
       ),
       titleLarge: TextStyle(
         fontSize: 24.sp,
-        color: AppColors.black,
+        color: AppColors.white,
         fontWeight: FontWeight.w500,
       ),
       titleMedium: TextStyle(
         fontSize: 22.sp,
-        color: AppColors.black,
+        color: AppColors.white,
         fontWeight: FontWeight.w500,
       ),
       titleSmall: TextStyle(
         fontSize: 20.sp,
-        color: AppColors.black,
+        color: AppColors.white,
         fontWeight: FontWeight.w500,
       ),
       bodyLarge: TextStyle(
         fontSize: 18.sp,
-        color: AppColors.black,
+        color: AppColors.white,
         fontWeight: FontWeight.w500,
       ),
       bodyMedium: TextStyle(
         fontSize: 16.sp,
-        color: AppColors.black,
+        color: AppColors.white,
         fontWeight: FontWeight.w500,
       ),
       bodySmall: const TextStyle(
-        color: AppColors.black,
+        color: AppColors.white,
         fontWeight: FontWeight.w500,
       ),
     ),

@@ -7,18 +7,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ellipsis_care/core/constants/asset_strings.dart';
 import 'package:ellipsis_care/core/constants/colors.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/controller/cubit/dashboard_cubit.dart';
+import 'package:ellipsis_care/src/features/home/presentation/controller/cubit/dashboard_cubit.dart';
 import 'package:ellipsis_care/src/shared/appbar.dart';
 
 import '../../../../../core/utils/helpers.dart';
-import '../controller/bloc/dashboard_bloc.dart';
+import '../controller/bloc/home_bloc.dart';
 
 class RecordingPage extends StatelessWidget {
   const RecordingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final dashboardBloc = context.read<DashboardBloc>();
+    final homeBloc = context.read<HomeBloc>();
     final dashboardCubit = context.read<DashboardCubit>();
 
     return Scaffold(
@@ -61,8 +61,8 @@ class RecordingPage extends StatelessWidget {
                   },
                 ),
                 10.sizedBoxWidth,
-                BlocListener<DashboardBloc, DashboardState>(
-                  bloc: dashboardBloc,
+                BlocListener<HomeBloc, HomeState>(
+                  bloc: homeBloc,
                   listener: (context, state) {
                     switch (state) {
                       case EndRecordingState():
@@ -74,7 +74,7 @@ class RecordingPage extends StatelessWidget {
                     }
                   },
                   child: GestureDetector(
-                    onTap: () => dashboardBloc.add(EndRecordingEvent()),
+                    onTap: () => homeBloc.add(EndRecordingEvent()),
                     child: Container(
                       padding: REdgeInsets.all(20),
                       decoration: const ShapeDecoration(

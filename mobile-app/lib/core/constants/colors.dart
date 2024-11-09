@@ -5,6 +5,9 @@ class AppColors {
   static const Color white = Color(0xFFFFFFFF);
   static const Color red = Color(0xFFFF0000);
 
+  static const Color lightThemeMode = Color(0xFFFFFFFF);
+  static const Color darkThemeMode = Color(0xFF0D0D0D);
+
   static const Color primary = Color(0xFF0C1421);
   static const Color secondary = Color(0xFF313957);
   static const Color darkGrey = Color(0xFF333333);
@@ -36,9 +39,11 @@ class AppColors {
   static const Color settingsBgColor = Color(0xFFEDEEF3);
   static const Color userEmailTextColor = Color(0xFF605F62);
   static const Color emergencyContactDraggableSheetBgColor = Color(0xFFECE9E9);
-
+  static const Color settingsGroupBgColor = Color(0xFFEDEEF3);
   static const Color reminderTileCheckColor = Color(0xFFD9D9D9);
+  static const Color switchTrackOutlineColor = Color(0xFFD7D1D1);
   static const Color calendarArrowBgColor = Color(0xFFF1F1F1);
+  static const Color editPhotoButtonColor = Color(0xFF1A91B5);
 
   static const LinearGradient animatedOvalGradient = LinearGradient(
     begin: Alignment.topCenter,

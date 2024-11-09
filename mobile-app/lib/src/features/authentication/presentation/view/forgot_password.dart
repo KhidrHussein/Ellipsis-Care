@@ -3,7 +3,7 @@ import '../../../../../core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../widgets/textfield.dart';
+import '../../../../shared/textfield.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -44,7 +44,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 style: context.textTheme.bodyLarge?.copyWith(fontSize: 15.sp),
               ),
               SizedBox(height: 48.h),
-              AuthenticationField(
+              AppTextField(
                 fieldname: "Email Address",
                 hint: "Input your email",
                 controller: _emailController,

@@ -7,24 +7,25 @@ import 'package:ellipsis_care/src/features/authentication/presentation/view/forg
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signin.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signup.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/verify_email.dart';
-import 'package:ellipsis_care/src/features/charts/presentation/views/charts.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/controller/bloc/dashboard_bloc.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/controller/cubit/dashboard_cubit.dart';
 import 'package:ellipsis_care/src/features/dashboard/presentation/views/dashboard.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/views/prompt_responses.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/views/recording_page.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/views/response_history.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/bloc/emergency_bloc.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/views/emergency_call.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/views/sos.dart';
+import 'package:ellipsis_care/src/features/home/presentation/controller/bloc/home_bloc.dart';
+import 'package:ellipsis_care/src/features/home/presentation/controller/cubit/dashboard_cubit.dart';
+import 'package:ellipsis_care/src/features/home/presentation/views/home.dart';
+import 'package:ellipsis_care/src/features/home/presentation/views/prompt_responses.dart';
+import 'package:ellipsis_care/src/features/home/presentation/views/recording_page.dart';
+import 'package:ellipsis_care/src/features/home/presentation/views/response_history.dart';
 import 'package:ellipsis_care/src/features/onboarding/cubit/cubit.dart';
 import 'package:ellipsis_care/src/features/onboarding/onboarding.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/views/reminders.dart';
+import 'package:ellipsis_care/src/features/settings/presentation/views/settings.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/views/sub_view/change_password.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/views/sub_view/faq.dart';
+import 'package:ellipsis_care/src/features/settings/presentation/views/sub_view/legal.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/views/sub_view/privacy_policy.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/views/sub_view/profile.dart';
-import 'package:ellipsis_care/src/features/settings/presentation/views/settings.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/views/sub_view/terms_of_use.dart';
 import 'package:ellipsis_care/src/shared/navigator_shell/navigator_shell.dart';
 
@@ -119,12 +120,12 @@ final GoRouter router = GoRouter(
       },
       routes: [
         GoRoute(
-          path: '/dashboard',
-          name: RouteNames.dashboard,
-          pageBuilder: (context, state) => MaterialPage<Dashboard>(
+          path: '/home',
+          name: RouteNames.home,
+          pageBuilder: (context, state) => MaterialPage<Home>(
             child: BlocProvider(
-              create: (context) => DashboardBloc(),
-              child: const Dashboard(),
+              create: (context) => HomeBloc(),
+              child: const Home(),
             ),
           ),
           routes: [
@@ -133,7 +134,7 @@ final GoRouter router = GoRouter(
               name: RouteNames.promptResponses,
               pageBuilder: (context, state) => MaterialPage<PromptResponses>(
                 child: BlocProvider(
-                  create: (context) => DashboardBloc(),
+                  create: (context) => HomeBloc(),
                   child: const PromptResponses(),
                 ),
               ),
@@ -144,7 +145,7 @@ final GoRouter router = GoRouter(
               parentNavigatorKey: _mainRouterKey,
               pageBuilder: (context, state) => MaterialPage<ResponseHistory>(
                 child: BlocProvider(
-                  create: (context) => DashboardBloc(),
+                  create: (context) => HomeBloc(),
                   child: const ResponseHistory(),
                 ),
               ),
@@ -157,7 +158,7 @@ final GoRouter router = GoRouter(
                 child: MultiBlocProvider(
                   providers: [
                     BlocProvider(create: (context) => DashboardCubit()),
-                    BlocProvider(create: (context) => DashboardBloc()),
+                    BlocProvider(create: (context) => HomeBloc()),
                   ],
                   child: const RecordingPage(),
                 ),
@@ -199,10 +200,10 @@ final GoRouter router = GoRouter(
           ],
         ),
         GoRoute(
-          path: '/charts',
-          name: RouteNames.charts,
-          pageBuilder: (context, state) => const MaterialPage<Charts>(
-            child: Charts(),
+          path: '/dashboard',
+          name: RouteNames.dashboard,
+          pageBuilder: (context, state) => const MaterialPage<Dashboard>(
+            child: Dashboard(),
           ),
         ),
         GoRoute(
@@ -263,13 +264,14 @@ final GoRouter router = GoRouter(
                 child: TermsOfUse(),
               ),
             ),
-            // GoRoute(
-            //   path: '/charts',
-            //   name: RouteNames.charts,
-            //   pageBuilder: (context, state) => const MaterialPage<Charts>(
-            //     child: Charts(),
-            //   ),
-            // ),
+            GoRoute(
+              path: 'legal',
+              name: RouteNames.legal,
+              parentNavigatorKey: _mainRouterKey,
+              pageBuilder: (context, state) => const MaterialPage<Legal>(
+                child: Legal(),
+              ),
+            ),
           ],
         ),
       ],

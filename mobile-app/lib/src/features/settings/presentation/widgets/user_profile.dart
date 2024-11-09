@@ -1,6 +1,7 @@
 import 'package:ellipsis_care/config/router/route_names.dart';
 import 'package:ellipsis_care/core/constants/colors.dart';
 import 'package:ellipsis_care/core/utils/helpers.dart';
+import 'package:ellipsis_care/src/shared/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -26,7 +27,7 @@ class UserProfile extends StatelessWidget {
           20.sizedBoxHeight,
           Row(
             children: [
-              const CircleAvatar(minRadius: 40),
+              const UserAvatar(radius: 40),
               16.sizedBoxWidth,
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

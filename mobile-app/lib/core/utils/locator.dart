@@ -1,5 +1,5 @@
 import 'package:ellipsis_care/src/features/authentication/data/auth_repository.dart';
-import 'package:ellipsis_care/src/features/dashboard/data/dashboard_repository.dart';
+import 'package:ellipsis_care/src/features/home/data/dashboard_repository.dart';
 import 'package:ellipsis_care/src/features/reminders/data/reminders_repository.dart';
 
 import '../services/notification_service.dart';
