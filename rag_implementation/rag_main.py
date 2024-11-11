@@ -1,10 +1,10 @@
 from typing import Optional
 from pydantic import BaseModel, EmailStr
-from .functions import prompt_setup
-from .functions import context_document_retreival_similarity, get_conversation_summary
-from .functions import qa_response, reminder_message
-from .config.database import collection
-from .schemas.schema import serializer
+from functions import prompt_setup
+from functions import context_document_retreival_similarity, get_conversation_summary
+from functions import qa_response, reminder_message
+from config.database import collection
+from schemas.schema import serializer
 
 from bson import ObjectId
 
@@ -82,24 +82,27 @@ def rag_response(user_id: str, query: str, knowledge_base: str):
     import time
     start = time.time()
     current_user = get_user(user_id)
+    # print(query)
     # print(current_user)
     full_history = current_user["full_history"]
     buffer_history = current_user["buffer_history"]
     prompt_template = prompt_setup()
 
     new_question = query
+    # print(new_question)
     if len(buffer_history)>0:
         new_question = get_conversation_summary("\n".join(buffer_history), query)
 
     documents, sources = context_document_retreival_similarity(new_question)
     full_prompt = prompt_template.format(history="\n".join(buffer_history), question=new_question, context=documents)
     # print(full_prompt)
-    # print()
+    print("Calling qa_response")
     response = qa_response(full_prompt)
 
     full_history.append(f"Human: {query}")
     full_history.append(f"AI: {response}")
     buffer_history.append(f"Human: {query}")
+    print(query)
     buffer_history.append(f"AI: {response}")
 
     if len(buffer_history)>10:
@@ -122,3 +125,6 @@ def reminder_message_full(user_id: str, reminder):
     current_user = get_user(user_id)
     buffer_history = current_user["buffer_history"]
     return reminder_message(reminder, "\n".join(buffer_history))
+
+if __name__ == "__main__":
+    rag_response("66ddc63127c0b932f8c97acf", "I think I'm having malaria symptoms. What do you suggest I do?", "some_knowledge_base")
