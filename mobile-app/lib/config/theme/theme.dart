@@ -6,6 +6,8 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     fontFamily: 'Manrope',
     brightness: Brightness.light,
+    primaryColorLight: AppColors.white,
+    primaryColorDark: AppColors.scaffoldBgColor,
     scaffoldBackgroundColor: AppColors.white,
     colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
     switchTheme: const SwitchThemeData(
@@ -106,47 +108,78 @@ class AppTheme {
       ),
     ),
     textTheme: TextTheme(
-      headlineLarge: TextStyle(
+      displayLarge: TextStyle(
+        fontSize: 57.sp,
+        color: AppColors.black,
+        fontWeight: FontWeight.w500,
+      ),
+      displayMedium: TextStyle(
+        fontSize: 45.sp,
+        color: AppColors.black,
+        fontWeight: FontWeight.w500,
+      ),
+      displaySmall: TextStyle(
         fontSize: 36.sp,
         color: AppColors.black,
         fontWeight: FontWeight.w500,
       ),
-      headlineMedium: TextStyle(
+      headlineLarge: TextStyle(
         fontSize: 32.sp,
         color: AppColors.black,
         fontWeight: FontWeight.w500,
       ),
-      headlineSmall: TextStyle(
-        fontSize: 30.sp,
+      headlineMedium: TextStyle(
+        fontSize: 28.sp,
         color: AppColors.black,
         fontWeight: FontWeight.w500,
       ),
-      titleLarge: TextStyle(
+      headlineSmall: TextStyle(
         fontSize: 24.sp,
         color: AppColors.black,
         fontWeight: FontWeight.w500,
       ),
-      titleMedium: TextStyle(
+      titleLarge: TextStyle(
         fontSize: 22.sp,
         color: AppColors.black,
         fontWeight: FontWeight.w500,
       ),
-      titleSmall: TextStyle(
-        fontSize: 20.sp,
-        color: AppColors.black,
-        fontWeight: FontWeight.w500,
-      ),
-      bodyLarge: TextStyle(
-        fontSize: 18.sp,
-        color: AppColors.black,
-        fontWeight: FontWeight.w500,
-      ),
-      bodyMedium: TextStyle(
+      titleMedium: TextStyle(
         fontSize: 16.sp,
         color: AppColors.black,
         fontWeight: FontWeight.w500,
       ),
-      bodySmall: const TextStyle(
+      titleSmall: TextStyle(
+        fontSize: 14.sp,
+        color: AppColors.black,
+        fontWeight: FontWeight.w500,
+      ),
+      bodyLarge: TextStyle(
+        fontSize: 16.sp,
+        color: AppColors.black,
+        fontWeight: FontWeight.w500,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 14.sp,
+        color: AppColors.black,
+        fontWeight: FontWeight.w500,
+      ),
+      bodySmall: TextStyle(
+        fontSize: 12.sp,
+        color: AppColors.black,
+        fontWeight: FontWeight.w500,
+      ),
+      labelLarge: TextStyle(
+        fontSize: 14.sp,
+        color: AppColors.black,
+        fontWeight: FontWeight.w500,
+      ),
+      labelMedium: TextStyle(
+        fontSize: 12.sp,
+        color: AppColors.black,
+        fontWeight: FontWeight.w500,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 11.sp,
         color: AppColors.black,
         fontWeight: FontWeight.w500,
       ),

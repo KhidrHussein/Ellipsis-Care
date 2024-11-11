@@ -10,8 +10,14 @@ class RouteNames {
   static const String promptResponses = "prompt_responses_page";
   static const String responseHistory = "response_history_page";
 
+  static const String dashboard = "dashboard_page";
+  static const String chartDetails = "chart_details_page";
+  static const String addData = "add_data_page";
+
   static const String sos = "sos_page";
   static const String callEmergencyContacts = "call_emergency_contacts_page";
+
+  static const String reminders = "reminders_page";
 
   static const String settings = "settings_page";
   static const String complianceScore = "compliance_score_page";
@@ -21,8 +27,4 @@ class RouteNames {
   static const String privacyPolicy = "privacy_policy_page";
   static const String faq = "faq_page";
   static const String termsOfUse = "terms_of_use_page";
-
-  static const String reminders = "reminders_page";
-
-  static const String dashboard = "dashboard_page";
 }

@@ -18,7 +18,7 @@ class MicrophoneService {
 
     try {
       await _mic.start(
-        const RecordConfig(encoder: AudioEncoder.wav),
+        const RecordConfig(encoder: AudioEncoder.opus),
         path: "${tempDir.path}/${const Uuid().v4()}",
       );
     } catch (e) {

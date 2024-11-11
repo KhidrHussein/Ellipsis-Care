@@ -23,15 +23,12 @@ class AssetStrings {
       "assets/icons/home/actions/previous_message_ic.svg";
 
   static const String pauseIcon = "assets/icons/home/actions/pause_ic.svg";
-  static const String cancelIcon =
-      "assets/icons/home/actions/cancel_ic.svg";
+  static const String cancelIcon = "assets/icons/home/actions/cancel_ic.svg";
 
   static const String home = "assets/icons/home/nav_bar/ic_home.svg";
   static const String dashboard = "assets/icons/home/nav_bar/ic_dashboard.svg";
-  static const String reminders =
-      "assets/icons/home/nav_bar/ic_reminders.svg";
-  static const String emergency =
-      "assets/icons/home/nav_bar/ic_emergency.svg";
+  static const String reminders = "assets/icons/home/nav_bar/ic_reminders.svg";
+  static const String emergency = "assets/icons/home/nav_bar/ic_emergency.svg";
   static const String settings = "assets/icons/home/nav_bar/ic_settings.svg";
 
   static const String profileIcon = 'assets/icons/settings/ic_profile.svg';
@@ -41,10 +38,6 @@ class AssetStrings {
       'assets/icons/settings/ic_language.svg';
   static const String pushNotificationIcon =
       'assets/icons/settings/ic_push_notification.svg';
-  static const String medicationNotificationIcon =
-      'assets/icons/settings/ic_medication_notification.svg';
-  static const String foodNotificationIcon =
-      'assets/icons/settings/ic_food_notification.svg';
   static const String emergencyNotificationIcon =
       'assets/icons/settings/ic_emergency.svg';
   static const String faqIcon = 'assets/icons/settings/ic_faq.svg';
@@ -54,8 +47,19 @@ class AssetStrings {
   static const String navigateBackIcon =
       'assets/icons/settings/ic_navigate_back.svg';
 
-  static const String food = 'assets/icons/reminder/food.svg';
-  static const String drug = 'assets/icons/reminder/drugs.svg';
+  static const String morningIcon = 'assets/icons/dashboard/ic_morning.svg';
+  static const String afternoonIcon = 'assets/icons/dashboard/ic_afternoon.svg';
+  static const String nightIcon = 'assets/icons/dashboard/ic_night.svg';
+  static const String breakfastIcon = 'assets/icons/dashboard/ic_breakfast.svg';
+  static const String lunchIcon = 'assets/icons/dashboard/ic_lunch.svg';
+  static const String dinnerIcon = 'assets/icons/dashboard/ic_dinner.svg';
+  static const String snacksIcon = 'assets/icons/dashboard/ic_snacks.svg';
+  static const String medicationIcon =
+      'assets/icons/dashboard/ic_medication.svg';
 
-  static const String sosBroadcast = 'assets/icons/sos/broadcast.svg';
+  static const String editIcon = 'assets/icons/reminder/ic_edit.svg';
+  static const String drugIcon = 'assets/icons/reminder/ic_drug.svg';
+  static const String foodIcon = 'assets/icons/reminder/ic_food.svg';
+
+  static const String sosBroadcast = 'assets/icons/sos/ic_broadcast.svg';
 }

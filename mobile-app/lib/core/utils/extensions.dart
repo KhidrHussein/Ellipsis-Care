@@ -10,6 +10,8 @@ extension LogExtension on Object? {
 }
 
 extension BuildContextExtensions on BuildContext {
+  ThemeData get themeData => Theme.of(this);
+
   TextTheme get textTheme => Theme.of(this).textTheme;
 
   ButtonStyle? get filledButtonTheme => Theme.of(this).filledButtonTheme.style;

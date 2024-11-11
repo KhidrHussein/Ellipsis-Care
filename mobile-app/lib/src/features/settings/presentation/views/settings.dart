@@ -76,13 +76,13 @@ class Settings extends StatelessWidget {
                       ),
                       5.sizedBoxHeight,
                       SectionOption(
-                        leadingIcon: AssetStrings.medicationNotificationIcon,
+                        leadingIcon: AssetStrings.drugIcon,
                         optionTitle: "Medication",
                         hasSwitch: true,
                         onPressed: () {},
                       ),
                       SectionOption(
-                        leadingIcon: AssetStrings.foodNotificationIcon,
+                        leadingIcon: AssetStrings.foodIcon,
                         optionTitle: "Food",
                         hasSwitch: true,
                         onPressed: () {},

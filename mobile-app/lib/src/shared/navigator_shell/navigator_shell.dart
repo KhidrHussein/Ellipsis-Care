@@ -1,3 +1,4 @@
+import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,8 +28,9 @@ class NavigatorShell extends StatelessWidget {
     return Scaffold(
       body: child,
       backgroundColor: switch (routerState.matchedLocation) {
-        '/settings' => AppColors.settingsBgColor,
-        _ => AppColors.white
+        '/settings' => context.themeData.primaryColorDark,
+        '/dashboard' => context.themeData.primaryColorDark,
+        _ => context.themeData.primaryColorLight
       },
       bottomNavigationBar: const CustomNavigatorBar(),
     );
@@ -44,61 +46,55 @@ class CustomNavigatorBar extends StatelessWidget {
       builder: (context, state) {
         return SafeArea(
           top: false,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SizedBox(
-                height: constraints.maxHeight * .1,
-                width: constraints.maxWidth,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Positioned(
-                      top: (.1.sh - 72.h),
-                      left: (1.sw - .93.sw),
-                      child: CustomPaint(
-                        size: Size((constraints.maxWidth - 24), 63.h),
-                        painter: _CustomNavigatorBarPainter(),
-                      ),
-                    ),
-                    Align(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          NavigatorBarItem(
-                            iconPath: AssetStrings.home,
-                            selectedIcon: AssetStrings.home == state,
-                          ),
-                          24.horizontalSpace,
-                          NavigatorBarItem(
-                            iconPath: AssetStrings.reminders,
-                            selectedIcon: AssetStrings.reminders == state,
-                          ),
-                          16.horizontalSpace,
-                          const SizedBox(width: 72),
-                          16.horizontalSpace,
-                          NavigatorBarItem(
-                            iconPath: AssetStrings.dashboard,
-                            selectedIcon: AssetStrings.dashboard == state,
-                          ),
-                          24.horizontalSpace,
-                          NavigatorBarItem(
-                            iconPath: AssetStrings.settings,
-                            selectedIcon: AssetStrings.settings == state,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 18.h,
-                      child: NavigatorBarItem(
-                        iconPath: AssetStrings.emergency,
-                        selectedIcon: AssetStrings.emergency == state,
-                      ),
-                    ),
-                  ],
+          child: SizedBox(
+            height: .1.sh,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned(
+                  top: (.1.sh - 72.h),
+                  left: (1.sw - .96.sw),
+                  child: CustomPaint(
+                    painter: _CustomNavigatorBarPainter(),
+                  ),
                 ),
-              );
-            },
+                Align(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      NavigatorBarItem(
+                        iconPath: AssetStrings.home,
+                        selectedIcon: AssetStrings.home == state,
+                      ),
+                      24.horizontalSpace,
+                      NavigatorBarItem(
+                        iconPath: AssetStrings.reminders,
+                        selectedIcon: AssetStrings.reminders == state,
+                      ),
+                      16.horizontalSpace,
+                      72.sizedBoxWidth,
+                      16.horizontalSpace,
+                      NavigatorBarItem(
+                        iconPath: AssetStrings.dashboard,
+                        selectedIcon: AssetStrings.dashboard == state,
+                      ),
+                      24.horizontalSpace,
+                      NavigatorBarItem(
+                        iconPath: AssetStrings.settings,
+                        selectedIcon: AssetStrings.settings == state,
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  bottom: 18.h,
+                  child: NavigatorBarItem(
+                    iconPath: AssetStrings.emergency,
+                    selectedIcon: AssetStrings.emergency == state,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

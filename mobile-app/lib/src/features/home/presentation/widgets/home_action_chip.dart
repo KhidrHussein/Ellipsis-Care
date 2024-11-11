@@ -5,12 +5,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ellipsis_care/core/constants/colors.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 
-class DashboardActionChip extends StatelessWidget {
+class HomeActionChip extends StatelessWidget {
   final String icon;
   final String title;
   final VoidCallback? onTap;
 
-  const DashboardActionChip({
+  const HomeActionChip({
     super.key,
     this.onTap,
     required this.icon,

@@ -87,7 +87,7 @@ class _SigninState extends State<Signin> {
                   listener: (context, state) {
                     switch (state) {
                       case AuthenticationPassed():
-                        UtilHelpers.pushRoute(RouteNames.dashboard);
+                        UtilHelpers.pushRoute(RouteNames.home);
                         break;
                       case AuthenticationFailed(error: var error):
                         UtilHelpers.showAlert(
@@ -110,7 +110,7 @@ class _SigninState extends State<Signin> {
                             //   );
                             // }
 
-                            UtilHelpers.pushRoute(RouteNames.dashboard);
+                            UtilHelpers.pushRoute(RouteNames.home);
                           }
                       },
                       child: const Text("Continue"),

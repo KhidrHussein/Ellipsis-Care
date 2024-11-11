@@ -18,7 +18,7 @@ class DashboardRepository {
     final data = FormData.fromMap({
       "audio_file": await MultipartFile.fromFile(
         audio.path,
-        contentType: DioMediaType("audio", "wav"),
+        contentType: DioMediaType("audio", "opus"),
       ),
     });
 

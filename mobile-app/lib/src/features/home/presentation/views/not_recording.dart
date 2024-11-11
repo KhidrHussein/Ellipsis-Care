@@ -34,7 +34,7 @@ class NotRecording extends StatelessWidget {
           padding: REdgeInsets.symmetric(horizontal: 16, vertical: 15),
           child: Row(
             children: _actions.entries.map((asset) {
-              return DashboardActionChip(
+              return HomeActionChip(
                 icon: asset.key,
                 title: asset.value,
                 onTap: switch (asset.key) {

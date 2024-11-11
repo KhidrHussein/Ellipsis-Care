@@ -1,3 +1,4 @@
+import 'package:ellipsis_care/src/features/dashboard/presentation/controller/cubit/medications_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,8 @@ import 'package:ellipsis_care/src/features/authentication/presentation/view/forg
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signin.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signup.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/verify_email.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/views/add_data.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/views/chart_details.dart';
 import 'package:ellipsis_care/src/features/dashboard/presentation/views/dashboard.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/bloc/emergency_bloc.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/views/emergency_call.dart';
@@ -202,9 +205,32 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: '/dashboard',
           name: RouteNames.dashboard,
-          pageBuilder: (context, state) => const MaterialPage<Dashboard>(
-            child: Dashboard(),
+          pageBuilder: (context, state) => MaterialPage<Dashboard>(
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (context) => MedicationProgressCubit())
+              ],
+              child: const Dashboard(),
+            ),
           ),
+          routes: [
+            GoRoute(
+              path: 'chart-details',
+              name: RouteNames.chartDetails,
+              pageBuilder: (context, state) => const MaterialPage<ChartDetails>(
+                child: ChartDetails(),
+              ),
+              routes: [
+                GoRoute(
+                  path: 'add-data',
+                  name: RouteNames.addData,
+                  pageBuilder: (context, state) => const MaterialPage<AddData>(
+                    child: AddData(),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
         GoRoute(
           path: '/settings',

@@ -32,26 +32,26 @@ enum ReminderInstruction {
 enum ReminderType {
   food(
     name: "Food",
-    icon: AssetStrings.food,
-    borderColor: AppColors.foodReminderBorderColor,
-    backgroundColor: AppColors.foodReminderColor,
+    icon: AssetStrings.foodIcon,
+    color: AppColors.foodIconColor,
+    backgroundColor: AppColors.foodIconBgColor,
   ),
   drug(
     name: "Drug",
-    icon: AssetStrings.drug,
-    backgroundColor: AppColors.drugReminderColor,
-    borderColor: AppColors.drugReminderBorderColor,
+    icon: AssetStrings.drugIcon,
+    color: AppColors.drugIconColor,
+    backgroundColor: AppColors.drugIconBgColor,
   );
 
   const ReminderType({
     required this.name,
     required this.icon,
-    required this.borderColor,
+    required this.color,
     required this.backgroundColor,
   });
 
   final String name;
   final String icon;
   final Color backgroundColor;
-  final Color borderColor;
+  final Color color;
 }

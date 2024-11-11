@@ -1,4 +1,5 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:ellipsis_care/core/constants/asset_strings.dart';
 import 'package:ellipsis_care/core/constants/colors.dart';
 import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:ellipsis_care/src/features/reminders/models/reminder.dart';
@@ -71,7 +72,7 @@ class _ReminderTileState extends State<ReminderTile> {
                     strokeWidth: 2,
                     dashPattern: const [12, 8],
                     borderType: BorderType.RRect,
-                    color: widget.reminder.type.borderColor,
+                    color: widget.reminder.type.color,
                     radius: Radius.circular(10.r),
                     padding: [12, 8].symmetricPadding,
                     child: Column(
@@ -115,7 +116,9 @@ class _ReminderTileState extends State<ReminderTile> {
                             AnimatedOpacity(
                               opacity: value ? 1 : 0,
                               duration: Durations.short1,
-                              child: const Icon(Icons.edit).alignCenter,
+                              child:
+                                  SvgPicture.asset(AssetStrings.editIcon)
+                                      .alignCenter,
                             )
                           ],
                         ),
@@ -154,7 +157,8 @@ class _ReminderTileState extends State<ReminderTile> {
                                   16.sizedBoxWidth,
                                   Expanded(
                                     child: TextButton(
-                                      onPressed: () => _showOptions.value = false,
+                                      onPressed: () =>
+                                          _showOptions.value = false,
                                       style: TextButton.styleFrom(
                                         fixedSize: Size(102.w, 40.h),
                                         padding: REdgeInsets.symmetric(

@@ -103,6 +103,7 @@ flutter:
     - assets/icons/authentication/
     - assets/icons/home/nav_bar/
     - assets/icons/home/actions/
+    - assets/icons/dashboard/
     - assets/icons/reminder/
     - assets/icons/settings/
     - assets/icons/sos/
