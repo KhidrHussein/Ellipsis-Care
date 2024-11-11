@@ -80,19 +80,19 @@ def context_document_retreival_similarity(question_summary):
     check_sources = set()
     sources = []
     for result in results:
-        cur_source = dict()
-        cur_source["page_number"] = []
+        # cur_source = dict()
+        # cur_source["page_number"] = []
         context += result.page_content + "\n"
-        new_source = result.metadata['source'].split("/")[-1]
-        if new_source not in check_sources:
-            cur_source["source"] = new_source
-            cur_source["page_number"].append(result.metadata['page'])
-            check_sources.add(new_source)
-            sources.append(cur_source)
-        else:
-            for source in sources:
-                if source["source"] == new_source and result.metadata['page'] not in source["page_number"]:
-                    source["page_number"].append(result.metadata['page'])
+        # new_source = result.metadata['source'].split("/")[-1]
+        # if new_source not in check_sources:
+        #     cur_source["source"] = new_source
+        #     cur_source["page_number"].append(result.metadata['page'])
+        #     check_sources.add(new_source)
+        #     sources.append(cur_source)
+        # else:
+        #     for source in sources:
+        #         if source["source"] == new_source and result.metadata['page'] not in source["page_number"]:
+        #             source["page_number"].append(result.metadata['page'])
 
     return context, sources
 
