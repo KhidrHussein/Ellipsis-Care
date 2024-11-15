@@ -77,8 +77,8 @@ langchain.verbose = False
 def context_document_retreival_similarity(question_summary):
     results = vector_store_ellipsis.similarity_search(question_summary, k=3)
     context = ""
-    check_sources = set()
     sources = []
+    print("Processing retreived documents...")
     for result in results:
         # cur_source = dict()
         # cur_source["page_number"] = []
@@ -142,6 +142,7 @@ def get_conversation_summary(history, question):
 def qa_response(prompt):
 
     # Query the Azure OpenAI LLM with the formatted prompt
+    print("Querying Azure OpenAI LLM...")
     response = openai.ChatCompletion.create(
         engine="Voicetask",  # Replace with your Azure OpenAI deployment name
         # prompt=formatted_prompt,
@@ -176,6 +177,7 @@ def reminder_notification_prompt(reminder, history):
         input_variables=["history", "medication"],
         template=template,
     )
+    print("Reminder Notification Prompt processing...")
     medication = "\n".join([f"{k.capitalize()}: {v}" for k, v in reminder.items()])
     return prompt.format(history=history, medication=medication)
 
@@ -185,6 +187,7 @@ def reminder_message(reminder, history):
     formatted_prompt = reminder_notification_prompt(reminder, history)
 
     # Query the Azure OpenAI LLM with the formatted prompt
+    print("Reminder Message processing...")
     response = openai.ChatCompletion.create(
         engine="Voicetask",  # Replace with your Azure OpenAI deployment name
         # prompt=formatted_prompt,
@@ -195,6 +198,5 @@ def reminder_message(reminder, history):
         # max_tokens=50,
         temperature=0.5
     )
-    
     # Extract and return the summary from the response
     return response.choices[0].message['content']
