@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:ellipsis_care/core/api/response/response.dart';
+import 'package:ellipsis_care/src/features/home/models/transcribed_response.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:ellipsis_care/core/services/mic_service.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/home/data/dashboard_repository.dart';
+import 'package:ellipsis_care/src/features/home/data/home_repository.dart';
 
 import '../../../../../../core/api/exceptions/exceptions.dart';
 import '../../../../../../core/services/voice_command_service.dart';
@@ -18,7 +20,7 @@ class HomeBloc extends Bloc<HomeEvents, HomeState> {
   HomeBloc()
       : _microphoneService = injector<MicrophoneService>(),
         _voiceCommandService = injector<VoiceCommandService>(),
-        _dashboardRepository = injector<DashboardRepository>(),
+        _dashboardRepository = injector<HomeRepository>(),
         super(DefaultState()) {
     on<ActivateVoiceCommandEvent>(_activateVoiceCommand);
     on<StartRecordingEvent>(_startRecording);
@@ -27,7 +29,7 @@ class HomeBloc extends Bloc<HomeEvents, HomeState> {
 
   final VoiceCommandService _voiceCommandService;
   final MicrophoneService _microphoneService;
-  final DashboardRepository _dashboardRepository;
+  final HomeRepository _dashboardRepository;
 
   void _activateVoiceCommand(
       ActivateVoiceCommandEvent event, Emitter<HomeState> handler) async {
@@ -53,10 +55,20 @@ class HomeBloc extends Bloc<HomeEvents, HomeState> {
       final apiResult = await _dashboardRepository.uploadAudio(audioFile);
 
       if (apiResult.response != null) {
-        handler.call(const EndRecordingState());
+        final state =
+            EndRecordingState(transcribedResult: [apiResult.response!]);
+
+        state.printLog();
+
+        handler.call(
+          EndRecordingState(transcribedResult: [...?state.transcribedResult]),
+        );
       } else {
         final String errorMessage =
             AppExceptions.getErrorMessage(apiResult.exception!);
+
+        "$runtimeType app exception message: $errorMessage".printLog();
+
         handler.call(const EndRecordingState());
       }
     } else {

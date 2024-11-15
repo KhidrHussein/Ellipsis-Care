@@ -19,6 +19,7 @@ class ReminderTile extends StatefulWidget {
 
 class _ReminderTileState extends State<ReminderTile> {
   final ValueNotifier<bool> _showOptions = ValueNotifier(false);
+  final ValueNotifier<bool> _isCurrentlySelected = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
@@ -67,30 +68,34 @@ class _ReminderTileState extends State<ReminderTile> {
               child: AnimatedSize(
                 duration: Durations.short4,
                 child: GestureDetector(
-                  onTap: () => _showOptions.value = true,
+                  onTap: () => _showOptions.value = !_showOptions.value,
                   child: DottedBorder(
                     strokeWidth: 2,
-                    dashPattern: const [12, 8],
-                    borderType: BorderType.RRect,
-                    color: widget.reminder.type.color,
-                    radius: Radius.circular(10.r),
                     padding: [12, 8].symmetricPadding,
+                    borderType: BorderType.RRect,
+                    radius: Radius.circular(12.r),
+                    dashPattern: _showOptions.value ? [8, 0] : const [8, 4],
+                    color: widget.reminder.type.color,
                     child: Column(
                       children: [
                         Row(
                           children: [
                             Container(
-                              padding: REdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 color: widget.reminder.type.backgroundColor,
                                 borderRadius: BorderRadius.circular(4.r),
                               ),
                               child: SvgPicture.asset(
                                 widget.reminder.type.icon,
+                                width: 36.w,
                                 fit: BoxFit.cover,
+                                colorFilter: ColorFilter.mode(
+                                  widget.reminder.type.color,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                             ),
-                            12.sizedBoxWidth,
+                            12.horizontalSpace,
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,16 +121,15 @@ class _ReminderTileState extends State<ReminderTile> {
                             AnimatedOpacity(
                               opacity: value ? 1 : 0,
                               duration: Durations.short1,
-                              child:
-                                  SvgPicture.asset(AssetStrings.editIcon)
-                                      .alignCenter,
+                              child: SvgPicture.asset(AssetStrings.editIcon)
+                                  .alignCenter,
                             )
                           ],
                         ),
                         if (value)
                           Column(
                             children: [
-                              12.sizedBoxHeight,
+                              12.verticalSpace,
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -154,7 +158,7 @@ class _ReminderTileState extends State<ReminderTile> {
                                       ),
                                     ),
                                   ),
-                                  16.sizedBoxWidth,
+                                  16.horizontalSpace,
                                   Expanded(
                                     child: TextButton(
                                       onPressed: () =>

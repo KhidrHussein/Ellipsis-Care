@@ -71,4 +71,6 @@ class AppColors {
     end: Alignment.bottomCenter,
     colors: [Color(0xFFA056F7), Color(0xFF20C1E4)],
   );
+
+  static const Color addButtonShadowColor = Color(0xFF2EB5FA);
 }

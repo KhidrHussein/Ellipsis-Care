@@ -32,7 +32,8 @@ import 'package:ellipsis_care/src/features/settings/presentation/views/sub_view/
 import 'package:ellipsis_care/src/features/settings/presentation/views/sub_view/terms_of_use.dart';
 import 'package:ellipsis_care/src/shared/navigator_shell/navigator_shell.dart';
 
-import '../../src/features/reminders/presentation/bloc/reminder_bloc.dart';
+import '../../src/features/reminders/presentation/controller/bloc/reminder_bloc.dart';
+import '../../src/features/reminders/presentation/controller/cubit/calender_cubit.dart';
 import '../../src/features/settings/presentation/views/sub_view/compliance_score.dart';
 import 'route_names.dart';
 
@@ -173,8 +174,11 @@ final GoRouter router = GoRouter(
           path: '/reminders',
           name: RouteNames.reminders,
           pageBuilder: (context, state) => MaterialPage<Reminders>(
-            child: BlocProvider(
-              create: (context) => ReminderBloc(),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (context) => ReminderBloc()),
+                BlocProvider(create: (context) => CalendarCubit()),
+              ],
               child: const Reminders(),
             ),
           ),

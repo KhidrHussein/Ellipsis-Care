@@ -1,9 +1,27 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MedicationProgressCubit extends Cubit<int> {
-  MedicationProgressCubit() : super(0);
+class MedicationProgressCubit extends Cubit<Map<String, bool>> {
+  MedicationProgressCubit()
+      : super({
+          "Morning": false,
+          "Afternoon": false,
+          "Night": false,
+        });
 
-  void incrementProgress() => emit(state + 1);
+  void hasPassedRoutine(String routine, bool hasPassed) {
+    state[routine] = hasPassed;
+    emit({...state});
+  }
 
-  void decrementProgress() => emit(state - 1);
+  int progress() {
+    int amountCompleted = 0;
+
+    for (bool value in state.values) {
+      if (value) {
+        amountCompleted += 1;
+      }
+    }
+
+    return amountCompleted;
+  }
 }

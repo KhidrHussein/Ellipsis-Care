@@ -1,19 +1,20 @@
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import 'package:ellipsis_care/src/features/reminders/presentation/controller/cubit/calender_cubit.dart';
+
 import '../../../../../core/constants/colors.dart';
-import '../bloc/reminder_bloc.dart';
+import '../controller/bloc/reminder_bloc.dart';
 
 class ReminderCalendar extends StatelessWidget {
   const ReminderCalendar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final reminderBloc = context.read<ReminderBloc>();
+    final calendarCubit = context.read<CalendarCubit>();
+    final calendarCubitState = context.watch<CalendarCubit>();
     final reminderBlocState = context.watch<ReminderBloc>();
 
     return Container(
@@ -27,8 +28,8 @@ class ReminderCalendar extends StatelessWidget {
         bloc: reminderBlocState,
         builder: (context, state) {
           return TableCalendar(
-            currentDay: reminderBlocState.state.selectedDate,
-            focusedDay: reminderBlocState.state.selectedDate,
+            currentDay: calendarCubitState.state,
+            focusedDay: calendarCubitState.state,
             firstDay: DateTime(2020),
             lastDay: DateTime(2030),
             daysOfWeekHeight: 42.h,
@@ -86,31 +87,22 @@ class ReminderCalendar extends StatelessWidget {
               ),
               tablePadding: REdgeInsets.only(left: 16, right: 16, bottom: 16),
               markerSizeScale: .15,
+              markersAnchor: 1.4,
               markersMaxCount: 1,
-              // selectedDecoration: const BoxDecoration(
-              //     color: AppColors.black, shape: BoxShape.circle),
+              todayDecoration: const BoxDecoration(
+                  color: AppColors.black, shape: BoxShape.circle),
+              selectedDecoration: const BoxDecoration(
+                  color: AppColors.black, shape: BoxShape.circle),
             ),
-            // eventLoader: (date) {
-            //   if (reminderBloc.state.selectedDate != date) {
-            //     date.printLog();
-            //     return reminderBlocState.state.reminders;
-            //   } else {
-            //     return [];
-            //   }
-            // },
-            // onHeaderTapped: (focusedDay) {
-            //   focusedDay.printLog();
-            // },
-
-            selectedDayPredicate: (day) {
-              return day == reminderBlocState.state.selectedDate;
+            eventLoader: (date) {
+              return !isSameDay(date, calendarCubitState.state)
+                  ? []
+                  : reminderBlocState.state.events[calendarCubitState.state] ??
+                      [];
             },
             onDaySelected: (selectedDay, focusedDay) {
-              reminderBloc.add(
-                SelectDate(newDate: selectedDay),
-              );
+              calendarCubit.updateDate(selectedDay);
             },
-            onPageChanged: (focusedDay) {},
           );
         },
       ),

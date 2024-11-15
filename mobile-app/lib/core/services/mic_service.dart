@@ -18,8 +18,8 @@ class MicrophoneService {
 
     try {
       await _mic.start(
-        const RecordConfig(encoder: AudioEncoder.opus),
-        path: "${tempDir.path}/${const Uuid().v4()}",
+        const RecordConfig(encoder: AudioEncoder.wav),
+        path: "${tempDir.path}/${const Uuid().v4()}.wav",
       );
     } catch (e) {
       "$runtimeType Error: $e".printLog();

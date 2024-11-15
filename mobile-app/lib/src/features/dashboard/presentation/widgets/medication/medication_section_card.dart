@@ -1,5 +1,3 @@
-import 'package:ellipsis_care/config/router/router.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/controller/cubit/medications_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:ellipsis_care/core/constants/asset_strings.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/controller/cubit/medications_cubit.dart';
 import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/medication/routine.dart';
 
 import '../../../../../../core/constants/colors.dart';
@@ -26,6 +25,7 @@ class MedicationSectionCard extends StatefulWidget {
 }
 
 class _MedicationSectionCardState extends State<MedicationSectionCard> {
+  final ValueNotifier<bool> _showRoutines = ValueNotifier(false);
   final Tween<double> _indicatorValue = Tween<double>(begin: 0.0, end: 1.0);
 
   @override
@@ -33,112 +33,127 @@ class _MedicationSectionCardState extends State<MedicationSectionCard> {
     final medicationsProgressCubit = context.watch<MedicationProgressCubit>();
 
     return GestureDetector(
+      onTap: () => _showRoutines.value = !_showRoutines.value,
       child: Container(
         padding: REdgeInsets.all(6),
         decoration: BoxDecoration(
-          border: Border.all(
-              color: AppColors.medicationCardBorderColor, width: 1.5.w),
           borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(
+            width: 1.5.w,
+            color: AppColors.medicationCardBorderColor,
+          ),
         ),
-        child: Column(
-          children: [
-            Row(
+        child: ValueListenableBuilder(
+          valueListenable: _showRoutines,
+          builder: (context, value, child) {
+            return Column(
               children: [
-                Container(
-                  width: 82.w,
-                  height: 85.h,
-                  padding: REdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: AppColors.medicationIconBgColor,
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: SvgPicture.asset(AssetStrings.medicationIcon),
-                ),
-                12.horizontalSpace,
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                child!,
+                if (_showRoutines.value) ...<Widget>[
+                  12.verticalSpace,
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            widget.name,
-                            style: context.textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w400,
+                      .21.sw.horizontalSpace,
+                      const Expanded(
+                        child: Column(
+                          children: [
+                            Routine(
+                              icon: AssetStrings.morningIcon,
+                              name: "Morning",
+                              timeAlloted: "5",
                             ),
-                          ),
-                          Spacer(),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Icon(Icons.keyboard_arrow_down),
-                          )
-                        ],
-                      ),
-                      Text(
-                        widget.dosage,
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.medicationCardSubTextColor,
-                        ),
-                      ),
-                      8.verticalSpace,
-                      TweenAnimationBuilder(
-                        tween: _indicatorValue,
-                        duration: Durations.short4,
-                        builder: (context, value, _) {
-                          return LinearProgressIndicator(
-                            value: (medicationsProgressCubit.state / 3) * value,
-                            minHeight: 7.h,
-                            borderRadius: BorderRadius.circular(8.r),
-                            color: AppColors.medicationProgressIndicatorColor,
-                            backgroundColor:
-                                AppColors.medicationProgressBgColor,
-                          );
-                        },
-                      ),
-                      4.verticalSpace,
-                      Text(
-                        "status",
-                        style: context.textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.medicationCardSubTextColor,
+                            Routine(
+                              icon: AssetStrings.afternoonIcon,
+                              name: "Afternoon",
+                              timeAlloted: "5",
+                            ),
+                            Routine(
+                              icon: AssetStrings.nightIcon,
+                              name: "Night",
+                              timeAlloted: "5",
+                            )
+                          ],
                         ),
                       ),
                     ],
                   ),
-                )
+                ]
               ],
-            ),
-            ...<Widget>[
-              12.verticalSpace,
-              Row(
-                children: [
-                  .21.sw.horizontalSpace,
-                  Expanded(
-                    child: Column(
+            );
+          },
+          child: Row(
+            children: [
+              Container(
+                width: 82.w,
+                height: 85.h,
+                padding: REdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: AppColors.medicationIconBgColor,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: SvgPicture.asset(AssetStrings.medicationIcon),
+              ),
+              12.horizontalSpace,
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Routine(
-                          icon: AssetStrings.morningIcon,
-                          name: "Morning",
-                          timeAlloted: "5",
+                        Text(
+                          widget.name,
+                          style: context.textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                        Routine(
-                          icon: AssetStrings.afternoonIcon,
-                          name: "Afternoon",
-                          timeAlloted: "5",
+                        const Spacer(),
+                        ValueListenableBuilder(
+                          valueListenable: _showRoutines,
+                          builder: (context, value, child) {
+                            return Icon(
+                              !value
+                                  ? Icons.keyboard_arrow_down
+                                  : Icons.keyboard_arrow_up,
+                            );
+                          },
                         ),
-                        Routine(
-                          icon: AssetStrings.nightIcon,
-                          name: "Night",
-                          timeAlloted: "5",
-                        )
                       ],
                     ),
-                  ),
-                ],
-              ),
-            ]
-          ],
+                    Text(
+                      widget.dosage,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.medicationCardSubTextColor,
+                      ),
+                    ),
+                    8.verticalSpace,
+                    TweenAnimationBuilder(
+                      tween: _indicatorValue,
+                      duration: Durations.short4,
+                      builder: (context, value, _) {
+                        return LinearProgressIndicator(
+                          value:
+                              (medicationsProgressCubit.progress() / 3) * value,
+                          minHeight: 7.h,
+                          borderRadius: BorderRadius.circular(8.r),
+                          color: AppColors.medicationProgressIndicatorColor,
+                          backgroundColor: AppColors.medicationProgressBgColor,
+                        );
+                      },
+                    ),
+                    4.verticalSpace,
+                    Text(
+                      "status",
+                      style: context.textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.medicationCardSubTextColor,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

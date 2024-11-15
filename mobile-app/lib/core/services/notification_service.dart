@@ -42,7 +42,7 @@ class NotificationService {
     }
   }
 
-  Future<void> createReminderNotification() async {
+  Future<void> createReminderNotification(String name, String? body) async {
     final int id = Random().nextInt(50);
 
     try {
@@ -50,7 +50,9 @@ class NotificationService {
         content: NotificationContent(
           id: id,
           channelKey: "ellipsis_care_reminder",
-          title: "Reminders active",
+          title: name,
+          body: body,
+          // timeoutAfter: 
         ),
       );
     } catch (e) {

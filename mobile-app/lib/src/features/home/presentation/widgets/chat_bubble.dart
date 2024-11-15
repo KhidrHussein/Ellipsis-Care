@@ -6,9 +6,16 @@ import '../../../../../core/constants/colors.dart';
 import '../../../../../core/utils/extensions.dart';
 
 class ChatBubble extends StatelessWidget {
-  final String data;
+  final String aiResponse;
+  final String transcription;
   final bool isUser;
-  const ChatBubble({super.key, required this.data, this.isUser = true});
+
+  const ChatBubble({
+    super.key,
+    required this.aiResponse,
+    required this.transcription,
+    this.isUser = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +38,7 @@ class ChatBubble extends StatelessWidget {
                 ),
               ),
               child: Text(
-                data,
+                transcription,
                 style: context.textTheme.bodyMedium?.copyWith(fontSize: 15.sp),
               ),
             )
@@ -46,7 +53,7 @@ class ChatBubble extends StatelessWidget {
               constraints: BoxConstraints(minWidth: 290.w),
               padding: REdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: Text(
-                data,
+                aiResponse,
                 style: context.textTheme.bodyMedium?.copyWith(fontSize: 15.sp),
               ),
             ),

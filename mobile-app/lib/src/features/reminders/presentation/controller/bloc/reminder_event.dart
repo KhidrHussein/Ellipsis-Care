@@ -2,16 +2,10 @@ part of 'reminder_bloc.dart';
 
 sealed class ReminderEvent {}
 
-class EditReminder implements ReminderEvent {}
+class EditReminderEvent implements ReminderEvent {}
 
-class SelectDate implements ReminderEvent {
-  SelectDate({required this.newDate});
-
-  final DateTime newDate;
-}
-
-class CreateReminder implements ReminderEvent {
-  CreateReminder({
+class CreateReminderEvent implements ReminderEvent {
+  CreateReminderEvent({
     required this.name,
     required this.dosage,
     required this.type,
@@ -20,6 +14,7 @@ class CreateReminder implements ReminderEvent {
     required this.instruction,
     required this.startDate,
     required this.endDate,
+    required this.eventDate,
   });
 
   final String name;
@@ -30,4 +25,5 @@ class CreateReminder implements ReminderEvent {
   final ReminderInstruction instruction;
   final DateTime? startDate;
   final DateTime? endDate;
+  final DateTime eventDate;
 }

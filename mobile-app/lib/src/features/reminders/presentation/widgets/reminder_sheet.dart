@@ -1,16 +1,16 @@
-import 'package:ellipsis_care/core/services/notification_service.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/core/utils/locator.dart';
-import 'package:ellipsis_care/src/features/reminders/models/reminder.dart';
-import 'package:ellipsis_care/src/features/reminders/presentation/views/add_reminder.dart';
-import 'package:ellipsis_care/src/features/reminders/presentation/widgets/reminder_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:ellipsis_care/core/utils/helpers.dart';
+import 'package:ellipsis_care/src/features/reminders/models/reminder.dart';
+import 'package:ellipsis_care/src/features/reminders/presentation/controller/cubit/calender_cubit.dart';
+import 'package:ellipsis_care/src/features/reminders/presentation/views/add_reminder.dart';
+
 import '../../../../../core/constants/colors.dart';
 import '../../../../../core/utils/extensions.dart';
-import '../bloc/reminder_bloc.dart';
+import '../controller/bloc/reminder_bloc.dart';
+import 'reminder_tile.dart';
 
 class ReminderSheet extends StatelessWidget {
   const ReminderSheet({super.key});
@@ -18,6 +18,7 @@ class ReminderSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reminderBloc = context.read<ReminderBloc>();
+    final calendarCubitState = context.watch<CalendarCubit>();
     final reminderBlocState = context.watch<ReminderBloc>();
 
     return DraggableScrollableSheet(
@@ -45,57 +46,75 @@ class ReminderSheet extends StatelessWidget {
                     Container(height: 3.h, width: 64.w, color: AppColors.black),
                     12.sizedBoxHeight,
                     Text(
-                      UtilHelpers.dateFormatter2(
-                          reminderBlocState.state.selectedDate),
+                      UtilHelpers.dateFormatter2(calendarCubitState.state),
                       style: context.textTheme.headlineSmall?.copyWith(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w400,
                       ),
                     ).alignLeft,
                     10.sizedBoxHeight,
-                    TextButton(
-                      onPressed: () async {
-    
-                        final result = await showAdaptiveDialog<ReminderModel>(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (context) => const AddReminder(),
-                        );
-                        if (result != null) {
-                          reminderBloc.add(
-                            CreateReminder(
-                              name: result.name,
-                              dosage: result.dosage,
-                              type: result.type,
-                              interval: result.interval,
-                              schedule: result.schedule,
-                              instruction: result.instruction,
-                              startDate: result.startDate,
-                              endDate: result.endDate,
-                            ),
-                          );
-                        }
-                      },
-                      child: Text("Add Reminder"),
-                    ),
                   ],
                 ),
               ),
               BlocBuilder<ReminderBloc, ReminderState>(
                 bloc: reminderBlocState,
                 builder: (context, state) {
-                  return switch (state) {
-                    CreatedReminder(reminders: var reminders) =>
-                      SliverList.builder(
-                        itemCount: reminders.length,
-                        itemBuilder: (context, index) {
-                          return ReminderTile(reminder: reminders[index]);
-                        },
-                      ),
-                    _ => const SliverToBoxAdapter(child: SizedBox()),
-                  };
+                  final reminders = state.events[calendarCubitState.state];
+                  return reminders != null
+                      ? SliverList.builder(
+                          itemCount:
+                              state.events[calendarCubitState.state]?.length,
+                          itemBuilder: (context, index) {
+                            return ReminderTile(reminder: reminders[index]);
+                          },
+                        )
+                      : const SliverToBoxAdapter(child: SizedBox());
                 },
-              )
+              ),
+              SliverToBoxAdapter(
+                child: GestureDetector(
+                  onTap: () async {
+                    final result = await showAdaptiveDialog<ReminderModel>(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (context) => const AddReminder(),
+                    );
+                    if (result != null) {
+                      reminderBloc.add(
+                        CreateReminderEvent(
+                          name: result.name,
+                          dosage: result.dosage,
+                          type: result.type,
+                          interval: result.interval,
+                          schedule: result.schedule,
+                          instruction: result.instruction,
+                          startDate: result.startDate,
+                          endDate: result.endDate,
+                          eventDate: calendarCubitState.state,
+                        ),
+                      );
+                    }
+                  },
+                  child: SizedBox(
+                    width: 48,
+                    child: Container(
+                      padding: REdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.black,
+                        borderRadius: BorderRadius.circular(12.r),
+                        boxShadow: const [
+                          BoxShadow(
+                            blurRadius: 16,
+                            offset: Offset(0, 2),
+                            color: AppColors.addButtonShadowColor,
+                          )
+                        ],
+                      ),
+                      child: const Icon(Icons.add, color: AppColors.white),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         );

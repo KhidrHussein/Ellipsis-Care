@@ -13,18 +13,16 @@ class Routine extends StatelessWidget {
   final String name;
   final String timeAlloted;
 
-  Routine({
+  const Routine({
     super.key,
     required this.icon,
     required this.name,
     required this.timeAlloted,
   });
 
-  final ValueNotifier<bool> _checkBoxValue = ValueNotifier(false);
-
   @override
   Widget build(BuildContext context) {
-    final medicationProgressCubit = context.read<MedicationProgressCubit>();
+    final medicationProgressCubit = context.watch<MedicationProgressCubit>();
 
     return Padding(
       padding: REdgeInsets.only(bottom: 10),
@@ -51,21 +49,19 @@ class Routine extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          ValueListenableBuilder(
-            valueListenable: _checkBoxValue,
-            builder: (context, value, child) {
+          BlocBuilder<MedicationProgressCubit, Map<String, bool>>(
+            bloc: medicationProgressCubit,
+            builder: (context, state) {
               return Checkbox(
-                value: value,
+                value: state[name],
                 onChanged: (value) {
-                  // value == true
-                  //     ? medicationProgressCubit.incrementProgress()
-                  //     : medicationProgressCubit.decrementProgress();
-
-                  _checkBoxValue.value = value ?? false;
+                  context
+                      .read<MedicationProgressCubit>()
+                      .hasPassedRoutine(name, value!);
                 },
               );
             },
-          ),
+          )
         ],
       ),
     );

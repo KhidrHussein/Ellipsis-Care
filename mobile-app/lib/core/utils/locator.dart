@@ -1,5 +1,5 @@
 import 'package:ellipsis_care/src/features/authentication/data/auth_repository.dart';
-import 'package:ellipsis_care/src/features/home/data/dashboard_repository.dart';
+import 'package:ellipsis_care/src/features/home/data/home_repository.dart';
 import 'package:ellipsis_care/src/features/reminders/data/reminders_repository.dart';
 
 import '../services/notification_service.dart';
@@ -29,8 +29,7 @@ void initService() {
 
   injector.registerLazySingleton<AuthenticationRepository>(
       () => AuthenticationRepository());
-  injector
-      .registerLazySingleton<DashboardRepository>(() => DashboardRepository());
+  injector.registerLazySingleton<HomeRepository>(() => HomeRepository());
   injector
       .registerLazySingleton<ReminderRepository>(() => ReminderRepository());
 }

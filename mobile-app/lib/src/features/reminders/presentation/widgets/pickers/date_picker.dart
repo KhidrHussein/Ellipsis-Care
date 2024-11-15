@@ -6,10 +6,17 @@ import 'package:ellipsis_care/core/utils/extensions.dart';
 
 import '../../../../../../core/constants/colors.dart';
 
-class DatePicker extends StatelessWidget {
+class DatePicker extends StatefulWidget {
   final String hint;
   final ValueNotifier<DateTime?> listenable;
   const DatePicker({super.key, required this.hint, required this.listenable});
+
+  @override
+  State<DatePicker> createState() => _DatePickerState();
+}
+
+class _DatePickerState extends State<DatePicker> {
+  final OverlayPortalController _portalController = OverlayPortalController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +31,12 @@ class DatePicker extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             ValueListenableBuilder(
-              valueListenable: listenable,
+              valueListenable: widget.listenable,
               builder: (context, value, child) {
                 return Text(
-                  value != null ? UtilHelpers.dateFormatter1(value) : hint,
+                  value != null
+                      ? UtilHelpers.dateFormatter1(value)
+                      : widget.hint,
                   style: context.textTheme.bodyMedium?.copyWith(
                     fontSize: 14.sp,
                     color: value != null
@@ -39,16 +48,27 @@ class DatePicker extends StatelessWidget {
             ),
             InkWell(
               onTap: () async {
+                // _portalController.toggle();
                 final result = await showDatePicker(
                   context: context,
                   firstDate: DateTime.now(),
                   lastDate: DateTime(2030),
                 );
-                listenable.value = result;
+                widget.listenable.value = result;
               },
-              child: Icon(
-                Icons.calendar_month,
-                color: AppColors.black.withOpacity(.3),
+              child: OverlayPortal(
+                controller: _portalController,
+                overlayChildBuilder: (context) {
+                  return Positioned(
+                    left: .2.sw,
+                    bottom: .4.sh,
+                    child: Text("data"),
+                  );
+                },
+                child: Icon(
+                  Icons.calendar_month,
+                  color: AppColors.black.withOpacity(.3),
+                ),
               ),
             )
           ],
