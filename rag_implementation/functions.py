@@ -142,7 +142,6 @@ def get_conversation_summary(history, question):
 def qa_response(prompt):
 
     # Query the Azure OpenAI LLM with the formatted prompt
-    print("Called qa_response")
     response = openai.ChatCompletion.create(
         engine="Voicetask",  # Replace with your Azure OpenAI deployment name
         # prompt=formatted_prompt,

@@ -19,7 +19,7 @@ from rag_implementation.config.database import collection
 from django.http import HttpResponse, StreamingHttpResponse
 import random, tempfile, os
 from asgiref.sync import async_to_sync
-from .utils import get_or_create_mongo_user
+from .utils import get_or_create_mongo_user, HealthSyncScoreCalculator
 
 from django.core.mail import EmailMessage
 from django.conf import settings
@@ -32,6 +32,8 @@ from rest_framework.response import Response
 import random
 import logging
 from django.core.cache import cache
+from pydub import AudioSegment
+
 
 logger = logging.getLogger(__name__)
 
@@ -376,6 +378,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     queryset = Appointment.objects.all()
     serializer_class = AppointmentSerializer
 
+
 class AudioViewSet(viewsets.ModelViewSet):
     """
     Handles audio uploads, transcriptions, and AI response generation.
@@ -412,9 +415,23 @@ class AudioViewSet(viewsets.ModelViewSet):
             'audio/mpeg': '.mp3',  # Add more formats as needed
             'audio/x-wav': '.wav',
             'audio/m4a': '.m4a',
+            'audio/mp4': '.m4a',
             'audio/ogg': '.opus'
-            # Add other audio formats you want to support
         }
+
+        # def convert_to_wav(input_file_path, output_file_path):
+        #     audio = AudioSegment.from_file(input_file_path)
+        #     audio.export(output_file_path, format="wav")
+
+        # content_type = audio_file.content_type
+        # print(f"Detected content type: {content_type}")
+
+        # if content_type not in ['audio/wav', 'audio/x-wav']:
+        #     converted_path = temp_audio_file.name.replace(suffix, '.wav')
+        #     convert_to_wav(temp_audio_file.name, converted_path)
+        #     temp_audio_file_name = converted_path
+        # else:
+        #     temp_audio_file_name = temp_audio_file.name
 
         try:
             # Get the content type of the audio file
@@ -432,7 +449,7 @@ class AudioViewSet(viewsets.ModelViewSet):
 
             # Get the appropriate file extension based on content type
             suffix = allowed_formats[content_type]
-            
+
             print("Saving temporary audio file for transcription...")
             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_audio_file:
                 audio_file.seek(0)
@@ -443,32 +460,23 @@ class AudioViewSet(viewsets.ModelViewSet):
 
             # Transcribe the audio file
             transcription = transcribe_audio(temp_audio_file.name)
+            if not transcription or 'Error' in transcription:
+                print(f"Transcription failed: {transcription}")
+                response_data = {
+                    "status": "fail",
+                    "message": "Transcription failed. Reason: " + transcription
+                }
+                return Response(response_data, status=400)
+
             print(f"Transcription result: {transcription}")
-
-            if not transcription:
-                raise ValueError("Transcription failed.")
-
             instance.transcription = transcription
             instance.save()
             print("Transcription saved to the database.")
 
-            # ai_result = rag_response(
-            #     user_id=str(mongo_user['_id']),
-            #     query=transcription,
-            #     knowledge_base="some_knowledge_base"
-            # )
-
-            # if not ai_result or 'response' not in ai_result:
-            #     raise ValueError("AI response failed.")
-
-            # instance.ai_response = ai_result['response']
-            # instance.save()
-            # print("AI response saved to the database.")
-
-            # Retrieve AI response
+            # Call RAG model to generate AI response
             print("Calling RAG model to generate AI response...")
             ai_result = rag_response(
-                user_id=str(mongo_user['_id']),
+                user_id=mongo_user['_id'],
                 query=transcription,
                 knowledge_base="some_knowledge_base"
             )
@@ -485,7 +493,6 @@ class AudioViewSet(viewsets.ModelViewSet):
             instance.ai_response = ai_result['response']
             instance.save()
             print("AI response saved to the database.")
-
 
             # Synthesize speech based on AI response
             print("Starting speech synthesis...")
@@ -517,17 +524,13 @@ class AudioViewSet(viewsets.ModelViewSet):
             response['X-Transcription'] = instance.transcription  # User transcription
             response['X-AI-Response'] = instance.ai_response      # AI response
 
-            # Debug the response headers
-            print(f"Response headers: {response.headers}")
-            print(f"Content-Type: {response['Content-Type']}")
-
             return response
 
         except Exception as e:
             print(f"Error during audio processing: {e}")
             response_data = {
                 "status": "fail",
-                "message": "Audio processing failed."
+                "message": "Audio processing failed. " + str(e)
             }
             return Response(response_data, status=500)
 
@@ -535,6 +538,7 @@ class AudioViewSet(viewsets.ModelViewSet):
             if 'temp_audio_file' in locals() and os.path.exists(temp_audio_file.name):
                 print(f"Deleting temporary audio file: {temp_audio_file.name}")
                 os.remove(temp_audio_file.name)
+
 
 
 class ReminderView(APIView):
@@ -577,6 +581,44 @@ class ReminderView(APIView):
 
         except Exception as e:
             # Handle any unexpected errors
+            return Response({
+                "status": "error",
+                "message": "An error occurred while processing the request",
+                "data": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    
+class HealthSyncScoreView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            user = request.user
+            data = request.data
+            timestamps = data.get('timestamps', {})
+            reminders = data.get('reminders', {})
+
+            if not timestamps or not reminders:
+                return Response({
+                    "status": "fail",
+                    "message": "Timestamps and reminders are required",
+                    "data": None
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            calculator = HealthSyncScoreCalculator(user)
+            daily_score = calculator.calculate_daily_adherence_score(timestamps, reminders)
+            health_sync_score = calculator.save_score(daily_score)
+
+            return Response({
+                "status": "success",
+                "message": "Health sync score calculated and stored successfully",
+                "data": {
+                    "dailyScore": health_sync_score.daily_score,
+                    "monthlySyncScore": health_sync_score.cumulative_monthly_score
+                }
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
             return Response({
                 "status": "error",
                 "message": "An error occurred while processing the request",

@@ -1,10 +1,10 @@
 from typing import Optional
 from pydantic import BaseModel, EmailStr
-from functions import prompt_setup
-from functions import context_document_retreival_similarity, get_conversation_summary
-from functions import qa_response, reminder_message
-from config.database import collection
-from schemas.schema import serializer
+from .functions import prompt_setup
+from .functions import context_document_retreival_similarity, get_conversation_summary
+from .functions import qa_response, reminder_message
+from .config.database import collection
+from .schemas.schema import serializer
 
 from bson import ObjectId
 
@@ -96,13 +96,11 @@ def rag_response(user_id: str, query: str, knowledge_base: str):
     documents, sources = context_document_retreival_similarity(new_question)
     full_prompt = prompt_template.format(history="\n".join(buffer_history), question=new_question, context=documents)
     # print(full_prompt)
-    print("Calling qa_response")
     response = qa_response(full_prompt)
 
     full_history.append(f"Human: {query}")
     full_history.append(f"AI: {response}")
     buffer_history.append(f"Human: {query}")
-    print(query)
     buffer_history.append(f"AI: {response}")
 
     if len(buffer_history)>10:

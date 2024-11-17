@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
-from .models import UserProfile, HealthCondition, Medication, Meal, MealPlan, Appointment, Audio, CustomUser
+from .models import UserProfile, HealthCondition, Medication, Meal, MealPlan, Appointment, Audio, CustomUser, HealthSyncScore
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django import forms
 
@@ -100,6 +100,9 @@ class AudioAdmin(admin.ModelAdmin):
         """Enable deletion of audio files from the admin panel"""
         return True
     
+
+
+admin.site.register(HealthSyncScore)
 
 # admin.site.register(DjangoJob)
 # admin.site.register(DjangoJobExecution)

@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import UserProfileViewSet, MedicationViewSet, HealthConditionViewSet, MealPlanViewSet, AppointmentViewSet, AudioViewSet, UserCreateViewSet, VerifyEmailView, ReminderView, CustomTokenCreateView, PasswordResetRequestView, PasswordResetConfirmView, CustomUserViewSet
+from .views import UserProfileViewSet, MedicationViewSet, HealthConditionViewSet, MealPlanViewSet, AppointmentViewSet, AudioViewSet, UserCreateViewSet, VerifyEmailView, ReminderView, CustomTokenCreateView, PasswordResetRequestView, PasswordResetConfirmView, CustomUserViewSet, HealthSyncScoreView
 
 router = DefaultRouter()
 router.register(r'userprofiles', UserProfileViewSet)
@@ -22,4 +22,5 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),  # Allauth routes
     path('auth/verify-email/', VerifyEmailView.as_view(), name='verify-email'), 
     path('reminder/', ReminderView.as_view(), name='reminder'),
+    path('health-sync-score/', HealthSyncScoreView.as_view(), name='health-sync-score'),
 ]
