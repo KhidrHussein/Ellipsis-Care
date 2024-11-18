@@ -97,8 +97,8 @@ class ReminderSheet extends StatelessWidget {
                       );
                     }
                   },
-                  child: SizedBox(
-                    width: 48,
+                  child: Align(
+                    alignment: Alignment.centerRight,
                     child: Container(
                       padding: REdgeInsets.all(16),
                       decoration: BoxDecoration(

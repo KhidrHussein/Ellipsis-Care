@@ -190,12 +190,12 @@ class _EmergencyContactTileState extends State<EmergencyContactTile> {
                 ],
               ),
             ),
-            if (_canEditContactName || _canEditContactPhone)
-              const SizedBox()
-            else
-              GestureDetector(
-                child: Icon(Icons.move_down),
-              )
+            // if (_canEditContactName || _canEditContactPhone)
+            //   const SizedBox()
+            // else
+            //   GestureDetector(
+            //     child: Icon(Icons.move_down),
+            //   )
           ],
         ),
       ),

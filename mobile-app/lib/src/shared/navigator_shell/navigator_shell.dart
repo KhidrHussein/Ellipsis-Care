@@ -51,12 +51,9 @@ class CustomNavigatorBar extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Positioned(
-                  top: (.1.sh - 72.h),
-                  left: (1.sw - .96.sw),
-                  child: CustomPaint(
-                    painter: _CustomNavigatorBarPainter(),
-                  ),
+                CustomPaint(
+                  size: Size(.88.sw, (.88.sw * 0.171)),
+                  painter: _CustomNavigatorBarPainter(),
                 ),
                 Align(
                   child: Row(
@@ -175,107 +172,292 @@ class NavigatorBarItem extends StatelessWidget {
 class _CustomNavigatorBarPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Path path_1 = Path();
-    path_1.moveTo(184.321, 53.4901);
-    path_1.cubicTo(203.331, 53.4901, 218.742, 36.9922, 218.742, 16.641);
-    path_1.cubicTo(218.742, 8.65595, 224.243, 0, 232.228, 0);
-    path_1.lineTo(337.142, 0);
-    path_1.cubicTo(354.538, 0, 368.642, 14.103, 368.642, 31.5);
-    path_1.cubicTo(368.642, 48.897, 354.538, 63, 337.142, 63);
-    path_1.lineTo(31.5, 63);
-    path_1.cubicTo(14.103, 63, 0, 48.897, 0, 31.5);
-    path_1.cubicTo(0, 14.103, 14.103, 0, 31.5, 0);
-    path_1.lineTo(136.413, 0);
-    path_1.cubicTo(144.398, 0, 149.899, 8.65595, 149.899, 16.641);
-    path_1.cubicTo(149.899, 36.9922, 165.31, 53.4901, 184.321, 53.4901);
-    path_1.close();
+    Path fillPath = Path();
+    fillPath.moveTo(size.width * 0.4995149, size.height * 0.8490492);
+    fillPath.cubicTo(
+      size.width * 0.5510325,
+      size.height * 0.8490492,
+      size.width * 0.5927967,
+      size.height * 0.5871778,
+      size.width * 0.5927967,
+      size.height * 0.2641429,
+    );
+    fillPath.cubicTo(
+      size.width * 0.5927967,
+      size.height * 0.1373960,
+      size.width * 0.6077046,
+      0,
+      size.width * 0.6293442,
+      0,
+    );
+    fillPath.lineTo(
+      size.width * 0.9136640,
+      0,
+    );
+    fillPath.cubicTo(
+      size.width * 0.9608076,
+      0,
+      size.width * 0.9990298,
+      size.height * 0.2238571,
+      size.width * 0.9990298,
+      size.height * 0.5000000,
+    );
+    fillPath.cubicTo(
+      size.width * 0.9990298,
+      size.height * 0.7761429,
+      size.width * 0.9608076,
+      size.height,
+      size.width * 0.9136640,
+      size.height,
+    );
+    fillPath.lineTo(
+      size.width * 0.08536585,
+      size.height,
+    );
+    fillPath.cubicTo(
+      size.width * 0.03821951,
+      size.height,
+      0,
+      size.height * 0.7761429,
+      0,
+      size.height * 0.5000000,
+    );
+    fillPath.cubicTo(
+      0,
+      size.height * 0.2238571,
+      size.width * 0.03821951,
+      0,
+      size.width * 0.08536585,
+      0,
+    );
+    fillPath.lineTo(
+      size.width * 0.3696829,
+      0,
+    );
+    fillPath.cubicTo(
+      size.width * 0.3913225,
+      0,
+      size.width * 0.4062304,
+      size.height * 0.1373960,
+      size.width * 0.4062304,
+      size.height * 0.2641429,
+    );
+    fillPath.cubicTo(
+      size.width * 0.4062304,
+      size.height * 0.5871778,
+      size.width * 0.4479946,
+      size.height * 0.8490492,
+      size.width * 0.4995149,
+      size.height * 0.8490492,
+    );
+    fillPath.close();
 
-    Paint pathOneFill = Paint()
+    Paint fillPathPainter = Paint()
       ..color = Colors.transparent
       ..style = PaintingStyle.fill;
-    canvas.drawPath(path_1, pathOneFill);
+    canvas.drawPath(fillPath, fillPathPainter);
 
-    Path path = Path();
-    path.moveTo(217.742, 16.641);
-    path.cubicTo(217.742, 36.5052, 202.716, 52.4901, 184.321, 52.4901);
-    path.lineTo(184.321, 54.4901);
-    path.cubicTo(203.947, 54.4901, 219.742, 37.4792, 219.742, 16.641);
-    path.lineTo(217.742, 16.641);
-    path.close();
-    path.moveTo(232.228, 1);
-    path.lineTo(337.142, 1);
-    path.lineTo(337.142, -1);
-    path.lineTo(232.228, -1);
-    path.lineTo(232.228, 1);
-    path.close();
-    path.moveTo(337.142, 62);
-    path.lineTo(31.5, 62);
-    path.lineTo(31.5, 64);
-    path.lineTo(337.142, 64);
-    path.lineTo(337.142, 62);
-    path.close();
-    path.moveTo(31.5, 1);
-    path.lineTo(136.413, 1);
-    path.lineTo(136.413, -1);
-    path.lineTo(31.5, -1);
-    path.lineTo(31.5, 1);
-    path.close();
-    path.moveTo(184.321, 52.4901);
-    path.cubicTo(165.926, 52.4901, 150.899, 36.5052, 150.899, 16.641);
-    path.lineTo(148.899, 16.641);
-    path.cubicTo(148.899, 37.4792, 164.695, 54.4901, 184.321, 54.4901);
-    path.lineTo(184.321, 52.4901);
-    path.close();
-    path.moveTo(136.413, 1);
-    path.cubicTo(140.013, 1, 143.114, 2.94593, 145.351, 5.9264);
-    path.cubicTo(147.593, 8.91292, 148.899, 12.8619, 148.899, 16.641);
-    path.lineTo(150.899, 16.641);
-    path.cubicTo(150.899, 12.4351, 149.456, 8.06356, 146.951, 4.72583);
-    path.cubicTo(144.441, 1.38205, 140.799, -1, 136.413, -1);
-    path.lineTo(136.413, 1);
-    path.close();
-    path.moveTo(1, 31.5);
-    path.cubicTo(1, 14.6553, 14.6553, 1, 31.5, 1);
-    path.lineTo(31.5, -1);
-    path.cubicTo(13.5507, -1, -1, 13.5507, -1, 31.5);
-    path.lineTo(1, 31.5);
-    path.close();
-    path.moveTo(31.5, 62);
-    path.cubicTo(14.6553, 62, 1, 48.3447, 1, 31.5);
-    path.lineTo(-1, 31.5);
-    path.cubicTo(-1, 49.4493, 13.5507, 64, 31.5, 64);
-    path.lineTo(31.5, 62);
-    path.close();
-    path.moveTo(367.642, 31.5);
-    path.cubicTo(367.642, 48.3447, 353.986, 62, 337.142, 62);
-    path.lineTo(337.142, 64);
-    path.cubicTo(355.091, 64, 369.642, 49.4493, 369.642, 31.5);
-    path.lineTo(367.642, 31.5);
-    path.close();
-    path.moveTo(337.142, 1);
-    path.cubicTo(353.986, 1, 367.642, 14.6553, 367.642, 31.5);
-    path.lineTo(369.642, 31.5);
-    path.cubicTo(369.642, 13.5507, 355.091, -1, 337.142, -1);
-    path.lineTo(337.142, 1);
-    path.close();
-    path.moveTo(219.742, 16.641);
-    path.cubicTo(219.742, 12.8619, 221.049, 8.91292, 223.29, 5.9264);
-    path.cubicTo(225.527, 2.94593, 228.628, 1, 232.228, 1);
-    path.lineTo(232.228, -1);
-    path.cubicTo(227.843, -1, 224.201, 1.38205, 221.691, 4.72583);
-    path.cubicTo(219.186, 8.06356, 217.742, 12.4351, 217.742, 16.641);
-    path.lineTo(219.742, 16.641);
-    path.close();
+    Path borderPath = Path();
+    borderPath.moveTo(size.width * 0.5900867, size.height * 0.2641429);
+    borderPath.cubicTo(
+        size.width * 0.5900867,
+        size.height * 0.5794476,
+        size.width * 0.5493659,
+        size.height * 0.8331762,
+        size.width * 0.4995149,
+        size.height * 0.8331762);
+    borderPath.lineTo(size.width * 0.4995149, size.height * 0.8649222);
+    borderPath.cubicTo(
+        size.width * 0.5527019,
+        size.height * 0.8649222,
+        size.width * 0.5955068,
+        size.height * 0.5949079,
+        size.width * 0.5955068,
+        size.height * 0.2641429);
+    borderPath.lineTo(size.width * 0.5900867, size.height * 0.2641429);
+    borderPath.close();
+    borderPath.moveTo(size.width * 0.6293442, size.height * 0.01587302);
+    borderPath.lineTo(size.width * 0.9136640, size.height * 0.01587302);
+    borderPath.lineTo(size.width * 0.9136640, size.height * -0.01587302);
+    borderPath.lineTo(size.width * 0.6293442, size.height * -0.01587302);
+    borderPath.lineTo(size.width * 0.6293442, size.height * 0.01587302);
+    borderPath.close();
+    borderPath.moveTo(size.width * 0.9136640, size.height * 0.9841270);
+    borderPath.lineTo(size.width * 0.08536585, size.height * 0.9841270);
+    borderPath.lineTo(size.width * 0.08536585, size.height * 1.015873);
+    borderPath.lineTo(size.width * 0.9136640, size.height * 1.015873);
+    borderPath.lineTo(size.width * 0.9136640, size.height * 0.9841270);
+    borderPath.close();
+    borderPath.moveTo(size.width * 0.08536585, size.height * 0.01587302);
+    borderPath.lineTo(size.width * 0.3696829, size.height * 0.01587302);
+    borderPath.lineTo(size.width * 0.3696829, size.height * -0.01587302);
+    borderPath.lineTo(size.width * 0.08536585, size.height * -0.01587302);
+    borderPath.lineTo(size.width * 0.08536585, size.height * 0.01587302);
+    borderPath.close();
+    borderPath.moveTo(size.width * 0.4995149, size.height * 0.8331762);
+    borderPath.cubicTo(
+        size.width * 0.4496640,
+        size.height * 0.8331762,
+        size.width * 0.4089404,
+        size.height * 0.5794476,
+        size.width * 0.4089404,
+        size.height * 0.2641429);
+    borderPath.lineTo(size.width * 0.4035203, size.height * 0.2641429);
+    borderPath.cubicTo(
+        size.width * 0.4035203,
+        size.height * 0.5949079,
+        size.width * 0.4463279,
+        size.height * 0.8649222,
+        size.width * 0.4995149,
+        size.height * 0.8649222);
+    borderPath.lineTo(size.width * 0.4995149, size.height * 0.8331762);
+    borderPath.close();
+    borderPath.moveTo(size.width * 0.3696829, size.height * 0.01587302);
+    borderPath.cubicTo(
+        size.width * 0.3794390,
+        size.height * 0.01587302,
+        size.width * 0.3878428,
+        size.height * 0.04676079,
+        size.width * 0.3939051,
+        size.height * 0.09406984);
+    borderPath.cubicTo(
+        size.width * 0.3999810,
+        size.height * 0.1414749,
+        size.width * 0.4035203,
+        size.height * 0.2041571,
+        size.width * 0.4035203,
+        size.height * 0.2641429);
+    borderPath.lineTo(size.width * 0.4089404, size.height * 0.2641429);
+    borderPath.cubicTo(
+        size.width * 0.4089404,
+        size.height * 0.1973825,
+        size.width * 0.4050298,
+        size.height * 0.1279930,
+        size.width * 0.3982412,
+        size.height * 0.07501317);
+    borderPath.cubicTo(
+        size.width * 0.3914390,
+        size.height * 0.02193730,
+        size.width * 0.3815691,
+        size.height * -0.01587302,
+        size.width * 0.3696829,
+        size.height * -0.01587302);
+    borderPath.lineTo(size.width * 0.3696829, size.height * 0.01587302);
+    borderPath.close();
+    borderPath.moveTo(size.width * 0.002710027, size.height * 0.5000000);
+    borderPath.cubicTo(
+        size.width * 0.002710027,
+        size.height * 0.2326238,
+        size.width * 0.03971626,
+        size.height * 0.01587302,
+        size.width * 0.08536585,
+        size.height * 0.01587302);
+    borderPath.lineTo(size.width * 0.08536585, size.height * -0.01587302);
+    borderPath.cubicTo(
+        size.width * 0.03672276,
+        size.height * -0.01587302,
+        size.width * -0.002710027,
+        size.height * 0.2150905,
+        size.width * -0.002710027,
+        size.height * 0.5000000);
+    borderPath.lineTo(size.width * 0.002710027, size.height * 0.5000000);
+    borderPath.close();
+    borderPath.moveTo(size.width * 0.08536585, size.height * 0.9841270);
+    borderPath.cubicTo(
+        size.width * 0.03971626,
+        size.height * 0.9841270,
+        size.width * 0.002710027,
+        size.height * 0.7673762,
+        size.width * 0.002710027,
+        size.height * 0.5000000);
+    borderPath.lineTo(size.width * -0.002710027, size.height * 0.5000000);
+    borderPath.cubicTo(
+        size.width * -0.002710027,
+        size.height * 0.7849095,
+        size.width * 0.03672276,
+        size.height * 1.015873,
+        size.width * 0.08536585,
+        size.height * 1.015873);
+    borderPath.lineTo(size.width * 0.08536585, size.height * 0.9841270);
+    borderPath.close();
+    borderPath.moveTo(size.width * 0.9963198, size.height * 0.5000000);
+    borderPath.cubicTo(
+        size.width * 0.9963198,
+        size.height * 0.7673762,
+        size.width * 0.9593117,
+        size.height * 0.9841270,
+        size.width * 0.9136640,
+        size.height * 0.9841270);
+    borderPath.lineTo(size.width * 0.9136640, size.height * 1.015873);
+    borderPath.cubicTo(
+        size.width * 0.9623062,
+        size.height * 1.015873,
+        size.width * 1.001740,
+        size.height * 0.7849095,
+        size.width * 1.001740,
+        size.height * 0.5000000);
+    borderPath.lineTo(size.width * 0.9963198, size.height * 0.5000000);
+    borderPath.close();
+    borderPath.moveTo(size.width * 0.9136640, size.height * 0.01587302);
+    borderPath.cubicTo(
+        size.width * 0.9593117,
+        size.height * 0.01587302,
+        size.width * 0.9963198,
+        size.height * 0.2326238,
+        size.width * 0.9963198,
+        size.height * 0.5000000);
+    borderPath.lineTo(size.width * 1.001740, size.height * 0.5000000);
+    borderPath.cubicTo(
+        size.width * 1.001740,
+        size.height * 0.2150905,
+        size.width * 0.9623062,
+        size.height * -0.01587302,
+        size.width * 0.9136640,
+        size.height * -0.01587302);
+    borderPath.lineTo(size.width * 0.9136640, size.height * 0.01587302);
+    borderPath.close();
+    borderPath.moveTo(size.width * 0.5955068, size.height * 0.2641429);
+    borderPath.cubicTo(
+        size.width * 0.5955068,
+        size.height * 0.2041571,
+        size.width * 0.5990488,
+        size.height * 0.1414749,
+        size.width * 0.6051220,
+        size.height * 0.09406984);
+    borderPath.cubicTo(
+        size.width * 0.6111843,
+        size.height * 0.04676079,
+        size.width * 0.6195881,
+        size.height * 0.01587302,
+        size.width * 0.6293442,
+        size.height * 0.01587302);
+    borderPath.lineTo(size.width * 0.6293442, size.height * -0.01587302);
+    borderPath.cubicTo(
+        size.width * 0.6174607,
+        size.height * -0.01587302,
+        size.width * 0.6075908,
+        size.height * 0.02193730,
+        size.width * 0.6007886,
+        size.height * 0.07501317);
+    borderPath.cubicTo(
+        size.width * 0.5940000,
+        size.height * 0.1279930,
+        size.width * 0.5900867,
+        size.height * 0.1973825,
+        size.width * 0.5900867,
+        size.height * 0.2641429);
+    borderPath.lineTo(size.width * 0.5955068, size.height * 0.2641429);
+    borderPath.close();
 
-    Paint pathPaint = Paint()
+    Paint borderPathPainter = Paint()
       ..color = AppColors.navigatiorBarBorderColor
       ..style = PaintingStyle.fill;
 
-    canvas.drawPath(path, pathPaint);
+    canvas.drawPath(borderPath, borderPathPainter);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+    return true;
   }
 }
