@@ -1,4 +1,12 @@
+import 'package:ellipsis_care/core/utils/helpers.dart';
+import 'package:ellipsis_care/src/features/settings/presentation/widgets/section_option.dart';
+import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_appbar.dart';
+import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_group.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../../../config/router/route_names.dart';
+import '../../../../../../core/constants/asset_strings.dart';
 
 class Legal extends StatelessWidget {
   const Legal({super.key});
@@ -7,7 +15,30 @@ class Legal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(),
+        child: Padding(
+          padding: REdgeInsets.symmetric(horizontal: 16, vertical: 30),
+          child: Column(
+            children: [
+              const SettingsAppbar(title: "Legal"),
+              20.verticalSpace,
+              SettingsGroup(
+                options: [
+                  SectionOption(
+                    leadingIcon: AssetStrings.privacyPolicyIcon,
+                    optionTitle: "Privacy Policy",
+                    onPressed: () =>
+                        UtilHelpers.pushRoute(RouteNames.privacyPolicy),
+                  ),
+                  SectionOption(
+                    optionTitle: "Terms of Use",
+                    onPressed: () =>
+                        UtilHelpers.pushRoute(RouteNames.termsOfUse),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

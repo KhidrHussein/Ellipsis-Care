@@ -14,6 +14,8 @@ class CreateReminderEvent implements ReminderEvent {
     required this.instruction,
     required this.startDate,
     required this.endDate,
+    required this.eventStartTime,
+    required this.eventEndTime,
     required this.eventDate,
   });
 
@@ -25,5 +27,7 @@ class CreateReminderEvent implements ReminderEvent {
   final ReminderInstruction instruction;
   final DateTime? startDate;
   final DateTime? endDate;
+  final TimeOfDay? eventStartTime;
+  final TimeOfDay? eventEndTime;
   final DateTime eventDate;
 }

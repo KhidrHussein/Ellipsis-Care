@@ -1,4 +1,5 @@
 import 'package:ellipsis_care/config/router/route_names.dart';
+import 'package:ellipsis_care/src/features/home/presentation/widgets/animated_spinner/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,66 +28,69 @@ class RecordingPage extends StatelessWidget {
           children: [
             const ProfileBar(),
             const Spacer(),
-
-            //TODO: Add animation spinner
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                BlocBuilder<DashboardCubit, bool>(
-                  bloc: dashboardCubit,
-                  builder: (context, state) {
-                    return GestureDetector(
-                      onTap: () {
-                        if (state) {
-                          dashboardCubit.pauseRecording();
-                        } else {
-                          dashboardCubit.resumeRecording();
-                        }
-                      },
+            const Spinner(),
+            const Spacer(),
+            Padding(
+              padding: REdgeInsets.only(bottom: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  BlocBuilder<DashboardCubit, bool>(
+                    bloc: dashboardCubit,
+                    builder: (context, state) {
+                      return GestureDetector(
+                        onTap: () {
+                          if (state) {
+                            dashboardCubit.pauseRecording();
+                          } else {
+                            dashboardCubit.resumeRecording();
+                          }
+                        },
+                        child: Container(
+                          padding: REdgeInsets.all(20),
+                          decoration: const ShapeDecoration(
+                            shape: CircleBorder(),
+                            color: AppColors.pauseIconBgColor,
+                          ),
+                          child: state
+                              ? SvgPicture.asset(AssetStrings.pauseIcon)
+                              : const Icon(
+                                  Icons.play_arrow,
+                                  color: AppColors.white,
+                                ),
+                        ),
+                      );
+                    },
+                  ),
+                  10.sizedBoxWidth,
+                  BlocListener<HomeBloc, HomeState>(
+                    bloc: homeBloc,
+                    listener: (context, state) {
+                      switch (state) {
+                        case EndRecordingState():
+                          UtilHelpers.popRoute();
+                          UtilHelpers.pushRoute(RouteNames.promptResponses);
+              
+                          break;
+                        default:
+                      }
+                    },
+                    child: GestureDetector(
+                      onTap: () => homeBloc.add(EndRecordingEvent()),
                       child: Container(
                         padding: REdgeInsets.all(20),
+                        
                         decoration: const ShapeDecoration(
                           shape: CircleBorder(),
-                          color: AppColors.pauseIconBgColor,
+                          color: AppColors.stopIconBgColor,
                         ),
-                        child: state
-                            ? SvgPicture.asset(AssetStrings.pauseIcon)
-                            : const Icon(
-                                Icons.play_arrow,
-                                color: AppColors.white,
-                              ),
+                        child:
+                            SvgPicture.asset(AssetStrings.cancelIcon, width: 21),
                       ),
-                    );
-                  },
-                ),
-                10.sizedBoxWidth,
-                BlocListener<HomeBloc, HomeState>(
-                  bloc: homeBloc,
-                  listener: (context, state) {
-                    switch (state) {
-                      case EndRecordingState():
-                        UtilHelpers.popRoute();
-                        UtilHelpers.pushRoute(RouteNames.promptResponses);
-
-                        break;
-                      default:
-                    }
-                  },
-                  child: GestureDetector(
-                    onTap: () => homeBloc.add(EndRecordingEvent()),
-                    child: Container(
-                      padding: REdgeInsets.all(20),
-                      decoration: const ShapeDecoration(
-                        shape: CircleBorder(),
-                        color: AppColors.stopIconBgColor,
-                      ),
-                      child:
-                          SvgPicture.asset(AssetStrings.cancelIcon, width: 21),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             )
           ],
         ),

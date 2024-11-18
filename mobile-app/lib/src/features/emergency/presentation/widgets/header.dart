@@ -12,19 +12,15 @@ class Header extends StatelessWidget {
     return Column(
       children: [
         Container(height: 3.h, width: 64.w, color: AppColors.black),
-        12.sizedBoxHeight,
-        Row(
-          children: [
-            Spacer(),
-            Text(
-              "Emergency Contacts",
-              style: context.textTheme.bodyLarge?.copyWith(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
+        12.verticalSpace,
+        Text(
+          "Emergency Contacts",
+          style: context.textTheme.bodyLarge?.copyWith(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w700,
+          ),
+        ).alignCenter,
+        20.verticalSpace,
         Text(
           "My Contacts",
           style: context.textTheme.bodyLarge?.copyWith(
@@ -32,7 +28,7 @@ class Header extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ).alignLeft,
-        5.sizedBoxHeight,
+        5.verticalSpace,
       ],
     );
   }

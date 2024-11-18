@@ -4,6 +4,8 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 
 import 'package:ellipsis_care/core/utils/extensions.dart';
 
+import '../../src/features/reminders/models/event.dart';
+
 class NotificationService {
   final AwesomeNotifications _service = AwesomeNotifications();
   final List<NotificationChannel> _channels = [
@@ -30,30 +32,32 @@ class NotificationService {
     return _service.requestPermissionToSendNotifications();
   }
 
-  void startListening() async {
-    try {
-      final isListening = await _service.setListeners(
-        onActionReceivedMethod: (ReceivedAction action) => _demo(action),
-      );
-
-      "$isListening".printLog();
-    } catch (e) {
-      "$runtimeType Error: $e".printLog();
-    }
-  }
-
-  Future<void> createReminderNotification(String name, String? body) async {
+  Future<void> createReminderNotification({required Event event}) async {
     final int id = Random().nextInt(50);
 
     try {
       await _service.createNotification(
         content: NotificationContent(
           id: id,
+          category: NotificationCategory.Event,
           channelKey: "ellipsis_care_reminder",
-          title: name,
-          body: body,
-          // timeoutAfter: 
+          title: event.name,
+          body: event.content,
         ),
+        schedule: NotificationCalendar(
+          repeats: true,
+          day: event.day,
+          month: event.month,
+          year: event.year,
+          hour: event.timeInHours,
+          minute: event.timeInMinutes,
+        ),
+        actionButtons: [
+          NotificationActionButton(
+            key: "complete_button",
+            label: "Mark as complete",
+          )
+        ],
       );
     } catch (e) {
       "$runtimeType Error: $e".printLog();

@@ -91,6 +91,8 @@ class ReminderSheet extends StatelessWidget {
                           startDate: result.startDate,
                           endDate: result.endDate,
                           eventDate: calendarCubitState.state,
+                          eventStartTime: result.reminderStartTime,
+                          eventEndTime: result.reminderEndTime,
                         ),
                       );
                     }

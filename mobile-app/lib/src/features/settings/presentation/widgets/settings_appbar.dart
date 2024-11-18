@@ -6,8 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SettingsAppbar extends StatelessWidget {
-  final String title;
-  const SettingsAppbar({super.key, required this.title});
+  final String? title;
+  const SettingsAppbar({super.key, this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +17,16 @@ class SettingsAppbar extends StatelessWidget {
           onTap: () => UtilHelpers.popRoute(),
           child: SvgPicture.asset(AssetStrings.navigateBackIcon),
         ),
-        5.sizedBoxWidth,
-        Text(
-          title,
-          style: context.textTheme.titleMedium?.copyWith(
-            fontSize: 17.sp,
-            fontWeight: FontWeight.w600,
-          ),
-        )
+        if (title != null) ...[
+          5.sizedBoxWidth,
+          Text(
+            title!,
+            style: context.textTheme.titleMedium?.copyWith(
+              fontSize: 17.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          )
+        ]
       ],
     );
   }

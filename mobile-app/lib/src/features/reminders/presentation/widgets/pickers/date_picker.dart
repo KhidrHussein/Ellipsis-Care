@@ -1,4 +1,5 @@
 import 'package:ellipsis_care/core/utils/helpers.dart';
+import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -8,14 +9,22 @@ import '../../../../../../core/constants/colors.dart';
 
 class DatePicker extends StatefulWidget {
   final String hint;
-  final ValueNotifier<DateTime?> listenable;
-  const DatePicker({super.key, required this.hint, required this.listenable});
+  final ValueNotifier<DateTime?> dateListenable;
+  final ValueNotifier<TimeOfDay?> timeListenable;
+
+  const DatePicker({
+    super.key,
+    required this.hint,
+    required this.dateListenable,
+    required this.timeListenable,
+  });
 
   @override
   State<DatePicker> createState() => _DatePickerState();
 }
 
 class _DatePickerState extends State<DatePicker> {
+  DateTime? _selectedDate;
   final OverlayPortalController _portalController = OverlayPortalController();
 
   @override
@@ -31,7 +40,7 @@ class _DatePickerState extends State<DatePicker> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             ValueListenableBuilder(
-              valueListenable: widget.listenable,
+              valueListenable: widget.dateListenable,
               builder: (context, value, child) {
                 return Text(
                   value != null
@@ -47,22 +56,53 @@ class _DatePickerState extends State<DatePicker> {
               },
             ),
             InkWell(
-              onTap: () async {
-                // _portalController.toggle();
-                final result = await showDatePicker(
-                  context: context,
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(2030),
-                );
-                widget.listenable.value = result;
-              },
+              onTap: () => _portalController.show(),
               child: OverlayPortal(
                 controller: _portalController,
                 overlayChildBuilder: (context) {
                   return Positioned(
-                    left: .2.sw,
-                    bottom: .4.sh,
-                    child: Text("data"),
+                    bottom: 75,
+                    child: ConstrainedBox(
+                      constraints:
+                          BoxConstraints(maxWidth: 1.sw, maxHeight: .55.sh),
+                      child: Dialog(
+                        backgroundColor: AppColors.white,
+                        shadowColor: AppColors.black,
+                        shape: const ContinuousRectangleBorder(),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: REdgeInsets.all(9),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "Time",
+                                    style: context.textTheme.titleLarge
+                                        ?.copyWith(fontSize: 20.sp),
+                                  ),
+                                  const Spacer(),
+                                  TimePicker(
+                                    onTimePicked: (time) =>
+                                        widget.timeListenable.value = time,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            CalendarDatePicker(
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(2030),
+                              currentDate: _selectedDate,
+                              onDateChanged: (value) {
+                                widget.dateListenable.value = value;
+                                _portalController.hide();
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   );
                 },
                 child: Icon(

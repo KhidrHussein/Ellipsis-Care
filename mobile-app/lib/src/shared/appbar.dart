@@ -1,3 +1,6 @@
+import 'package:ellipsis_care/config/router/route_names.dart';
+import 'package:ellipsis_care/core/utils/helpers.dart';
+import 'package:ellipsis_care/src/shared/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,11 +14,11 @@ class ProfileBar extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-            onPressed: () {},
+            onPressed: () => UtilHelpers.pushRoute(RouteNames.responseHistory),
             icon: const Icon(Icons.menu),
           ),
           const Spacer(),
-          const CircleAvatar(),
+          const UserAvatar(radius: 20),
         ],
       ),
     );

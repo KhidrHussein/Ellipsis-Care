@@ -32,8 +32,8 @@ class AppColors {
   static const Color drugIconBgColor = Color(0xFFE9F3EB);
   static const Color foodIconBgColor = Color(0xFFD2FFF4);
 
-  static const Color dashboardActionBgColor = Color(0xFFE5E5EA);
-  static const Color dashboardActionFontColor = Color(0xFF797979);
+  static const Color homeBtnColor = Color(0xFFE5E5EA);
+  static const Color homeBtnFontColor = Color(0xFF797979);
   static const Color pauseIconBgColor = Color(0xFF444444);
   static const Color stopIconBgColor = Color(0xFFFE0001);
   static const Color deleteButtonColor = Color(0xFFFF3B30);
@@ -58,6 +58,20 @@ class AppColors {
   static const Color medicationProgressIndicatorColor = Color(0xFFEDB31E);
   static const Color medicationProgressBgColor = Color(0xFFFEF0D5);
   static const Color medicationCardSubTextColor = Color(0xFF605F62);
+  static const Color timePickerBgColor = Color(0x1F767680);
+
+  static const Color optimalScoreColor = Color(0xFF4CAF50);
+  static const Color strongScoreColor = Color(0xFF8BC34A);
+  static const Color moderateScoreColor = Color(0xFFCDDC39);
+  static const Color weakScoreColor = Color(0xFFFF9800);
+  static const Color outScoreColor = Color(0xFFF44336);
+
+
+  static const Color optimalScoreBgColor = Color(0xFFA5D6A7);
+  static const Color strongScoreBgColor = Color(0xFFC5E1A5);
+  static const Color moderateScoreBgColor = Color(0xFFE6EE9C);
+  static const Color weakScoreBgColor = Color(0xFFFFCC80);
+  static const Color outScoreBgColor = Color(0xFFF44336);
 
   static const List<Color> mealAndNutritionCardColorsDark = [
     Color(0xFF041E5A),

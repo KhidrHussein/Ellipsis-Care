@@ -34,6 +34,8 @@ class _AddReminderState extends State<AddReminder> {
       ValueNotifier(null);
   final ValueNotifier<DateTime?> _startDate = ValueNotifier(null);
   final ValueNotifier<DateTime?> _endDate = ValueNotifier(null);
+  final ValueNotifier<TimeOfDay> _startReminderAt = ValueNotifier(TimeOfDay.now());
+  final ValueNotifier<TimeOfDay> _endReminderAt = ValueNotifier(TimeOfDay.now());
 
   @override
   void dispose() {
@@ -99,7 +101,14 @@ class _AddReminderState extends State<AddReminder> {
                               ),
                               child: Column(
                                 children: [
-                                  SvgPicture.asset(reminderType.icon),
+                                  SvgPicture.asset(
+                                    reminderType.icon,
+                                    width: 32,
+                                    colorFilter: ColorFilter.mode(
+                                      reminderType.color,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
                                   10.sizedBoxHeight,
                                   Text(
                                     reminderType.name,
@@ -203,12 +212,14 @@ class _AddReminderState extends State<AddReminder> {
                 children: [
                   DatePicker(
                     hint: "Start Date",
-                    listenable: _startDate,
+                    dateListenable: _startDate,
+                    timeListenable: _startReminderAt,
                   ),
                   16.sizedBoxWidth,
                   DatePicker(
                     hint: "End Date",
-                    listenable: _endDate,
+                    dateListenable: _endDate,
+                    timeListenable: _endReminderAt,
                   ),
                 ],
               ),
@@ -248,6 +259,8 @@ class _AddReminderState extends State<AddReminder> {
                     instruction: _instruction.first,
                     startDate: _startDate.value!,
                     endDate: _endDate.value!,
+                    reminderStartTime: _startReminderAt.value!,
+                    reminderEndTime: _endReminderAt.value!,
                   );
 
                   UtilHelpers.popRoute(model);

@@ -61,17 +61,14 @@ class _SectionOptionState extends State<SectionOption> {
                       value: value,
                       onChanged: (value) {
                         _switchValue.value = value;
-                        widget.onChanged!(value);
+                        widget.onChanged ?? (value);
                       },
                     ),
                   );
                 },
               )
             else
-              const Icon(
-                Icons.keyboard_arrow_right,
-                size: 24,
-              )
+              const Icon(Icons.keyboard_arrow_right, size: 24)
           ],
         ),
       ),

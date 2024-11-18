@@ -26,7 +26,7 @@ class HomeActionChip extends StatelessWidget {
         margin: REdgeInsets.only(right: 10),
         padding: REdgeInsets.symmetric(horizontal: 15, vertical: 9),
         decoration: BoxDecoration(
-          color: AppColors.dashboardActionBgColor,
+          color: AppColors.homeBtnColor,
           border: Border.all(color: AppColors.generalOutlineBorder),
           borderRadius: BorderRadius.circular(10.r),
         ),
@@ -41,7 +41,7 @@ class HomeActionChip extends StatelessWidget {
               textAlign: TextAlign.center,
               style: context.textTheme.bodySmall?.copyWith(
                 fontSize: 12.sp,
-                color: AppColors.dashboardActionFontColor,
+                color: AppColors.homeBtnFontColor,
               ),
             )
           ],

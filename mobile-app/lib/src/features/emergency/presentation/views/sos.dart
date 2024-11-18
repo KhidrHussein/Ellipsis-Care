@@ -8,6 +8,7 @@ import 'package:ellipsis_care/core/constants/colors.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 
 import '../../../../../core/constants/asset_strings.dart';
+import '../../../../shared/page_info.dart';
 
 class SosPage extends StatelessWidget {
   const SosPage({super.key});
@@ -38,6 +39,11 @@ class SosPage extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          Positioned(
+            right: 0,
+            child:
+                PageInfo(info: "Click the SOS button in case of emergencies"),
           ),
           const ContactSheet()
         ],

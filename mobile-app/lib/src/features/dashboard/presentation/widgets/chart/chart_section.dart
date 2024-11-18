@@ -11,6 +11,8 @@ class ChartSection extends StatelessWidget {
   final String chartTitle;
   const ChartSection({super.key, required this.chartTitle});
 
+  final _items = const ["Day", "Year", "Month", "Week"];
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,8 +36,32 @@ class ChartSection extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Placeholder(fallbackWidth: 40, fallbackHeight: 20),
-                  const Spacer(),
+                  Flexible(
+                    child: DropdownButton<String>(
+                      elevation: 4,
+                      menuWidth: 84.w,
+                      isExpanded: true,
+                      borderRadius: BorderRadius.circular(5.r),
+                      padding: REdgeInsets.only(left: 12),
+                      style: context.textTheme.labelSmall?.copyWith(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.black.withOpacity(.87),
+                      ),
+                      underline: const SizedBox(),
+                      value: _items.first,
+                      items: _items
+                          .map(
+                            (item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(item),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {},
+                    ),
+                  ),
+                  // const Spacer(),
                   IconButton(
                     onPressed: () => UtilHelpers.pushRoute(RouteNames.addData),
                     icon: const Icon(Icons.add),
