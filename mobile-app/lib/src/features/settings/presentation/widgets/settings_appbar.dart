@@ -15,7 +15,13 @@ class SettingsAppbar extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () => UtilHelpers.popRoute(),
-          child: SvgPicture.asset(AssetStrings.navigateBackIcon),
+          child: SvgPicture.asset(
+            AssetStrings.navigateBackIcon,
+            colorFilter: ColorFilter.mode(
+              context.textTheme.titleMedium!.color!,
+              BlendMode.srcIn,
+            ),
+          ),
         ),
         if (title != null) ...[
           5.sizedBoxWidth,

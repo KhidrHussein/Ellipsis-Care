@@ -1,7 +1,4 @@
 import '../../constants/asset_strings.dart';
-import 'package:flutter/widgets.dart';
-
-import '../../constants/colors.dart';
 
 enum ReminderInterval {
   daily(intervalName: "Daily"),
@@ -30,28 +27,11 @@ enum ReminderInstruction {
 }
 
 enum ReminderType {
-  food(
-    name: "Food",
-    icon: AssetStrings.foodIcon,
-    color: AppColors.foodIconColor,
-    backgroundColor: AppColors.foodIconBgColor,
-  ),
-  drug(
-    name: "Drug",
-    icon: AssetStrings.drugIcon,
-    color: AppColors.drugIconColor,
-    backgroundColor: AppColors.drugIconBgColor,
-  );
+  food(name: "Food", icon: AssetStrings.foodIcon),
+  drug(name: "Drug", icon: AssetStrings.drugIcon);
 
-  const ReminderType({
-    required this.name,
-    required this.icon,
-    required this.color,
-    required this.backgroundColor,
-  });
+  const ReminderType({required this.name, required this.icon});
 
   final String name;
   final String icon;
-  final Color backgroundColor;
-  final Color color;
 }

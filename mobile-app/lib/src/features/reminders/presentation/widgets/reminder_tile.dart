@@ -9,6 +9,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:ellipsis_care/core/utils/extensions.dart';
 
+import '../../../../../core/utils/enums/reminder.dart';
+
 class ReminderTile extends StatefulWidget {
   final ReminderModel reminder;
   const ReminderTile({super.key, required this.reminder});
@@ -20,6 +22,13 @@ class ReminderTile extends StatefulWidget {
 class _ReminderTileState extends State<ReminderTile> {
   final ValueNotifier<bool> _showOptions = ValueNotifier(false);
   final ValueNotifier<bool> _isCurrentlySelected = ValueNotifier(false);
+  late final ValueNotifier<bool> _markedAsCompleted;
+
+  @override
+  void initState() {
+    super.initState();
+    _markedAsCompleted = ValueNotifier(widget.reminder.eventIsCompleted);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +52,10 @@ class _ReminderTileState extends State<ReminderTile> {
                       shape: CircleBorder(),
                       color: AppColors.reminderTileCheckColor,
                     ),
-                    child: widget.reminder.eventIsCompleted
-                        ? const Icon(Icons.check,
-                            size: 12, color: AppColors.white)
+                    child: _markedAsCompleted.value
+                        ? Icon(Icons.check,
+                            size: 12,
+                            color: context.themeExtension.reminderColor)
                         : const DecoratedBox(
                             decoration: BoxDecoration(
                                 color: AppColors.white, shape: BoxShape.circle),
@@ -74,15 +84,24 @@ class _ReminderTileState extends State<ReminderTile> {
                     padding: [12, 8].symmetricPadding,
                     borderType: BorderType.RRect,
                     radius: Radius.circular(12.r),
-                    dashPattern: _showOptions.value ? [8, 0] : const [8, 4],
-                    color: widget.reminder.type.color,
+                    dashPattern:
+                        _markedAsCompleted.value ? [8, 0] : const [8, 4],
+                    color: switch (widget.reminder.type) {
+                      ReminderType.drug => context.themeExtension.drugColor,
+                      ReminderType.food => context.themeExtension.foodColor,
+                    },
                     child: Column(
                       children: [
                         Row(
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                color: widget.reminder.type.backgroundColor,
+                                color: switch (widget.reminder.type) {
+                                  ReminderType.drug =>
+                                    context.themeExtension.drugBgColor,
+                                  ReminderType.food =>
+                                    context.themeExtension.foodBgColor,
+                                },
                                 borderRadius: BorderRadius.circular(4.r),
                               ),
                               child: SvgPicture.asset(
@@ -90,7 +109,12 @@ class _ReminderTileState extends State<ReminderTile> {
                                 width: 36.w,
                                 fit: BoxFit.cover,
                                 colorFilter: ColorFilter.mode(
-                                  widget.reminder.type.color,
+                                  switch (widget.reminder.type) {
+                                    ReminderType.drug =>
+                                      context.themeExtension.drugColor,
+                                    ReminderType.food =>
+                                      context.themeExtension.foodColor,
+                                  },
                                   BlendMode.srcIn,
                                 ),
                               ),
@@ -121,8 +145,13 @@ class _ReminderTileState extends State<ReminderTile> {
                             AnimatedOpacity(
                               opacity: value ? 1 : 0,
                               duration: Durations.short1,
-                              child: SvgPicture.asset(AssetStrings.editIcon)
-                                  .alignCenter,
+                              child: SvgPicture.asset(
+                                AssetStrings.editIcon,
+                                colorFilter: ColorFilter.mode(
+                                  context.themeExtension.reminderInverseColor,
+                                  BlendMode.srcIn,
+                                ),
+                              ).alignCenter,
                             )
                           ],
                         ),
@@ -137,6 +166,7 @@ class _ReminderTileState extends State<ReminderTile> {
                                   Expanded(
                                     child: FilledButton(
                                       onPressed: () {
+                                        _markedAsCompleted.value = !_markedAsCompleted.value;
                                         widget.reminder
                                             .copyWith(eventIsCompleted: true);
                                       },
@@ -153,7 +183,8 @@ class _ReminderTileState extends State<ReminderTile> {
                                         style: context.textTheme.labelLarge
                                             ?.copyWith(
                                           fontSize: 15.sp,
-                                          color: AppColors.white,
+                                          color: context
+                                              .themeExtension.reminderColor,
                                         ),
                                       ),
                                     ),
@@ -168,8 +199,9 @@ class _ReminderTileState extends State<ReminderTile> {
                                         padding: REdgeInsets.symmetric(
                                             horizontal: 26, vertical: 10),
                                         shape: RoundedRectangleBorder(
-                                          side: const BorderSide(
-                                              color: AppColors.black),
+                                          side: BorderSide(
+                                              color: context.themeExtension
+                                                  .reminderInverseColor),
                                           borderRadius:
                                               BorderRadius.circular(10.r),
                                         ),
@@ -179,7 +211,8 @@ class _ReminderTileState extends State<ReminderTile> {
                                         style: context.textTheme.labelLarge
                                             ?.copyWith(
                                           fontSize: 15.sp,
-                                          color: AppColors.black,
+                                          color: context.themeExtension
+                                              .reminderInverseColor,
                                         ),
                                       ),
                                     ),

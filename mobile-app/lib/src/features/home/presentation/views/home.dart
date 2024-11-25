@@ -1,38 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ellipsis_care/config/router/route_names.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/home/presentation/controller/bloc/home_bloc.dart';
+import 'package:ellipsis_care/src/features/home/models/transcribed_response.dart';
+import 'package:ellipsis_care/src/features/home/presentation/controller/home_bloc/home_bloc.dart';
 import 'package:ellipsis_care/src/features/home/presentation/views/not_recording.dart';
-
-import '../../../../shared/appbar.dart';
+import 'package:ellipsis_care/src/features/home/presentation/views/prompt_responses.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = context.read<HomeBloc>();
+    final homeBloc = BlocProvider.of<HomeBloc>(context);
 
     return SafeArea(
-      child: Column(
-        children: [
-          const ProfileBar(),
-          const Spacer(),
-          BlocConsumer<HomeBloc, HomeState>(
-            bloc: homeBloc,
-            listener: (context, state) {
-              switch (state) {
-                case StartRecordingState():
-                  UtilHelpers.pushRoute(RouteNames.recording);
-                  break;
-                default:
-              }
-            },
-            builder: (context, state) => const NotRecording(),
-          ),
-        ],
+      child: BlocBuilder<HomeBloc, HomeState>(
+        bloc: homeBloc,
+        builder: (context, state) {
+          return switch (state) {
+            InitialState() => const NotRecording(),
+            LoadingState() => const Center(child: CircularProgressIndicator()),
+            UploadToAISuccessful() => PromptResponses(
+                responses: homeBloc.state as List<TranscribedResponse>),
+            UploadToAIFailed(:String? error) => Text("$error"),
+          };
+        },
       ),
     );
   }

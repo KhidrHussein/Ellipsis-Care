@@ -3,8 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:ellipsis_care/core/utils/extensions.dart';
 
-import '../../core/constants/colors.dart';
-
 class PageInfo extends StatelessWidget {
   final String info;
   PageInfo({super.key, required this.info});
@@ -16,13 +14,13 @@ class PageInfo extends StatelessWidget {
       controller: _controller,
       overlayChildBuilder: (context) {
         return Positioned(
-          right: 32,
-          top: 96,
+          right: 28,
+          top: 60,
           child: Container(
             constraints: BoxConstraints(maxWidth: 227.w, minHeight: 36.h),
             padding: REdgeInsets.symmetric(horizontal: 12, vertical: 14),
             decoration: BoxDecoration(
-              color: AppColors.homeBtnColor,
+              color: context.themeExtension.homeColor,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10.r),
                 bottomLeft: Radius.circular(10.r),
@@ -32,7 +30,7 @@ class PageInfo extends StatelessWidget {
             child: Text(
               info,
               style: context.textTheme.labelMedium?.copyWith(
-                color: AppColors.black.withOpacity(.5),
+                color: context.textTheme.labelMedium?.color!.withOpacity(.5),
               ),
             ),
           ),

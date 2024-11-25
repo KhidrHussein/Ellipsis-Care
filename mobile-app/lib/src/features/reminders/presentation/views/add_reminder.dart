@@ -34,8 +34,10 @@ class _AddReminderState extends State<AddReminder> {
       ValueNotifier(null);
   final ValueNotifier<DateTime?> _startDate = ValueNotifier(null);
   final ValueNotifier<DateTime?> _endDate = ValueNotifier(null);
-  final ValueNotifier<TimeOfDay> _startReminderAt = ValueNotifier(TimeOfDay.now());
-  final ValueNotifier<TimeOfDay> _endReminderAt = ValueNotifier(TimeOfDay.now());
+  final ValueNotifier<TimeOfDay> _startReminderAt =
+      ValueNotifier(TimeOfDay.now());
+  final ValueNotifier<TimeOfDay> _endReminderAt =
+      ValueNotifier(TimeOfDay.now());
 
   @override
   void dispose() {
@@ -48,7 +50,7 @@ class _AddReminderState extends State<AddReminder> {
   Widget build(BuildContext context) {
     return Card(
       borderOnForeground: false,
-      color: AppColors.white,
+      color: context.themeExtension.reminderColor,
       margin: REdgeInsets.symmetric(horizontal: 16, vertical: 99),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5.r),
@@ -72,7 +74,8 @@ class _AddReminderState extends State<AddReminder> {
               subsection: TextField(
                 controller: _nameController,
                 decoration: const InputDecoration(
-                    hintText: "Input the name of the reminder"),
+                  hintText: "Input the name of the reminder",
+                ),
               ),
             ),
             AddReminderSection(
@@ -93,10 +96,15 @@ class _AddReminderState extends State<AddReminder> {
                                 vertical: 10,
                               ),
                               decoration: BoxDecoration(
-                                color: reminderType.backgroundColor,
+                                color: switch (reminderType) {
+                                  ReminderType.drug =>
+                                    context.themeExtension.drugBgColor,
+                                  ReminderType.food =>
+                                    context.themeExtension.foodBgColor,
+                                },
                                 borderRadius: BorderRadius.circular(5.r),
                                 border: value == reminderType
-                                    ? Border.all(color: AppColors.black)
+                                    ? Border.all(color: context.themeExtension.reminderInverseColor)
                                     : null,
                               ),
                               child: Column(
@@ -105,7 +113,12 @@ class _AddReminderState extends State<AddReminder> {
                                     reminderType.icon,
                                     width: 32,
                                     colorFilter: ColorFilter.mode(
-                                      reminderType.color,
+                                      switch (reminderType) {
+                                        ReminderType.drug =>
+                                          context.themeExtension.drugColor,
+                                        ReminderType.food =>
+                                          context.themeExtension.foodColor,
+                                      },
                                       BlendMode.srcIn,
                                     ),
                                   ),
@@ -115,7 +128,7 @@ class _AddReminderState extends State<AddReminder> {
                                     style:
                                         context.textTheme.bodyMedium?.copyWith(
                                       fontSize: 14.sp,
-                                      color: AppColors.black.withOpacity(.3),
+                                      color: context.themeExtension.reminderInverseColor.withOpacity(.3),
                                     ),
                                   ),
                                 ],
@@ -149,8 +162,8 @@ class _AddReminderState extends State<AddReminder> {
                     sectionName: "Interval (Daily)",
                     subsection: DecoratedBox(
                       decoration: BoxDecoration(
-                        border:
-                            Border.all(color: AppColors.generalOutlineBorder),
+                        border: Border.all(
+                            color: context.themeExtension.reminderInverseColor),
                         borderRadius: BorderRadius.circular(5.r),
                       ),
                       child: ValueListenableBuilder(
@@ -165,14 +178,16 @@ class _AddReminderState extends State<AddReminder> {
                             style: context.textTheme.labelSmall?.copyWith(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w400,
-                              color: AppColors.black.withOpacity(.87),
+                              color: context.textTheme.labelSmall?.color!
+                                  .withOpacity(.87),
                             ),
                             underline: const SizedBox(),
                             hint: Text(
                               "Daily, twice, etc",
                               style: context.textTheme.labelSmall?.copyWith(
                                 fontSize: 14.sp,
-                                color: AppColors.black.withOpacity(.3),
+                                color: context.textTheme.labelSmall?.color!
+                                    .withOpacity(.3),
                               ),
                             ),
                             value: value,

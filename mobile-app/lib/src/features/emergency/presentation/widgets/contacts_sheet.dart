@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/widgets/header.dart';
 
-import '../../../../../core/constants/colors.dart';
 import '../bloc/emergency_bloc.dart';
 import 'contact_tile.dart';
 
@@ -23,7 +22,7 @@ class ContactSheet extends StatelessWidget {
         return Container(
           padding: REdgeInsets.only(left: 16.w, right: 16.w, top: 5.h),
           decoration: BoxDecoration(
-            color: AppColors.emergencyContactDraggableSheetBgColor,
+            color: context.themeExtension.emergencySheetBgColor,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(40.r),
               topRight: Radius.circular(40.r),
@@ -47,9 +46,8 @@ class ContactSheet extends StatelessWidget {
                         if (index == state.contacts.length) {
                           return AddEmergencyContact(
                             key: const ValueKey("add"),
-                            addContact: () => context
-                                .read<EmergencyContactBloc>()
-                                .add(AddContactEvent()),
+                            addContact: () =>
+                                emergencyContactBloc.add(AddContactEvent()),
                           );
                         }
                         return EmergencyContactTile(
@@ -61,9 +59,8 @@ class ContactSheet extends StatelessWidget {
                   }
                   return SliverToBoxAdapter(
                     child: AddEmergencyContact(
-                      addContact: () => context
-                          .read<EmergencyContactBloc>()
-                          .add(AddContactEvent()),
+                      addContact: () =>
+                          emergencyContactBloc.add(AddContactEvent()),
                     ),
                   );
                 },

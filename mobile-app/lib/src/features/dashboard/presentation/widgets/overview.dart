@@ -1,3 +1,4 @@
+import 'package:community_charts_flutter/community_charts_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -18,7 +19,20 @@ class Overview extends StatelessWidget {
           ),
         ).alignLeft,
         30.sizedBoxHeight,
-        const Placeholder(fallbackHeight: 180),
+        SizedBox(
+          width: .4.sw,
+          height: .2.sh,
+          child: PieChart(
+            [
+              Series(
+                id: "",
+                data: [],
+                domainFn: (data, index) => "",
+                measureFn: (data, index) => 4,
+              )
+            ],
+          ),
+        ),
         30.sizedBoxHeight,
       ],
     );

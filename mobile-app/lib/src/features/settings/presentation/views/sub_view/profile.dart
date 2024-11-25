@@ -41,7 +41,7 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: REdgeInsets.only(left: 16, right: 16, bottom: 16),
+          padding: REdgeInsets.only(left: 16, right: 16, bottom: 16, top: 30),
           child: Column(
             children: [
               const SettingsAppbar(title: "Profile"),

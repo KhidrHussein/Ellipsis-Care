@@ -43,9 +43,10 @@ class UserProfile extends StatelessWidget {
                   Container(
                     padding: REdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.white,
+                      color: context.textTheme.labelMedium?.color,
+                      // FIXME: use the correct color for border
                       border: Border.all(
-                        color: AppColors.outlineBorderColor.withOpacity(.73),
+                        color: context.themeExtension.homeColor,
                       ),
                       borderRadius: BorderRadius.circular(8.r),
                     ),
@@ -66,7 +67,8 @@ class UserProfile extends StatelessWidget {
                       padding:
                           REdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColors.white,
+                        // FIXME: adjust color here. let it react to changes in inner widget
+                        // color: AppColors.white,
                         borderRadius: BorderRadius.circular(50.r),
                       ),
                       child: Row(

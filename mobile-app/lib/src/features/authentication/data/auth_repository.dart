@@ -23,8 +23,11 @@ class AuthenticationRepository {
       final response = await _service.client.post(ApiUrl.signUp, data: payload);
 
       final apiResult = SuccessfulApiResponse<User>.fromJson(
-        response.data["user"],
-        (json) => User.fromJson(json as Map<String, dynamic>),
+        response.data,
+        (dataJson) {
+          final json = dataJson as Map<String, dynamic>;
+          return User.fromJson(json["user"]);
+        },
       );
 
       return (response: apiResult, exception: null);
@@ -54,7 +57,8 @@ class AuthenticationRepository {
   Future<ApiResult<SuccessfulApiResponse?, AppExceptions>> verifyEmail(
       Map<String, dynamic> payload) async {
     try {
-      final response = await _service.client.post(ApiUrl.verifyEmail, data: payload);
+      final response =
+          await _service.client.post(ApiUrl.verifyEmail, data: payload);
 
       final apiResult = SuccessfulApiResponse.fromJson(
         response.data,

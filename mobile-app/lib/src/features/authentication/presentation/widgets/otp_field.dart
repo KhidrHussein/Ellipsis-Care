@@ -1,5 +1,6 @@
 import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/constants/colors.dart';
@@ -18,6 +19,34 @@ class _OtpFieldState extends State<OtpField> {
   final List<TextEditingController> _controllers =
       List.generate(6, (index) => TextEditingController());
   final List<FocusNode> _nodes = List.generate(6, (index) => FocusNode());
+
+  @override
+  void initState() {
+    super.initState();
+    // for (TextEditingController controller in _controllers) {
+    //   controller.addListener(() {
+    //     HardwareKeyboard.instance
+    //         .isLogicalKeyPressed(LogicalKeyboardKey.clear)
+    //         .printLog();
+      // }
+    // }
+
+    // FocusScope.of(context).onKeyEvent = (node, event) {
+    //   if (event is KeyRepeatEvent) {
+    //     event.logicalKey.printLog();
+    //   }
+    //   return KeyEventResult.ignored;
+    // };
+
+    // for (var node in _nodes) {
+
+    //   // node.addListener(() {
+    //   //   HardwareKeyboard.instance
+    //   //       .isLogicalKeyPressed(LogicalKeyboardKey.clear)
+    //   //       .printLog();
+    //   // });
+    // }
+  }
 
   @override
   void dispose() {

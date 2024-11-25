@@ -7,7 +7,6 @@ class RouteNames {
 
   static const String home = "home_page";
   static const String recording = "recording_page";
-  static const String promptResponses = "prompt_responses_page";
   static const String responseHistory = "response_history_page";
 
   static const String dashboard = "dashboard_page";

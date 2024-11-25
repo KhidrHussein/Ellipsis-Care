@@ -38,7 +38,7 @@ class DashboardSection extends StatelessWidget {
           padding: REdgeInsets.all(15),
           constraints: BoxConstraints(minWidth: .9.sw, minHeight: .2.sh),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: context.themeData.scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(21.r),
           ),
           child: Column(

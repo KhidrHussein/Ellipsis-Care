@@ -2,8 +2,6 @@ import '../../../../../core/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/constants/colors.dart';
-
 class AuthenticationDivider extends StatelessWidget {
   const AuthenticationDivider({super.key});
 
@@ -15,7 +13,7 @@ class AuthenticationDivider extends StatelessWidget {
         children: [
           Expanded(
             child: Divider(
-              color: AppColors.black,
+              color: context.textTheme.bodyMedium?.color,
               indent: 5.w,
               endIndent: 10.w,
             ),
@@ -29,7 +27,7 @@ class AuthenticationDivider extends StatelessWidget {
           ),
           Expanded(
             child: Divider(
-              color: AppColors.black,
+              color: context.textTheme.bodyMedium?.color,
               indent: 10.w,
               endIndent: 5.w,
             ),

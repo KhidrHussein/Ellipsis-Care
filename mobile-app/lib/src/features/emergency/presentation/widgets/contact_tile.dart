@@ -50,12 +50,12 @@ class _EmergencyContactTileState extends State<EmergencyContactTile> {
           fontWeight: FontWeight.w400,
           color: _canEditContactName
               ? AppColors.black
-              : AppColors.emergencyContactNumberColor,
+              : AppColors.contactNumberTextColor,
           fontSize: _canEditContactName ? 15.sp : 12.sp,
         ),
         decoration: InputDecoration(
           filled: true,
-          fillColor: AppColors.editContactTextFieldColor,
+          fillColor: context.themeExtension.editTextfieldColor,
           contentPadding: REdgeInsets.symmetric(horizontal: 5, vertical: 2),
           focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
         ),
@@ -82,7 +82,7 @@ class _EmergencyContactTileState extends State<EmergencyContactTile> {
         text,
         style: context.textTheme.bodyMedium?.copyWith(
           fontSize: 15.sp,
-          color: AppColors.white,
+          color: context.themeExtension.reminderColor,
         ),
       ),
     );
@@ -103,7 +103,7 @@ class _EmergencyContactTileState extends State<EmergencyContactTile> {
         margin: REdgeInsets.only(bottom: 5),
         padding: REdgeInsets.symmetric(horizontal: 10, vertical: 9),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.themeExtension.contactTileColor,
           borderRadius: BorderRadius.circular(15.r),
           border: Border.all(color: AppColors.outlinedButtonBorder),
         ),
@@ -147,7 +147,7 @@ class _EmergencyContactTileState extends State<EmergencyContactTile> {
                         style: context.textTheme.bodyLarge?.copyWith(
                           fontSize: 11.sp,
                           fontWeight: FontWeight.w400,
-                          color: AppColors.emergencyContactNumberColor,
+                          color: AppColors.contactNumberTextColor,
                         ),
                       ),
                     ),
@@ -157,7 +157,7 @@ class _EmergencyContactTileState extends State<EmergencyContactTile> {
                       child: Row(
                         children: [
                           _actionButton(
-                            color: AppColors.black,
+                            color: context.themeExtension.doneButtonColor,
                             text: "Done",
                             onTap: () async {
                               setState(() {
@@ -176,7 +176,7 @@ class _EmergencyContactTileState extends State<EmergencyContactTile> {
                           ),
                           16.sizedBoxWidth,
                           _actionButton(
-                            color: AppColors.deleteButtonColor,
+                            color: context.themeExtension.deleteButtonColor,
                             text: "Delete",
                             onTap: () {
                               emergencyContactBloc.add(
@@ -214,13 +214,18 @@ class AddEmergencyContact extends StatelessWidget {
       child: Container(
         padding: REdgeInsets.symmetric(horizontal: 12, vertical: 16),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.themeExtension.contactTileColor,
           borderRadius: BorderRadius.circular(15.r),
-          border: Border.all(color: AppColors.outlinedButtonBorder),
+          border:
+              Border.all(color: context.themeExtension.contactTileBorderColor),
         ),
         child: Row(
           children: [
-            const Icon(Icons.add_circle_outline_outlined, size: 24),
+            Icon(
+              Icons.add_circle_outline_outlined,
+              size: 24,
+              color: context.textTheme.bodyLarge!.color,
+            ),
             10.sizedBoxWidth,
             Text(
               "Add new",

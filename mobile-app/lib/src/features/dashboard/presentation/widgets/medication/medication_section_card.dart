@@ -40,7 +40,7 @@ class _MedicationSectionCardState extends State<MedicationSectionCard> {
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(
             width: 1.5.w,
-            color: AppColors.medicationCardBorderColor,
+            color: context.themeExtension.medicationCardBorderColor,
           ),
         ),
         child: ValueListenableBuilder(
@@ -88,7 +88,7 @@ class _MedicationSectionCardState extends State<MedicationSectionCard> {
                 height: 85.h,
                 padding: REdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: AppColors.medicationIconBgColor,
+                  color: context.themeExtension.medicationIconBgColor,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: SvgPicture.asset(AssetStrings.medicationIcon),
@@ -136,8 +136,10 @@ class _MedicationSectionCardState extends State<MedicationSectionCard> {
                               (medicationsProgressCubit.progress() / 3) * value,
                           minHeight: 7.h,
                           borderRadius: BorderRadius.circular(8.r),
-                          color: AppColors.medicationProgressIndicatorColor,
-                          backgroundColor: AppColors.medicationProgressBgColor,
+                          color: context
+                              .themeExtension.medicationProgressIndicatorColor,
+                          backgroundColor:
+                              context.themeExtension.medicationProgressBgColor,
                         );
                       },
                     ),

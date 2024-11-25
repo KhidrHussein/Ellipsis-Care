@@ -1,3 +1,5 @@
+import 'package:community_charts_flutter/community_charts_flutter.dart';
+import 'package:ellipsis_care/src/features/settings/presentation/widgets/health_option_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -29,38 +31,14 @@ class ChartSection extends StatelessWidget {
           padding: REdgeInsets.all(5),
           constraints: BoxConstraints(minWidth: 361.w, minHeight: 154.h),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: context.themeExtension.dashboardScaffoldColor,
             borderRadius: BorderRadius.circular(10.r),
           ),
           child: Column(
             children: [
               Row(
                 children: [
-                  Flexible(
-                    child: DropdownButton<String>(
-                      elevation: 4,
-                      menuWidth: 84.w,
-                      isExpanded: true,
-                      borderRadius: BorderRadius.circular(5.r),
-                      padding: REdgeInsets.only(left: 12),
-                      style: context.textTheme.labelSmall?.copyWith(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.black.withOpacity(.87),
-                      ),
-                      underline: const SizedBox(),
-                      value: _items.first,
-                      items: _items
-                          .map(
-                            (item) => DropdownMenuItem<String>(
-                              value: item,
-                              child: Text(item),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (value) {},
-                    ),
-                  ),
+                  const HealthOptionPicker(),
                   // const Spacer(),
                   IconButton(
                     onPressed: () => UtilHelpers.pushRoute(RouteNames.addData),
@@ -79,20 +57,37 @@ class ChartSection extends StatelessWidget {
                   Column(
                     children: [
                       Text(
-                        chartTitle,
-                        style: context.textTheme.titleSmall,
+                        "",
+                        style: context.textTheme.titleSmall
+                            ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                       Text(
-                        chartTitle,
-                        style: context.textTheme.titleSmall,
+                        "",
+                        style: context.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ],
                   ),
-                  const Spacer(flex: 1),
-                  const Flexible(
-                    flex: 9,
-                    child: Placeholder(fallbackHeight: 140),
-                  )
+                  SizedBox(
+                    width: .5.sw,
+                    height: .2.sh,
+                    child: BarChart(
+                      [
+                        Series(
+                          id: "",
+                          displayName: "Some chart",
+                          data: [],
+                          domainFn: (data, index) {
+                            return "data";
+                          },
+                          measureFn: (data, index) {
+                            return 4;
+                          },
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               )
             ],

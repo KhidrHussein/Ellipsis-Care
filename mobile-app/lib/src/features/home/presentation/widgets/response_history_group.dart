@@ -5,8 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ellipsis_care/core/constants/asset_strings.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 
-import '../../../../../core/constants/colors.dart';
-
 class ResponseHistoryGroup extends StatelessWidget {
   final String groupHeader;
   final List<String> responses;
@@ -44,10 +42,16 @@ class ResponseHistoryGroup extends StatelessWidget {
           Container(
             padding: REdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.homeBtnColor,
+              color: context.themeExtension.homeColor,
               borderRadius: BorderRadius.circular(5.r),
             ),
-            child: SvgPicture.asset(AssetStrings.previousMessageIcon),
+            child: SvgPicture.asset(
+              AssetStrings.previousMessageIcon,
+              colorFilter: ColorFilter.mode(
+                context.themeExtension.homeIconColor,
+                BlendMode.srcIn,
+              ),
+            ),
           ),
           10.horizontalSpace,
           Expanded(

@@ -1,4 +1,4 @@
-part of 'cubit.dart';
+part of 'onboarding_cubit.dart';
 
 typedef OnboardingState = ({int currentIndex, OnboardStory story});
 

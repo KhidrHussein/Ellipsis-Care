@@ -81,7 +81,7 @@ class _TimePickerState extends State<TimePicker> {
       padding: REdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: switch (dayPeriod) {
         true => BoxDecoration(
-            color: AppColors.white,
+            color: context.themeExtension.reminderColor,
             borderRadius: BorderRadius.circular(6.r),
           ),
         false => null

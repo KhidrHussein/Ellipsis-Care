@@ -3,30 +3,40 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:ellipsis_care/config/router/route_names.dart';
-import 'package:ellipsis_care/config/theme/controller.dart';
 import 'package:ellipsis_care/core/constants/asset_strings.dart';
+import 'package:ellipsis_care/core/services/storage_service.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/settings/presentation/widgets/section_option.dart';
+import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_card_option.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_group.dart';
 
-import '../../../../../core/constants/colors.dart';
+import '../../../../../config/app_session/app_session_bloc.dart';
+import '../../../../../core/utils/locator.dart';
 import '../widgets/user_profile.dart';
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   const Settings({super.key});
 
   @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  @override
   Widget build(BuildContext context) {
+    final appSessionState = context.watch<AppSessionBloc>().state;
+    final appSessionBloc = context.read<AppSessionBloc>();
+
     return SafeArea(
       child: SingleChildScrollView(
+        padding: REdgeInsets.only(top: 30),
         child: Column(
           children: [
             const UserProfile(),
             Container(
               padding: REdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: context.themeData.scaffoldBackgroundColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(25.r),
                   topRight: Radius.circular(25.r),
@@ -37,29 +47,28 @@ class Settings extends StatelessWidget {
                   SettingsGroup(
                     groupName: "Personal",
                     options: [
-                      SectionOption(
-                        leadingIcon: AssetStrings.profileIcon,
-                        optionTitle: "Profile",
+                      SettingCardOption(
+                        svgIcon: AssetStrings.profileIcon,
+                        title: "Profile",
                         onPressed: () =>
                             UtilHelpers.pushRoute(RouteNames.profile),
                       ),
-                      SectionOption(
-                        leadingIcon: AssetStrings.changePasswordIcon,
-                        optionTitle: "Change Password",
+                      SettingCardOption(
+                        svgIcon: AssetStrings.changePasswordIcon,
+                        title: "Change Password",
                         onPressed: () =>
                             UtilHelpers.pushRoute(RouteNames.changePassword),
                       ),
-                      // SectionOption(
-                      //   leadingIcon: AssetStrings.languageAndVoiceIcon,
-                      //   optionTitle: "Language & Voice",
-                      //     onPressed: () {},
-                      // ),
-                      SectionOption(
-                        optionTitle: "Dark Mode",
-                        hasSwitch: true,
-                        onChanged: (value) {
+                      SettingCardOptionWithSwitch(
+                        title: "Dark Mode",
+                        initialSwitchValue:
+                            appSessionState.session!.enableDarkMode,
+                        onChanged: (value) async {
                           if (value != null) {
-                            context.read<ThemeCubit>().changeTheme(value);
+                            _updateUserData(value);
+                            appSessionBloc.add(
+                              EnableDarkModeEvent(darkModeIsEnabled: value),
+                            );
                           }
                         },
                       ),
@@ -68,44 +77,44 @@ class Settings extends StatelessWidget {
                   SettingsGroup(
                     groupName: "Notification Preferences",
                     options: [
-                      SectionOption(
-                        leadingIcon: AssetStrings.pushNotificationIcon,
-                        optionTitle: "Push Notification",
-                        hasSwitch: true,
-                        onPressed: () {},
+                      SettingCardOptionWithSwitch(
+                        svgIcon: AssetStrings.pushNotificationIcon,
+                        title: "Push Notification",
+                        initialSwitchValue: true,
+                        onChanged: (value) {},
                       ),
                       5.sizedBoxHeight,
-                      SectionOption(
-                        leadingIcon: AssetStrings.drugIcon,
-                        optionTitle: "Medication",
-                        hasSwitch: true,
-                        onPressed: () {},
+                      SettingCardOptionWithSwitch(
+                        svgIcon: AssetStrings.drugIcon,
+                        title: "Medication",
+                        initialSwitchValue: true,
+                        onChanged: (value) {},
                       ),
-                      SectionOption(
-                        leadingIcon: AssetStrings.foodIcon,
-                        optionTitle: "Food",
-                        hasSwitch: true,
-                        onPressed: () {},
+                      SettingCardOptionWithSwitch(
+                        svgIcon: AssetStrings.foodIcon,
+                        title: "Food",
+                        initialSwitchValue: true,
+                        onChanged: (value) {},
                       ),
-                      SectionOption(
-                        leadingIcon: AssetStrings.emergencyNotificationIcon,
-                        optionTitle: "Emergency",
-                        hasSwitch: true,
-                        onPressed: () {},
+                      SettingCardOptionWithSwitch(
+                        svgIcon: AssetStrings.emergencyNotificationIcon,
+                        title: "Emergency",
+                        initialSwitchValue: true,
+                        onChanged: (value) {},
                       ),
                     ],
                   ),
                   SettingsGroup(
                     groupName: "More",
                     options: [
-                      SectionOption(
-                        leadingIcon: AssetStrings.faqIcon,
-                        optionTitle: "FAQs",
+                      SettingCardOption(
+                        svgIcon: AssetStrings.faqIcon,
+                        title: "FAQs",
                         onPressed: () => UtilHelpers.pushRoute(RouteNames.faq),
                       ),
-                      SectionOption(
-                        leadingIcon: AssetStrings.legalIcon,
-                        optionTitle: "Legal",
+                      SettingCardOption(
+                        svgIcon: AssetStrings.legalIcon,
+                        title: "Legal",
                         onPressed: () =>
                             UtilHelpers.pushRoute(RouteNames.legal),
                       ),
@@ -118,5 +127,11 @@ class Settings extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _updateUserData(bool value) async {
+    final userdata = await injector<StorageService>().getUserData();
+    userdata!.enableDarkMode = value;
+    await userdata.save();
   }
 }

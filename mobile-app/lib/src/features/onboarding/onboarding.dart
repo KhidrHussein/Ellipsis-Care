@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/constants/colors.dart';
 import '../../../core/utils/extensions.dart';
-import 'cubit/cubit.dart';
+import 'cubit/onboarding_cubit.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({super.key});
@@ -34,8 +34,7 @@ class Onboarding extends StatelessWidget {
                             child: Text(
                               stories[index].title,
                               textAlign: TextAlign.center,
-                              style: context.textTheme.bodyLarge?.copyWith(
-                                fontSize: 24.sp,
+                              style: context.textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -45,10 +44,8 @@ class Onboarding extends StatelessWidget {
                             child: Text(
                               stories[index].body,
                               textAlign: TextAlign.center,
-                              style: context.textTheme.bodySmall?.copyWith(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w500,
-                              ),
+                              style: context.textTheme.bodyMedium
+                                  ?.copyWith(fontSize: 15.sp),
                             ),
                           ),
                         ],
@@ -59,13 +56,6 @@ class Onboarding extends StatelessWidget {
               ),
               BlocBuilder<OnboardingCubit, OnboardingState>(
                 bloc: cubit,
-                // listener: (context, state) {
-                //   if (state.currentIndex == 4) {
-                //     context
-                //         .read<EmergencyContactBloc>()
-                //         .add(AddMultipleContactsEvent());
-                //   }
-                // },
                 builder: (context, state) {
                   return Column(
                     children: [

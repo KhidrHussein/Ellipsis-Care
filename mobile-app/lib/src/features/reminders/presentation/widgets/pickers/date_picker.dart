@@ -33,7 +33,8 @@ class _DatePickerState extends State<DatePicker> {
       child: Container(
         padding: REdgeInsets.symmetric(horizontal: 10, vertical: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.generalOutlineBorder),
+          //FIXME: change the border color here
+          border: Border.all(color: AppColors.homeColorLight),
           borderRadius: BorderRadius.circular(5.r),
         ),
         child: Row(
@@ -49,8 +50,8 @@ class _DatePickerState extends State<DatePicker> {
                   style: context.textTheme.bodyMedium?.copyWith(
                     fontSize: 14.sp,
                     color: value != null
-                        ? AppColors.black
-                        : AppColors.black.withOpacity(.3),
+                        ? context.textTheme.bodyMedium?.color
+                        : context.textTheme.bodyMedium?.color?.withOpacity(.3),
                   ),
                 );
               },
@@ -66,8 +67,8 @@ class _DatePickerState extends State<DatePicker> {
                       constraints:
                           BoxConstraints(maxWidth: 1.sw, maxHeight: .55.sh),
                       child: Dialog(
-                        backgroundColor: AppColors.white,
-                        shadowColor: AppColors.black,
+                        backgroundColor: context.themeExtension.reminderColor,
+                        shadowColor: context.themeExtension.reminderInverseColor,
                         shape: const ContinuousRectangleBorder(),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -105,10 +106,7 @@ class _DatePickerState extends State<DatePicker> {
                     ),
                   );
                 },
-                child: Icon(
-                  Icons.calendar_month,
-                  color: AppColors.black.withOpacity(.3),
-                ),
+                child: const Icon(Icons.calendar_month),
               ),
             )
           ],

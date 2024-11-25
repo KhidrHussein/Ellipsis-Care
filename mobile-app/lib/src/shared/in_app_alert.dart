@@ -23,8 +23,7 @@ class InAppAlert extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: .9.sw,
-      constraints: BoxConstraints.loose(const Size(300, 120)),
+      constraints: const BoxConstraints(maxWidth: 300, minHeight: 70),
       decoration: BoxDecoration(
         color: AppColors.white,
         boxShadow: [
@@ -38,6 +37,7 @@ class InAppAlert extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+        
           Padding(
             padding: REdgeInsets.fromLTRB(15, 9, 15, 15),
             child: Row(
@@ -61,13 +61,15 @@ class InAppAlert extends StatelessWidget {
                           color: AppColors.alertTitleTextColor,
                         ),
                       ),
-                      Text(
-                        message,
-                        style: context.textTheme.bodySmall?.copyWith(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: AssetStrings.colfax,
-                          color: AppColors.alertMessageTextColor,
+                      Flexible(
+                        child: Text(
+                          message,
+                          style: context.textTheme.bodySmall?.copyWith(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: AssetStrings.colfax,
+                            color: AppColors.alertMessageTextColor,
+                          ),
                         ),
                       ),
                     ],

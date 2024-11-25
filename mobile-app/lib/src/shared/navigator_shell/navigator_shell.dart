@@ -11,7 +11,7 @@ import '../../../config/router/route_names.dart';
 import '../../../core/constants/asset_strings.dart';
 import '../../../core/constants/colors.dart';
 
-part 'cubit.dart';
+part 'bottom_bar_cubit.dart';
 
 class NavigatorShell extends StatelessWidget {
   final Widget child;
@@ -28,9 +28,10 @@ class NavigatorShell extends StatelessWidget {
     return Scaffold(
       body: child,
       backgroundColor: switch (routerState.matchedLocation) {
-        '/settings' => context.themeData.primaryColorDark,
-        '/dashboard' => context.themeData.primaryColorDark,
-        _ => context.themeData.primaryColorLight
+        '/settings' ||
+        '/dashboard' =>
+          context.themeExtension.dashboardScaffoldColor,
+        _ => context.themeData.scaffoldBackgroundColor,
       },
       bottomNavigationBar: const CustomNavigatorBar(),
     );
@@ -144,13 +145,13 @@ class NavigatorBarItem extends StatelessWidget {
                 iconPath,
                 width: 24.w,
                 height: 24.h,
-                colorFilter: ColorFilter.mode(
-                  switch (selectedIcon) {
-                    true => AppColors.black,
-                    false => AppColors.navigationIconColor,
-                  },
-                  BlendMode.srcIn,
-                ),
+                // colorFilter: ColorFilter.mode(
+                //   switch (selectedIcon) {
+                //     true => AppColors.black,
+                //     false => AppColors.navigationIconColor,
+                //   },
+                //   BlendMode.srcIn,
+                // ),
               ),
             if (selectedIcon && iconPath != AssetStrings.emergency)
               Container(
@@ -450,7 +451,7 @@ class _CustomNavigatorBarPainter extends CustomPainter {
     borderPath.close();
 
     Paint borderPathPainter = Paint()
-      ..color = AppColors.navigatiorBarBorderColor
+      ..color = AppColors.bottomBarBorderColor
       ..style = PaintingStyle.fill;
 
     canvas.drawPath(borderPath, borderPathPainter);

@@ -32,7 +32,7 @@ class SosPage extends StatelessWidget {
                   "SOS",
                   style: context.textTheme.displayLarge?.copyWith(
                     fontSize: 96.sp,
-                    color: AppColors.white,
+                    // color: context.themeExtension.,
                     fontWeight: FontWeight.w700,
                     fontFamily: AssetStrings.visbyRoundCF,
                   ),

@@ -28,13 +28,14 @@ class ReminderSheet extends StatelessWidget {
         return Container(
           padding: REdgeInsets.only(left: 27.w, right: 27.w, top: 6.h),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: context.themeExtension.reminderColor,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20.r),
               topRight: Radius.circular(20.r),
             ),
-            border: const Border.symmetric(
-              horizontal: BorderSide(color: AppColors.outlineBorderColor),
+            border: Border.symmetric(
+              // FIXME: Use the correct color
+              horizontal: BorderSide(color: context.themeExtension.homeColor),
             ),
           ),
           child: CustomScrollView(
@@ -102,7 +103,7 @@ class ReminderSheet extends StatelessWidget {
                     child: Container(
                       padding: REdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.black,
+                        color: context.themeExtension.reminderInverseColor,
                         borderRadius: BorderRadius.circular(12.r),
                         boxShadow: const [
                           BoxShadow(
@@ -112,7 +113,8 @@ class ReminderSheet extends StatelessWidget {
                           )
                         ],
                       ),
-                      child: const Icon(Icons.add, color: AppColors.white),
+                      child: Icon(Icons.add,
+                          color: context.themeExtension.reminderColor),
                     ),
                   ),
                 ),

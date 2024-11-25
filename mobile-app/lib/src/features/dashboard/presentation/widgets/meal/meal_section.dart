@@ -15,11 +15,11 @@ class MealAndNutritionSection extends StatelessWidget {
     return Column(
       children: [
         MealSectionCard(
-          icon: AssetStrings.breakfastIcon,
           title: "Breakfast",
           recipe: "Oats with milk",
-          color: AppColors.breakfastCardColor,
           amountOfCalories: 300,
+          icon: AssetStrings.breakfastIcon,
+          color: context.themeExtension.breakfastCardColor,
         ),
         5.verticalSpace,
         Row(
@@ -28,19 +28,19 @@ class MealAndNutritionSection extends StatelessWidget {
               child: Column(
                 children: [
                   MealSectionCard(
-                    icon: AssetStrings.lunchIcon,
                     title: "Lunch",
-                    color: AppColors.lunchCardColor,
                     recipe: "Oats with milk",
                     amountOfCalories: 300,
+                    icon: AssetStrings.lunchIcon,
+                    color: context.themeExtension.lunchCardColor,
                   ),
                   5.verticalSpace,
                   MealSectionCard(
-                    icon: AssetStrings.snacksIcon,
                     title: "Snacks",
-                    color: AppColors.snacksCardColor,
                     recipe: "Oats with milk",
                     amountOfCalories: 300,
+                    icon: AssetStrings.snacksIcon,
+                    color: context.themeExtension.snacksCardColor,
                   ),
                 ],
               ),
@@ -50,12 +50,12 @@ class MealAndNutritionSection extends StatelessWidget {
               child: Column(
                 children: [
                   MealSectionCard(
-                    icon: AssetStrings.dinnerIcon,
                     title: "Dinner",
-                    color: AppColors.dinnerCardColor,
                     recipe: "Oats with milk",
                     amountOfCalories: 300,
                     stretchToFill: true,
+                    icon: AssetStrings.dinnerIcon,
+                    color: context.themeExtension.dinnerCardColor,
                   ),
                 ],
               ),

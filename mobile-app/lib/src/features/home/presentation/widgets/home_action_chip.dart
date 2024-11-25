@@ -5,6 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ellipsis_care/core/constants/colors.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 
+import '../../../../../core/constants/asset_strings.dart';
+
 class HomeActionChip extends StatelessWidget {
   final String icon;
   final String title;
@@ -26,8 +28,10 @@ class HomeActionChip extends StatelessWidget {
         margin: REdgeInsets.only(right: 10),
         padding: REdgeInsets.symmetric(horizontal: 15, vertical: 9),
         decoration: BoxDecoration(
-          color: AppColors.homeBtnColor,
-          border: Border.all(color: AppColors.generalOutlineBorder),
+          color: context.themeExtension.homeColor,
+
+          //FIXME: change the color here
+          border: Border.all(color: AppColors.bottomBarBorderColor),
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Column(
@@ -35,13 +39,17 @@ class HomeActionChip extends StatelessWidget {
           children: [
             SvgPicture.asset(
               icon,
+              colorFilter: icon != AssetStrings.sosIcon
+                  ? ColorFilter.mode(
+                      context.themeExtension.homeIconColor, BlendMode.srcIn)
+                  : null,
             ),
             Text(
               title,
               textAlign: TextAlign.center,
               style: context.textTheme.bodySmall?.copyWith(
                 fontSize: 12.sp,
-                color: AppColors.homeBtnFontColor,
+                color: context.themeExtension.homeTextColor,
               ),
             )
           ],

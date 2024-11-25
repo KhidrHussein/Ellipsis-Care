@@ -1,4 +1,5 @@
 import 'package:ellipsis_care/src/features/dashboard/presentation/controller/cubit/medications_cubit.dart';
+import 'package:ellipsis_care/src/features/home/presentation/controller/microphone_bloc/mic_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -14,13 +15,12 @@ import 'package:ellipsis_care/src/features/dashboard/presentation/views/dashboar
 import 'package:ellipsis_care/src/features/emergency/presentation/bloc/emergency_bloc.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/views/emergency_call.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/views/sos.dart';
-import 'package:ellipsis_care/src/features/home/presentation/controller/bloc/home_bloc.dart';
-import 'package:ellipsis_care/src/features/home/presentation/controller/cubit/dashboard_cubit.dart';
+import 'package:ellipsis_care/src/features/home/presentation/controller/home_bloc/home_bloc.dart';
 import 'package:ellipsis_care/src/features/home/presentation/views/home.dart';
 import 'package:ellipsis_care/src/features/home/presentation/views/prompt_responses.dart';
 import 'package:ellipsis_care/src/features/home/presentation/views/recording_page.dart';
 import 'package:ellipsis_care/src/features/home/presentation/views/response_history.dart';
-import 'package:ellipsis_care/src/features/onboarding/cubit/cubit.dart';
+import 'package:ellipsis_care/src/features/onboarding/cubit/onboarding_cubit.dart';
 import 'package:ellipsis_care/src/features/onboarding/onboarding.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/views/reminders.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/views/settings.dart';
@@ -32,6 +32,8 @@ import 'package:ellipsis_care/src/features/settings/presentation/views/sub_view/
 import 'package:ellipsis_care/src/features/settings/presentation/views/sub_view/terms_of_use.dart';
 import 'package:ellipsis_care/src/shared/navigator_shell/navigator_shell.dart';
 
+import '../../core/services/storage_service.dart';
+import '../../core/utils/locator.dart';
 import '../../src/features/reminders/presentation/controller/bloc/reminder_bloc.dart';
 import '../../src/features/reminders/presentation/controller/cubit/calender_cubit.dart';
 import '../../src/features/settings/presentation/views/sub_view/compliance_score.dart';
@@ -45,9 +47,9 @@ final GoRouter router = GoRouter(
   navigatorKey: _mainRouterKey,
   debugLogDiagnostics: true,
   redirect: (context, state) async {
-    // final userDataSession = await injector<StorageService>().getUserData();
-    // if (userDataSession!.hasViewedOnboarding) {
-    //   return '/dashboard';
+    // final userdata = await injector<StorageService>().getUserData();
+    // if (userdata!.hasViewedOnboarding) {
+    //   return '/sign-up';
     // }
 
     return null;
@@ -127,22 +129,15 @@ final GoRouter router = GoRouter(
           path: '/home',
           name: RouteNames.home,
           pageBuilder: (context, state) => MaterialPage<Home>(
-            child: BlocProvider(
-              create: (context) => HomeBloc(),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (context) => HomeBloc()),
+                BlocProvider(create: (context) => MicrophoneBloc()),
+              ],
               child: const Home(),
             ),
           ),
           routes: [
-            GoRoute(
-              path: 'prompt-responses',
-              name: RouteNames.promptResponses,
-              pageBuilder: (context, state) => MaterialPage<PromptResponses>(
-                child: BlocProvider(
-                  create: (context) => HomeBloc(),
-                  child: const PromptResponses(),
-                ),
-              ),
-            ),
             GoRoute(
               path: 'response-history',
               name: RouteNames.responseHistory,
@@ -161,7 +156,7 @@ final GoRouter router = GoRouter(
               pageBuilder: (context, state) => MaterialPage<RecordingPage>(
                 child: MultiBlocProvider(
                   providers: [
-                    BlocProvider(create: (context) => DashboardCubit()),
+                    BlocProvider(create: (context) => MicrophoneBloc()),
                     BlocProvider(create: (context) => HomeBloc()),
                   ],
                   child: const RecordingPage(),

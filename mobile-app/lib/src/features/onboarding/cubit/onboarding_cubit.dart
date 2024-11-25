@@ -1,4 +1,5 @@
 import 'package:ellipsis_care/core/services/notification_service.dart';
+import 'package:ellipsis_care/src/features/authentication/models/userdata/userdata.dart';
 
 import '../../../../core/services/contacts_service.dart';
 import '../../../../core/services/voice_command_service.dart';
@@ -12,7 +13,7 @@ import '../../../../config/router/route_names.dart';
 import '../../../../core/services/mic_service.dart';
 import '../../../../core/utils/helpers.dart';
 
-part 'state.dart';
+part 'onboarding_state.dart';
 
 class OnboardingCubit extends Cubit<OnboardingState> {
   OnboardingCubit() : super((currentIndex: 0, story: stories.first)) {
@@ -60,9 +61,9 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   }
 
   void _hasViewedOnboarding() async {
-    final session = await injector<StorageService>().getUserData();
-    session!.hasViewedOnboarding = true;
-    await session.save();
+    final userdata = await injector<StorageService>().getUserData();
+    userdata!.hasViewedOnboarding = true;
+    await userdata.save();
   }
 
   void _initializeAudio() async {

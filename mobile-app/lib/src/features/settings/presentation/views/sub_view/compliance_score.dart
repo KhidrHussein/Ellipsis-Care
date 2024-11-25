@@ -31,7 +31,7 @@ class _ComplianceScoreState extends State<ComplianceScore> {
           padding: REdgeInsets.all(10),
           margin: REdgeInsets.symmetric(horizontal: 16, vertical: 30),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: context.themeExtension.settingsCardColor,
             borderRadius: BorderRadius.circular(25.r),
           ),
           child: Column(
@@ -63,7 +63,7 @@ class _ComplianceScoreState extends State<ComplianceScore> {
                 style: context.textTheme.bodyLarge?.copyWith(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w400,
-                  color: AppColors.black.withOpacity(.5),
+                  color: context.textTheme.bodyLarge?.color?.withOpacity(.5),
                 ),
               ),
               20.verticalSpace,

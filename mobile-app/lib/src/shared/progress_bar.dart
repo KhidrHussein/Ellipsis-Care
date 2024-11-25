@@ -29,13 +29,22 @@ class ProgressBar extends StatelessWidget {
           Container(
             padding: REdgeInsets.all(2.r),
             decoration: BoxDecoration(
-              color: type.backgroundColor,
+              color: switch (type) {
+                ReminderType.drug => context.themeExtension.drugBgColor,
+                ReminderType.food => context.themeExtension.foodBgColor,
+              },
               borderRadius: BorderRadius.circular(4.r),
             ),
             child: SvgPicture.asset(
               icon!,
               width: 28,
-              colorFilter: ColorFilter.mode(type.color, BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(
+                switch (type) {
+                  ReminderType.drug => context.themeExtension.drugColor,
+                  ReminderType.food => context.themeExtension.foodColor,
+                },
+                BlendMode.srcIn,
+              ),
             ),
           ),
           5.horizontalSpace
@@ -68,8 +77,14 @@ class ProgressBar extends StatelessWidget {
                     value: progress * value * 0.01,
                     minHeight: 7.h,
                     borderRadius: BorderRadius.circular(8.r),
-                    color: type.color,
-                    backgroundColor: type.backgroundColor,
+                    color: switch (type) {
+                      ReminderType.drug => context.themeExtension.drugColor,
+                      ReminderType.food => context.themeExtension.foodColor,
+                    },
+                    backgroundColor: switch (type) {
+                      ReminderType.drug => context.themeExtension.drugBgColor,
+                      ReminderType.food => context.themeExtension.foodBgColor,
+                    },
                   );
                 },
               )
