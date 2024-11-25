@@ -16,7 +16,7 @@ from djoser.signals import user_registered
 from rag_implementation.rag_main import rag_response, reminder_message_full
 from rag_implementation.speech_io import transcribe_audio ,synthesize_speech
 from rag_implementation.config.database import collection
-from django.http import HttpResponse, StreamingHttpResponse
+from django.http import HttpResponse, StreamingHttpResponse, FileResponse
 import random, tempfile, os
 from asgiref.sync import async_to_sync
 from .utils import get_or_create_mongo_user, HealthSyncScoreCalculator
@@ -508,23 +508,24 @@ class AudioViewSet(viewsets.ModelViewSet):
 
             print("Returning audio response to frontend.")
 
-            # Open and read the audio file as binary
-            with open(audio_file_path, 'rb') as audio_file:
-                audio_content = audio_file.read()
 
-            # Return audio stream as a WAV response
+            # Open the file without closing it immediately
+            audio_file = open(audio_file_path, 'rb')
+
+            # Use StreamingHttpResponse
             response = StreamingHttpResponse(
-                audio_content,
+                audio_file,  # Pass the open file handle
                 content_type="audio/wav"
             )
-            response['Content-Disposition'] = f'inline; filename="response.wav"'
-            response['Content-Length'] = str(len(audio_content))
+            response['Content-Disposition'] = 'inline; filename="response.wav"'
+            response['Content-Length'] = str(len(audio_file))
 
             # Add transcription and AI response as custom headers
             response['X-Transcription'] = instance.transcription  # User transcription
             response['X-AI-Response'] = instance.ai_response      # AI response
 
             return response
+
 
         except Exception as e:
             print(f"Error during audio processing: {e}")
