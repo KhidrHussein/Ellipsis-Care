@@ -126,7 +126,7 @@ def get_conversation_summary(history, question):
 
     # Query the Azure OpenAI LLM with the formatted prompt
     response = openai.ChatCompletion.create(
-        engine="Voicetask",  # Replace with your Azure OpenAI deployment name
+        engine="gpt-4o-mini",  # Replace with your Azure OpenAI deployment name
         # prompt=formatted_prompt,
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
@@ -143,7 +143,7 @@ def qa_response(prompt):
 
     # Query the Azure OpenAI LLM with the formatted prompt
     response = openai.ChatCompletion.create(
-        engine="Voicetask",  # Replace with your Azure OpenAI deployment name
+        engine="gpt-4o-mini",  # Replace with your Azure OpenAI deployment name
         # prompt=formatted_prompt,
         messages=[
             {"role": "system", "content": "You are a health expert and experienced medical practitioner. Use the contexts and chat history to answer the user's question. Generate your responses on a personal level and not third person. Never mention that you are an AI."},
@@ -186,7 +186,7 @@ def reminder_message(reminder, history):
 
     # Query the Azure OpenAI LLM with the formatted prompt
     response = openai.ChatCompletion.create(
-        engine="Voicetask",  # Replace with your Azure OpenAI deployment name
+        engine="gpt-4o-mini",  # Replace with your Azure OpenAI deployment name
         # prompt=formatted_prompt,
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},

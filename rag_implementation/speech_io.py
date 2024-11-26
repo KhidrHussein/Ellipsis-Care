@@ -359,6 +359,7 @@ subscription_key = os.getenv('SUBSCRIPTION_KEY')
 
 
 def transcribe_audio(audio_path):
+    start = time.time()
     # Set up headers with your subscription key
     # subscription_key = 'YourSubscriptionKey'
     headers = {
@@ -388,6 +389,8 @@ def transcribe_audio(audio_path):
         # print('Success!')
         # print(response.json())
         # print(response.json()['combinedPhrases'][0]['text'])
+        print("Time taken for Transcription:", time.time()-start)
+
         return response.json()['combinedPhrases'][0]['text']
     else:
         # print('Error:', response.status_code)
@@ -515,6 +518,8 @@ import os
 import time
 
 def synthesize_speech(text):
+    start = time.time()
+
     # Set up the speech configuration with the specified voice name
     speech_config = speechsdk.SpeechConfig(subscription=os.getenv("SPEECH_KEY"), region=os.getenv("SPEECH_REGION"))
     speech_config.speech_synthesis_voice_name = 'en-NG-EzinneNeural'  # Set the voice to 'en-NG-EzinneNeural'
@@ -535,6 +540,8 @@ def synthesize_speech(text):
             # Check if synthesis was successful
             if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
                 print(f"Speech synthesized to file: {temp_audio_file.name}")
+                print("Time taken for Speech Sythesis:", time.time()-start)
+
                 return temp_audio_file.name  # Return the path to the audio file
             else:
                 print(f"Speech synthesis failed: {result.reason}")
@@ -547,3 +554,4 @@ def synthesize_speech(text):
         except Exception as e:
             print(f"Error during speech synthesis: {e}")
             return None
+        

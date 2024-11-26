@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from djoser.views import UserViewSet
+from djoser.views import UserViewSet, TokenCreateView
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
@@ -165,10 +165,6 @@ class VerifyEmailView(APIView):
             return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
-from djoser.views import TokenCreateView
-from rest_framework.response import Response
-from rest_framework import status
-
 class CustomTokenCreateView(TokenCreateView):
     serializer_class = CustomTokenCreateSerializer
 
@@ -228,6 +224,7 @@ class CustomTokenCreateView(TokenCreateView):
                     "error": "Internal server error. Please try again later."
                 }
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class PasswordResetRequestView(APIView):
     """
@@ -419,6 +416,8 @@ class AudioViewSet(viewsets.ModelViewSet):
             'audio/ogg': '.opus'
         }
 
+        # Streaming the audio to the frontend in sections instead of in one bulk.
+
         # def convert_to_wav(input_file_path, output_file_path):
         #     audio = AudioSegment.from_file(input_file_path)
         #     audio.export(output_file_path, format="wav")
@@ -543,7 +542,6 @@ class AudioViewSet(viewsets.ModelViewSet):
             if 'temp_audio_file' in locals() and os.path.exists(temp_audio_file.name):
                 print(f"Deleting temporary audio file: {temp_audio_file.name}")
                 os.remove(temp_audio_file.name)
-
 
 
 class ReminderView(APIView):
