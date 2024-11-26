@@ -509,7 +509,12 @@ class AudioViewSet(viewsets.ModelViewSet):
             print("Returning audio response to frontend.")
 
 
-            # Open the file without closing it immediately
+            audio_file_path = synthesize_speech(ai_result['response'])
+
+            # Calculate file size
+            file_size = os.path.getsize(audio_file_path)
+
+            # Open the file for streaming
             audio_file = open(audio_file_path, 'rb')
 
             # Use StreamingHttpResponse
@@ -518,12 +523,11 @@ class AudioViewSet(viewsets.ModelViewSet):
                 content_type="audio/wav"
             )
             response['Content-Disposition'] = 'inline; filename="response.wav"'
-            response['Content-Length'] = str(len(audio_file))
+            response['Content-Length'] = str(file_size)  # Set the correct file size
 
             # Add transcription and AI response as custom headers
             response['X-Transcription'] = instance.transcription  # User transcription
             response['X-AI-Response'] = instance.ai_response      # AI response
-
             return response
 
 
