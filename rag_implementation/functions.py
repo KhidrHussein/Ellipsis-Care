@@ -32,7 +32,7 @@ openai_embeddings: OpenAIEmbeddings = OpenAIEmbeddings(
 from langchain.chat_models import ChatOpenAI
 
 # LLM
-llm = ChatOpenAI(temperature = 0.6, openai_api_key = os.getenv("API_KEY"), openai_api_base = os.getenv("ENDPOINT"), model_name="gpt-35-turbo", engine="gpt-4o-mini")
+# llm = ChatOpenAI(temperature = 0.6, openai_api_key = os.getenv("API_KEY"), openai_api_base = os.getenv("ENDPOINT"), model_name="gpt-4o-mini", engine="gpt-4o-mini")
 
 # Handling vector database
 from langchain_chroma import Chroma
@@ -161,7 +161,7 @@ def qa_response(prompt):
 
 def reminder_notification_prompt(reminder, history):
     template = """
-    Use the following medication details (delimited by <ctx></ctx>) and the chat history (delimited by <hs></hs>) to generate a personalised reminder message.
+    Use the following medication details (delimited by <ctx></ctx>) and the chat history (delimited by <hs></hs>) to generate a conversation-like personalised reminder message for a user. Do not include any extra remarks.
     ------
     <ctx>
     {medication}
@@ -242,14 +242,36 @@ def reminder_message(reminder, history):
             {"role": "user", "content": formatted_prompt}
         ],
         # max_tokens=50,
-        temperature=0.5,
+        temperature = 0.5,
         tools = function_tool_reminder()[0],
-        tool_choice='required'
+        tool_choice = 'required'
     )
 
     # Extract and return the title, subtitle and body of reminder notification
     extract = extract.choices[0].message.tool_calls[0].function.arguments
-    extract['response'] = response.choices[0].message['content']
+    # extract['response'] = response.choices[0].message['content']
     final_response = json.loads(extract)
+    final_response['response'] = response.choices[0].message['content']
     return final_response
     # return response.choices[0].message['content']
+
+
+if __name__ == "__main__":
+    # Test the function
+    history = ""
+    reminder = {
+        "reminder": {
+            "name": "Afternoon Medication",
+            "type": "Medication",
+            "schedule": "daily",
+            "interval": "1 day",
+            "dosage": "2 tablets",
+            "duration": {
+                "start": "2024-11-26",
+                "end": "2024-12-10"
+            },
+            "instruction": "Take with water after breakfast",
+            "time": "2:00 PM"
+        }
+    }
+    print(reminder_message(reminder, history))
