@@ -123,6 +123,3 @@ def reminder_message_full(user_id: str, reminder):
     current_user = get_user(user_id)
     buffer_history = current_user["buffer_history"]
     return reminder_message(reminder, "\n".join(buffer_history))
-
-if __name__ == "__main__":
-    rag_response("66ddc63127c0b932f8c97acf", "I think I'm having malaria symptoms. What do you suggest I do?", "some_knowledge_base")
