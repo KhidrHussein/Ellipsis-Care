@@ -115,10 +115,8 @@ class AudioSerializer(serializers.ModelSerializer):
         return Audio.objects.create(**validated_data)
 
 
-from rest_framework import serializers
-
 class ReminderSerializer(serializers.Serializer):
-    user_id = serializers.CharField(required=True)
+    # user_id = serializers.CharField(required=True)
     reminder = serializers.DictField(required=True)
 
     def validate_reminder(self, value):

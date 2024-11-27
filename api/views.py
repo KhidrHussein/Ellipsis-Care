@@ -16,7 +16,7 @@ from djoser.signals import user_registered
 from rag_implementation.rag_main import rag_response, reminder_message_full
 from rag_implementation.speech_io import transcribe_audio ,synthesize_speech
 from rag_implementation.config.database import collection
-from django.http import HttpResponse, StreamingHttpResponse, FileResponse
+from django.http import HttpResponse, StreamingHttpResponse, FileResponse, JsonResponse
 import random, tempfile, os
 from asgiref.sync import async_to_sync
 from .utils import get_or_create_mongo_user, HealthSyncScoreCalculator
@@ -33,6 +33,8 @@ import random
 import logging
 from django.core.cache import cache
 from pydub import AudioSegment
+from wsgiref.util import FileWrapper
+
 
 
 logger = logging.getLogger(__name__)
@@ -544,15 +546,63 @@ class AudioViewSet(viewsets.ModelViewSet):
                 os.remove(temp_audio_file.name)
 
 
+# class ReminderView(APIView):
+#     """
+#     API View to handle POST requests for personalized reminder notifications.
+#     """
+
+#     def post(self, request, *args, **kwargs):
+#         serializer = ReminderSerializer(data=request.data)
+
+#         # Validate the incoming request data
+#         if not serializer.is_valid():
+#             return Response({
+#                 "status": "error",
+#                 "message": "Validation failed",
+#                 "data": serializer.errors
+#             }, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             validated_data = serializer.validated_data
+#             reminder = validated_data['reminder']
+
+#             # Retrieve the current user
+#             postgres_user = self.request.user
+            
+#             # Get or create MongoDB user
+#             mongo_user = get_or_create_mongo_user(postgres_user)
+
+#             # Generate the personalized reminder content
+#             personalized_message = reminder_message_full(mongo_user["_id"], reminder)
+
+#             # Return success response
+#             return Response({
+#                 "status": "success",
+#                 "message": "Reminder created successfully",
+#                 "data": {
+#                     "reminder_message": personalized_message
+#                 }
+#             }, status=status.HTTP_200_OK)
+
+#         except Exception as e:
+#             # Handle any unexpected errors
+#             return Response({
+#                 "status": "error",
+#                 "message": "An error occurred while processing the request",
+#                 "data": str(e)
+#             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class ReminderView(APIView):
     """
-    API View to handle POST requests for personalized reminder notifications.
+    API View to handle POST requests for personalized reminder notifications with audio.
     """
 
     def post(self, request, *args, **kwargs):
+        # Deserialize incoming data
         serializer = ReminderSerializer(data=request.data)
 
-        # Validate the incoming request data
+        # Validate the request data
         if not serializer.is_valid():
             return Response({
                 "status": "error",
@@ -564,31 +614,182 @@ class ReminderView(APIView):
             validated_data = serializer.validated_data
             reminder = validated_data['reminder']
 
-            # Retrieve the current user
+            # Retrieve the current user from the request
             postgres_user = self.request.user
-            
-            # Get or create MongoDB user
+
+            # Get or create MongoDB user for this postgres_user
             mongo_user = get_or_create_mongo_user(postgres_user)
 
-            # Generate the personalized reminder content
+            # Generate personalized reminder content
             personalized_message = reminder_message_full(mongo_user["_id"], reminder)
 
-            # Return success response
-            return Response({
-                "status": "success",
-                "message": "Reminder created successfully",
-                "data": {
-                    "reminder_message": personalized_message
+            if not personalized_message:
+                return Response({
+                    "status": "fail",
+                    "message": "Could not generate reminder message."
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            # Synthesize speech based on AI response
+            print("Starting speech synthesis...")
+            audio_file_path = synthesize_speech(personalized_message)
+
+            if audio_file_path is None:
+                print("Speech synthesis failed, returning error.")
+                response_data = {
+                    "status": "fail",
+                    "message": "Speech synthesis failed."
                 }
-            }, status=status.HTTP_200_OK)
+                return Response(response_data, status=500)
+
+            print("Returning audio response to frontend.")
+
+
+            audio_file_path = synthesize_speech(personalized_message)
+
+            # Calculate file size
+            file_size = os.path.getsize(audio_file_path)
+
+            # Open the file for streaming
+            audio_file = open(audio_file_path, 'rb')
+
+            # Use StreamingHttpResponse
+            response = StreamingHttpResponse(
+                audio_file,  # Pass the open file handle
+                content_type="audio/wav"
+            )
+            response['Content-Disposition'] = 'inline; filename="response.wav"'
+            response['Content-Length'] = str(file_size)  # Set the correct file size
+
+            # Add transcription and AI response as custom headers
+            # response['X-Transcription'] = instance.transcription  # User transcription
+            # response['X-AI-Response'] = instance.ai_response      # AI response
+            return response
+
+            # Return the response with the open audio file stream
+            # return response
 
         except Exception as e:
-            # Handle any unexpected errors
+            # Handle any unexpected errors gracefully
             return Response({
                 "status": "error",
-                "message": "An error occurred while processing the request",
+                "message": "An error occurred while processing the reminder",
                 "data": str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        finally:
+            # Ensure the temporary audio file is deleted after response is streamed
+            if 'audio_file_path' in locals() and os.path.exists(audio_file_path):
+                try:
+                    os.remove(audio_file_path)
+                    print(f"Audio file deleted: {audio_file_path}")
+                except PermissionError as e:
+                    print(f"Failed to delete audio file: {e}")
+
+
+# import os
+# import threading
+# from django.http import StreamingHttpResponse
+# from django.core.files.temp import NamedTemporaryFile
+# import time
+
+# class ReminderView(APIView):
+#     """
+#     API View to handle POST requests for personalized reminder notifications with audio.
+#     """
+
+#     def post(self, request, *args, **kwargs):
+#         # Deserialize incoming data
+#         serializer = ReminderSerializer(data=request.data)
+
+#         # Validate the request data
+#         if not serializer.is_valid():
+#             return Response({
+#                 "status": "error",
+#                 "message": "Validation failed",
+#                 "data": serializer.errors
+#             }, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             validated_data = serializer.validated_data
+#             reminder = validated_data['reminder']
+
+#             # Retrieve the current user from the request
+#             postgres_user = self.request.user
+
+#             # Get or create MongoDB user for this postgres_user
+#             mongo_user = get_or_create_mongo_user(postgres_user)
+
+#             # Generate personalized reminder content
+#             personalized_message = reminder_message_full(mongo_user["_id"], reminder)
+
+#             if not personalized_message:
+#                 return Response({
+#                     "status": "fail",
+#                     "message": "Could not generate reminder message."
+#                 }, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Synthesize speech based on AI response
+#             print("Starting speech synthesis...")
+#             audio_file_path = synthesize_speech(personalized_message)
+
+#             if audio_file_path is None:
+#                 print("Speech synthesis failed, returning error.")
+#                 response_data = {
+#                     "status": "fail",
+#                     "message": "Speech synthesis failed."
+#                 }
+#                 return Response(response_data, status=500)
+
+#             print(f"Speech synthesized to file: {audio_file_path}")
+
+#             # Calculate file size
+#             file_size = os.path.getsize(audio_file_path)
+
+#             # Open the file for streaming
+#             audio_file = open(audio_file_path, 'rb')
+
+#             # Clean header values by replacing newline characters
+#             sanitized_message = personalized_message.replace("\n", " ")
+
+#             # Use StreamingHttpResponse to stream the audio file
+#             response = StreamingHttpResponse(
+#                 audio_file,  # Pass the open file handle
+#                 content_type="audio/wav"
+#             )
+#             response['Content-Disposition'] = 'inline; filename="response.wav"'
+#             response['Content-Length'] = str(file_size)  # Set the correct file size
+
+#             # Add sanitized header with the personalized message
+#             response['X-Reminder-Message'] = sanitized_message  # Transcription version
+#             response['X-Reminder-Time'] = reminder.get('time')  # Time for reminder
+
+#             # Asynchronously delete the audio file after streaming is complete
+#             threading.Thread(target=self.delete_file_after_streaming, args=(audio_file_path,)).start()
+
+#             return response
+
+#         except Exception as e:
+#             # Handle any unexpected errors gracefully
+#             return Response({
+#                 "status": "error",
+#                 "message": "An error occurred while processing the reminder",
+#                 "data": str(e)
+#             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+#     def delete_file_after_streaming(self, file_path):
+#         """
+#         This method is called asynchronously to delete the file after streaming.
+#         """
+#         try:
+#             # Give some time for streaming to finish, then delete the file
+#             print(f"Deleting audio file: {file_path}")
+#             os.remove(file_path)
+#             print(f"Audio file deleted: {file_path}")
+#         except PermissionError as e:
+#             print(f"Failed to delete audio file: {e}")
+#         except Exception as e:
+#             print(f"Error while deleting the file: {e}")
+
 
     
 class HealthSyncScoreView(APIView):
