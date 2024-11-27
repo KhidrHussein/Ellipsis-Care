@@ -122,3 +122,14 @@ def reminder_message_full(user_id: str, reminder):
     current_user = get_user(user_id)
     buffer_history = current_user["buffer_history"]
     return reminder_message(reminder, "\n".join(buffer_history))
+
+
+
+if __name__ == "__main__":
+    response = rag_response(
+        "66e20bf6070cbfb0abab1f23",
+        "If I am experiencing swellings on my neck, what could be the cause and what can I do to solve it?",
+        "anything"
+    )
+    print()
+    print(response['response'])
