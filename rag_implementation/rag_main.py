@@ -82,19 +82,20 @@ def rag_response(user_id: str, query: str, knowledge_base: str):
     import time
     start = time.time()
     current_user = get_user(user_id)
+    # print(query)
     # print(current_user)
     full_history = current_user["full_history"]
     buffer_history = current_user["buffer_history"]
     prompt_template = prompt_setup()
 
     new_question = query
+    # print(new_question)
     if len(buffer_history)>0:
         new_question = get_conversation_summary("\n".join(buffer_history), query)
 
     documents, sources = context_document_retreival_similarity(new_question)
     full_prompt = prompt_template.format(history="\n".join(buffer_history), question=new_question, context=documents)
     # print(full_prompt)
-    # print()
     response = qa_response(full_prompt)
 
     full_history.append(f"Human: {query}")
@@ -122,14 +123,3 @@ def reminder_message_full(user_id: str, reminder):
     current_user = get_user(user_id)
     buffer_history = current_user["buffer_history"]
     return reminder_message(reminder, "\n".join(buffer_history))
-
-
-
-if __name__ == "__main__":
-    response = rag_response(
-        "66e20bf6070cbfb0abab1f23",
-        "If I am experiencing swellings on my neck, what could be the cause and what can I do to solve it?",
-        "anything"
-    )
-    print()
-    print(response['response'])

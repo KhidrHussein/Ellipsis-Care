@@ -95,6 +95,7 @@ DJOSER = {
     'SERIALIZERS': {
         'user_create': 'api.serializers.UserSerializer',
         'user': 'api.serializers.UserSerializer',
+        'token_create': 'api.serializers.CustomTokenCreateSerializer',
     },
 }
 
@@ -119,15 +120,23 @@ REST_FRAMEWORK = {
 from decouple import config
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_PORT = config('EMAIL_PORT', cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
-EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+# logging.basicConfig(level=logging.DEBUG)
+# EMAIL_HOST = config('EMAIL_HOST')
+# EMAIL_PORT = config('EMAIL_PORT', cast=int)
+# EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+# EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool)
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+# DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('POSTMARK_SMTP_SERVER', 'smtp.postmarkapp.com')
+EMAIL_PORT = os.getenv('POSTMARK_SMTP_PORT', 587)
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('POSTMARK_API_TOKEN')
+EMAIL_HOST_PASSWORD = os.getenv('POSTMARK_API_TOKEN')  # Postmark uses the API token as both user and password
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 # Allauth settings
 ACCOUNT_EMAIL_REQUIRED = True
@@ -254,14 +263,14 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 # Define the schedule
-CELERY_BEAT_SCHEDULE = {
-    'run-my-task-every-60-seconds': {
-        # 'task': 'api.tasks.send_medication_reminders',
-        'task': 'api.tasks.test_task',
-        'schedule': 60.0,  # Run every 60 seconds
-        'args': ()
-    },
-}
+# CELERY_BEAT_SCHEDULE = {
+#     'run-my-task-every-60-seconds': {
+#         # 'task': 'api.tasks.send_medication_reminders',
+#         'task': 'api.tasks.test_task',
+#         'schedule': 60.0,  # Run every 60 seconds
+#         'args': ()
+#     },
+# }
 
 # Logging configuration
 
@@ -281,16 +290,16 @@ LOGGING = {
 }
 
 # PythonQ configuration
-Q_CLUSTER = {
-    'name': 'DjangoQ',
-    'workers': 4,
-    'recycle': 500,
-    'timeout': 60,
-    'retry': 120,
-    'queue_limit': 50,
-    'bulk': 10,
-    'orm': 'default',
-}
+# Q_CLUSTER = {
+#     'name': 'DjangoQ',
+#     'workers': 4,
+#     'recycle': 500,
+#     'timeout': 60,
+#     'retry': 120,
+#     'queue_limit': 50,
+#     'bulk': 10,
+#     'orm': 'default',
+# }
 
 # media and audio directory configuration
 MEDIA_URL = '/media/'

@@ -175,3 +175,17 @@ class Audio(models.Model):
 
     def __str__(self):
         return f"Audio {self.id} by {self.user.username}"
+
+
+class HealthSyncScore(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    # date = models.DateField(auto_now_add=True)
+    date = models.DateField()  # Remove auto_now_add=True, so you can manually set the date
+    daily_score = models.FloatField()
+    cumulative_monthly_score = models.FloatField()
+
+    class Meta:
+        unique_together = ('user', 'date')  # Enforce uniqueness on the combination of user and date
+
+    def __str__(self):
+        return f"Health Sync Score for {self.user} on {self.date}"

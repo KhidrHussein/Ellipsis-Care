@@ -1,11 +1,12 @@
 from django.shortcuts import render
+from djoser.views import UserViewSet
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from .models import UserProfile, Medication, HealthCondition, MealPlan, Appointment, Audio, CustomUser
 from .serializers import (
     UserSerializer, UserProfileSerializer, MedicationSerializer, 
-    HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer
+    HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer, CustomTokenCreateSerializer
 )
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -15,12 +16,26 @@ from djoser.signals import user_registered
 from rag_implementation.rag_main import rag_response, reminder_message_full
 from rag_implementation.speech_io import transcribe_audio ,synthesize_speech
 from rag_implementation.config.database import collection
-from django.http import HttpResponse, StreamingHttpResponse
+from django.http import HttpResponse, StreamingHttpResponse, FileResponse
 import random, tempfile, os
 from asgiref.sync import async_to_sync
-from .utils import get_or_create_mongo_user
+from .utils import get_or_create_mongo_user, HealthSyncScoreCalculator
+
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.core.exceptions import ValidationError
+
+from django.core.mail import send_mail
+from django.conf import settings
+from rest_framework import status
+from rest_framework.response import Response
+import random
+import logging
+from django.core.cache import cache
+from pydub import AudioSegment
 
 
+logger = logging.getLogger(__name__)
 
 class UserCreateViewSet(viewsets.ModelViewSet):
     """
@@ -35,64 +50,93 @@ class UserCreateViewSet(viewsets.ModelViewSet):
         return [IsAuthenticated()]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save(is_active=False)
-        user.verification_code = str(random.randint(100000, 999999))
-        print(user.verification_code)
-        user.save()
-
         try:
-            send_mail(
-                'Verify your account',
-                f'Your verification code is {user.verification_code}',
-                'husseinkhidr3@gmail.com',
-                [user.email],
-                fail_silently=False,
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
+            # Save the user but set them inactive until they verify
+            user = serializer.save(is_active=False)
+            user.verification_code = str(random.randint(100000, 999999))
+            print(user.verification_code)  # Debug: print the verification code
+            user.save()
+
+            # Send the verification email
+            email = EmailMessage(
+                subject='Verify your account',
+                body=f'Your verification code is {user.verification_code}',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[user.email],
             )
-            print(f"Verification code {user.verification_code} sent to {user.email}")
+            email.extra_headers = {'X-PM-Message-Stream': 'outbound'}
+            email.send(fail_silently=False)
 
             response_data = {
                 "status": "success",
+                "message": "Verification code sent to your email.",
                 "data": {
                     "user": {
                         "email": user.email,
-                        "username": user.first_name
+                        "username": user.first_name,
+                        "otp": user.verification_code,
                     }
-                },
-                "message": "Verification code sent to your email."
+                }
             }
-
-            print(response_data)  # This will log the exact response data
             return Response(response_data, status=status.HTTP_201_CREATED)
 
-        except Exception as e:
-            print(f"Error sending email: {e}")
+        except ValidationError as e:
+            # Handle validation errors (e.g., user already exists)
             response_data = {
                 "status": "fail",
-                "message": "Error sending verification email."
+                "message": "User with this email already exists.",
+                "data": {}
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            import traceback
+            print(f"Error sending email: {e}")
+            
+            response_data = {
+                "status": "fail",
+                "message": "Error sending verification email.",
+                "data": {}
             }
             return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 
 class VerifyEmailView(APIView):
     """
     Verifies user email by checking the provided verification code.
     """
+    permission_classes = [AllowAny]  # Allow access without authentication
+
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
         verification_code = request.data.get('verification_code')
 
+        print(f"Verification attempt with email: {email} and code: {verification_code}")  # Log input
+
+        # Validate input data
+        if not email or not verification_code:
+            response_data = {
+                "status": "fail",
+                "message": "Both email and verification code are required."
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
         try:
+            # Fetch the user based on email and verification code
             user = CustomUser.objects.get(email=email, verification_code=verification_code)
-            if user.is_verified:
+
+            # Check if the user is already verified
+            if user.is_active:
                 response_data = {
                     "status": "fail",
-                    "message": "User is already verified."
+                    "message": "This email address has already been verified. Please log in."
                 }
                 return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
             
+            # Proceed to verify the user's email
             user.is_verified = True
             user.is_active = True
             user.verification_code = ''
@@ -100,16 +144,214 @@ class VerifyEmailView(APIView):
 
             response_data = {
                 "status": "success",
-                "message": "Email verified successfully."
+                "message": "Email verified successfully! You can now log in."
             }
             return Response(response_data, status=status.HTTP_200_OK)
 
         except CustomUser.DoesNotExist:
+            print("User not found with provided email or verification code.")  # Log error
             response_data = {
                 "status": "fail",
-                "message": "Invalid verification code or email."
+                "message": "No account found with the provided email address and verification code. Please check your input or request a new verification code."
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            print("An unexpected error occurred:", str(e))  # Log unexpected errors
+            response_data = {
+                "status": "fail",
+                "message": "An unexpected error occurred while verifying your email. Please try again later."
+            }
+            return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+from djoser.views import TokenCreateView
+from rest_framework.response import Response
+from rest_framework import status
+
+class CustomTokenCreateView(TokenCreateView):
+    serializer_class = CustomTokenCreateSerializer
+
+    def post(self, request, *args, **kwargs):
+        # Log the incoming request for debugging
+        print("Login attempt with data:", request.data)
+
+        # Check for required fields in the request
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        if not email or not password:
+            response_data = {
+                "status": "fail",
+                "message": "Email and password are required.",
+                "data": {
+                    "email": "This field is required." if not email else None,
+                    "password": "This field is required." if not password else None,
+                }
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(data=request.data)
+
+        try:
+            # Validate and create the token using the custom serializer
+            serializer.is_valid(raise_exception=True)
+            token = serializer.validated_data['auth_token']
+            response_data = {
+                "status": "success",
+                "message": "Login successful.",
+                "data": {
+                    "token": token,
+                }
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        except ValidationError as e:
+            # Handle validation errors and construct a clear response
+            print("Login failed. Errors:", e.detail)
+            error_messages = e.detail
+            response_data = {
+                "status": "fail",
+                "message": error_messages.get('message', "Unable to log in with provided credentials."),
+                "data": {
+                    "error": error_messages.get('email', ["Invalid credentials."])[0]  # Get specific email error
+                }
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            print("An unexpected error occurred:", str(e))
+            return Response({
+                "status": "fail",
+                "message": "An unexpected error occurred.",
+                "data": {
+                    "error": "Internal server error. Please try again later."
+                }
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class PasswordResetRequestView(APIView):
+    """
+    View to handle password reset requests by sending an OTP to the user's email.
+    """
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Extract email from request
+        email = request.data.get("email")
+        
+        # Validate email field
+        if not email:
+            return Response({"status": "error", "message": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Attempt to retrieve user by email
+            user = CustomUser.objects.get(email=email)
+            
+            # Generate a 6-digit OTP and store it in cache for 5 minutes
+            otp = random.randint(100000, 999999)
+            cache.set(f"password_reset_otp_{user.id}", otp, timeout=300)
+            
+            # Prepare and send email with OTP
+            email_message = EmailMessage(
+                subject='Password Reset Verification Code',
+                body=f'Your OTP code is {otp}',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[user.email],
+            )
+            email_message.extra_headers = {'X-PM-Message-Stream': 'outbound'}
+            email_message.send(fail_silently=False)
+
+            # Success response
+            return Response({"status": "success", "message": "OTP sent to email"}, status=status.HTTP_200_OK)
+        
+        except CustomUser.DoesNotExist:
+            # Error response if user is not found
+            return Response({"status": "error", "message": "User with this email does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class PasswordResetConfirmView(APIView):
+    """
+    View to handle password reset confirmation by validating OTP and setting a new password.
+    """
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Extract fields from request
+        email = request.data.get("email")
+        otp = request.data.get("otp")
+        new_password = request.data.get("new_password")
+
+        # Validate required fields
+        if not email or not otp or not new_password:
+            missing_fields = [field for field in ["email", "otp", "new_password"] if not request.data.get(field)]
+            return Response(
+                {"status": "error", "message": f"Missing required fields: {', '.join(missing_fields)}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            # Retrieve user by email
+            user = CustomUser.objects.get(email=email)
+            
+            # Retrieve cached OTP
+            cached_otp = cache.get(f"password_reset_otp_{user.id}")
+
+            # Check if OTP is expired or invalid
+            if cached_otp is None:
+                return Response({"status": "error", "message": "OTP expired or invalid"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Check if OTP is correct
+            if str(cached_otp) != str(otp):
+                return Response({"status": "error", "message": "OTP is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Set new password
+            user.set_password(new_password)
+            user.save()
+            
+            # Clear OTP from cache after successful reset
+            cache.delete(f"password_reset_otp_{user.id}")
+
+            # Success response
+            return Response({"status": "success", "message": "Password reset successfully"}, status=status.HTTP_200_OK)
+        
+        except CustomUser.DoesNotExist:
+            # Error response if user is not found
+            return Response({"status": "error", "message": "User with this email does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class CustomUserViewSet(UserViewSet):
+    def set_password(self, request, *args, **kwargs):
+        print("set_password method called")  # Debugging line to confirm method is triggered
+        print(f"Request data: {request.data}")  # Log the request data
+
+        # Call the parent method to handle the actual password change
+        response = super().set_password(request, *args, **kwargs)
+
+        print(f"Response from parent set_password: {response.data}")  # Debugging line to check response from parent method
+        
+        if response.status_code == status.HTTP_204_NO_CONTENT:
+            # If password is changed successfully, modify the success response
+            return Response(
+                {"status": "success", "message": "Password has been updated successfully"},
+                status=status.HTTP_200_OK
+            )
+
+        # Now handle errors by checking response.data
+        error_message = response.data  # Capture entire error message from response
+
+        # Log the error message
+        print(f"Error response: {error_message}")
+
+        # Customize error message format
+        return Response(
+            {
+                "status": "fail",
+                "message": error_message
+            },
+            status=response.status_code
+        )
 
 
 class UserProfileViewSet(viewsets.ModelViewSet):
@@ -135,6 +377,7 @@ class MealPlanViewSet(viewsets.ModelViewSet):
 class AppointmentViewSet(viewsets.ModelViewSet):
     queryset = Appointment.objects.all()
     serializer_class = AppointmentSerializer
+
 
 class AudioViewSet(viewsets.ModelViewSet):
     """
@@ -171,9 +414,24 @@ class AudioViewSet(viewsets.ModelViewSet):
             'audio/wav': '.wav',
             'audio/mpeg': '.mp3',  # Add more formats as needed
             'audio/x-wav': '.wav',
-            'audio/m4a': '.m4a'
-            # Add other audio formats you want to support
+            'audio/m4a': '.m4a',
+            'audio/mp4': '.m4a',
+            'audio/ogg': '.opus'
         }
+
+        # def convert_to_wav(input_file_path, output_file_path):
+        #     audio = AudioSegment.from_file(input_file_path)
+        #     audio.export(output_file_path, format="wav")
+
+        # content_type = audio_file.content_type
+        # print(f"Detected content type: {content_type}")
+
+        # if content_type not in ['audio/wav', 'audio/x-wav']:
+        #     converted_path = temp_audio_file.name.replace(suffix, '.wav')
+        #     convert_to_wav(temp_audio_file.name, converted_path)
+        #     temp_audio_file_name = converted_path
+        # else:
+        #     temp_audio_file_name = temp_audio_file.name
 
         try:
             # Get the content type of the audio file
@@ -191,7 +449,7 @@ class AudioViewSet(viewsets.ModelViewSet):
 
             # Get the appropriate file extension based on content type
             suffix = allowed_formats[content_type]
-            
+
             print("Saving temporary audio file for transcription...")
             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_audio_file:
                 audio_file.seek(0)
@@ -202,24 +460,35 @@ class AudioViewSet(viewsets.ModelViewSet):
 
             # Transcribe the audio file
             transcription = transcribe_audio(temp_audio_file.name)
+            if not transcription or 'Error' in transcription:
+                print(f"Transcription failed: {transcription}")
+                response_data = {
+                    "status": "fail",
+                    "message": "Transcription failed. Reason: " + transcription
+                }
+                return Response(response_data, status=400)
+
             print(f"Transcription result: {transcription}")
-
-            if not transcription:
-                raise ValueError("Transcription failed.")
-
             instance.transcription = transcription
             instance.save()
             print("Transcription saved to the database.")
 
-            # Get AI response based on the transcription
+            # Call RAG model to generate AI response
+            print("Calling RAG model to generate AI response...")
             ai_result = rag_response(
-                user_id=str(mongo_user['_id']),
+                user_id=mongo_user['_id'],
                 query=transcription,
                 knowledge_base="some_knowledge_base"
             )
 
+            # Check if the AI response is valid
             if not ai_result or 'response' not in ai_result:
-                raise ValueError("AI response failed.")
+                print("AI response retrieval failed or 'response' key missing.")
+                response_data = {
+                    "status": "fail",
+                    "message": "AI response generation failed."
+                }
+                return Response(response_data, status=500)
 
             instance.ai_response = ai_result['response']
             instance.save()
@@ -239,33 +508,30 @@ class AudioViewSet(viewsets.ModelViewSet):
 
             print("Returning audio response to frontend.")
 
-            # Open and read the audio file as binary
-            with open(audio_file_path, 'rb') as audio_file:
-                audio_content = audio_file.read()
 
-            # Return audio stream as a WAV response
+            # Open the file without closing it immediately
+            audio_file = open(audio_file_path, 'rb')
+
+            # Use StreamingHttpResponse
             response = StreamingHttpResponse(
-                audio_content,
+                audio_file,  # Pass the open file handle
                 content_type="audio/wav"
             )
-            response['Content-Disposition'] = f'inline; filename="response.wav"'
-            response['Content-Length'] = str(len(audio_content))
+            response['Content-Disposition'] = 'inline; filename="response.wav"'
+            response['Content-Length'] = str(len(audio_file))
 
             # Add transcription and AI response as custom headers
             response['X-Transcription'] = instance.transcription  # User transcription
             response['X-AI-Response'] = instance.ai_response      # AI response
 
-            # Debug the response headers
-            print(f"Response headers: {response.headers}")
-            print(f"Content-Type: {response['Content-Type']}")
-
             return response
+
 
         except Exception as e:
             print(f"Error during audio processing: {e}")
             response_data = {
                 "status": "fail",
-                "message": "Audio processing failed."
+                "message": "Audio processing failed. " + str(e)
             }
             return Response(response_data, status=500)
 
@@ -273,6 +539,7 @@ class AudioViewSet(viewsets.ModelViewSet):
             if 'temp_audio_file' in locals() and os.path.exists(temp_audio_file.name):
                 print(f"Deleting temporary audio file: {temp_audio_file.name}")
                 os.remove(temp_audio_file.name)
+
 
 
 class ReminderView(APIView):
@@ -285,25 +552,76 @@ class ReminderView(APIView):
 
         # Validate the incoming request data
         if not serializer.is_valid():
-            return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "status": "error",
+                "message": "Validation failed",
+                "data": serializer.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             validated_data = serializer.validated_data
             reminder = validated_data['reminder']
 
-            # Use self.user to get the current user
+            # Retrieve the current user
             postgres_user = self.request.user
             
             # Get or create MongoDB user
             mongo_user = get_or_create_mongo_user(postgres_user)
 
-            # Call reminder_message_full to get the personalized reminder content
+            # Generate the personalized reminder content
             personalized_message = reminder_message_full(mongo_user["_id"], reminder)
 
-            # Return the reminder response
+            # Return success response
             return Response({
-                "reminder_message": personalized_message
+                "status": "success",
+                "message": "Reminder created successfully",
+                "data": {
+                    "reminder_message": personalized_message
+                }
             }, status=status.HTTP_200_OK)
 
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # Handle any unexpected errors
+            return Response({
+                "status": "error",
+                "message": "An error occurred while processing the request",
+                "data": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    
+class HealthSyncScoreView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            user = request.user
+            data = request.data
+            timestamps = data.get('timestamps', {})
+            reminders = data.get('reminders', {})
+
+            if not timestamps or not reminders:
+                return Response({
+                    "status": "fail",
+                    "message": "Timestamps and reminders are required",
+                    "data": None
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            calculator = HealthSyncScoreCalculator(user)
+            daily_score = calculator.calculate_daily_adherence_score(timestamps, reminders)
+            health_sync_score = calculator.save_score(daily_score)
+
+            return Response({
+                "status": "success",
+                "message": "Health sync score calculated and stored successfully",
+                "data": {
+                    "dailyScore": health_sync_score.daily_score,
+                    "monthlySyncScore": health_sync_score.cumulative_monthly_score
+                }
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({
+                "status": "error",
+                "message": "An error occurred while processing the request",
+                "data": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

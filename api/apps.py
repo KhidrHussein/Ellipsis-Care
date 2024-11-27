@@ -10,6 +10,6 @@ class ApiConfig(AppConfig):
         import api.signals
 
         # Start the APScheduler in a new thread to prevent blocking
-        from .scheduler import start
-        scheduler_thread = threading.Thread(target=start)
-        scheduler_thread.start()
+        # from .scheduler import start
+        # scheduler_thread = threading.Thread(target=start)
+        # scheduler_thread.start()
