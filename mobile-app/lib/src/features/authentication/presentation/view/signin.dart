@@ -1,3 +1,4 @@
+import 'package:ellipsis_care/core/utils/enums/api_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +9,7 @@ import '../../../../../core/utils/helpers.dart';
 import '../bloc/auth_bloc.dart';
 import '../widgets/divider.dart';
 import '../widgets/oauth_options.dart';
-import '../../../../shared/textfield.dart';
+import '../../../../shared/widgets/textfield.dart';
 
 class Signin extends StatefulWidget {
   const Signin({super.key});
@@ -36,7 +37,7 @@ class _SigninState extends State<Signin> {
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: REdgeInsets.fromLTRB(16.w, 64.h, 16.w, 32.h),
           child: Form(
             key: _formKey,
@@ -72,8 +73,7 @@ class _SigninState extends State<Signin> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
-                    onTap: () =>
-                        UtilHelpers.pushRoute(RouteNames.forgotPassword),
+                    onTap: () => UtilHelpers.pushTo(RouteNames.forgotPassword),
                     child: Text(
                       "Forgot Password?",
                       style: context.textTheme.bodyMedium
@@ -81,17 +81,17 @@ class _SigninState extends State<Signin> {
                     ),
                   ),
                 ),
-                SizedBox(height: 12.h),
+                SizedBox(height: 24.h),
                 BlocConsumer<AuthenticationBloc, AuthenticationState>(
                   bloc: authenticationBloc,
                   listener: (context, state) {
-                    switch (state) {
-                      case AuthenticationPassed():
-                        UtilHelpers.pushRoute(RouteNames.home);
+                    switch (state.apiState) {
+                      case ApiState.success:
+                        UtilHelpers.pushTo(RouteNames.home);
                         break;
-                      case AuthenticationFailed(error: var error):
+                      case ApiState.failed:
                         UtilHelpers.showAlert(
-                            title: "Error", message: "$error");
+                            title: "Error", message: state.error);
                         break;
                       default:
                         break;
@@ -99,18 +99,17 @@ class _SigninState extends State<Signin> {
                   },
                   builder: (context, state) {
                     return FilledButton(
-                      onPressed: switch (state) {
-                        LoadingState() => null,
+                      onPressed: switch (state.apiState) {
+                        ApiState.loading => null,
                         _ => () {
-                            // if (_formKey.currentState!.validate()) {
-                            //   authenticationBloc.add(
-                            //     SignInEvent(
-                            //         email: _emailController.text,
-                            //         password: _passwordController.text),
-                            //   );
-                            // }
-
-                            UtilHelpers.pushRoute(RouteNames.home);
+                            if (_formKey.currentState!.validate()) {
+                              authenticationBloc.add(
+                                SignInEvent(
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                ),
+                              );
+                            }
                           }
                       },
                       child: const Text("Continue"),

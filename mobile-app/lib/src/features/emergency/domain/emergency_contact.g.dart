@@ -8,7 +8,7 @@ part of 'emergency_contact.dart';
 
 class EmergencyContactAdapter extends TypeAdapter<EmergencyContact> {
   @override
-  final int typeId = 1;
+  final int typeId = 2;
 
   @override
   EmergencyContact read(BinaryReader reader) {

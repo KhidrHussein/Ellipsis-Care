@@ -3,14 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:ellipsis_care/core/constants/asset_strings.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/home/presentation/controller/microphone_bloc/mic_bloc.dart';
-import 'package:ellipsis_care/src/features/home/presentation/widgets/home_action_chip.dart';
+import '../../../../../core/constants/asset_strings.dart';
+import '../../../../../core/utils/extensions.dart';
+import '../bloc/home_bloc.dart';
+import '../widgets/home_action_chip.dart';
 
-import '../../../../../config/router/route_names.dart';
-import '../../../../../core/utils/helpers.dart';
-import '../../../../shared/appbar.dart';
+import '../../../../shared/widgets/appbar.dart';
 
 class NotRecording extends StatelessWidget {
   const NotRecording({super.key});
@@ -23,7 +21,7 @@ class NotRecording extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final micBloc = context.read<MicrophoneBloc>();
+    final homeBloc = context.read<HomeBloc>();
 
     return Column(
       children: [
@@ -31,8 +29,7 @@ class NotRecording extends StatelessWidget {
         const Spacer(),
         GestureDetector(
           onTap: () {
-            UtilHelpers.pushRoute(RouteNames.recording);
-            micBloc.add(StartRecordingEvent());
+            homeBloc.add(StartRecordingEvent());
           },
           child: SvgPicture.asset(
             AssetStrings.microphoneIcon,

@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/dashboard_appbar.dart';
+import '../../../../../core/utils/extensions.dart';
+import '../widgets/dashboard_appbar.dart';
 
 class AddData extends StatelessWidget {
   const AddData({super.key});

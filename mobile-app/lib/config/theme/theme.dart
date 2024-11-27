@@ -1,8 +1,8 @@
-import 'package:ellipsis_care/config/theme/theme_extensions.dart';
-
-import '../../core/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../core/constants/colors.dart';
+import 'theme_extensions.dart';
 
 class AppTheme {
   static ThemeData lightTheme = ThemeData(

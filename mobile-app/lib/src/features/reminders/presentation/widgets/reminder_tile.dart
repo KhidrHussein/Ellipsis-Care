@@ -1,15 +1,13 @@
 import 'package:dotted_border/dotted_border.dart';
-import 'package:ellipsis_care/core/constants/asset_strings.dart';
-import 'package:ellipsis_care/core/constants/colors.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/reminders/models/reminder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
-
+import '../../../../../core/constants/colors.dart';
 import '../../../../../core/utils/enums/reminder.dart';
+import '../../../../../core/utils/extensions.dart';
+import '../../../../../core/utils/helpers.dart';
+import '../../models/reminder.dart';
 
 class ReminderTile extends StatefulWidget {
   final ReminderModel reminder;
@@ -21,13 +19,12 @@ class ReminderTile extends StatefulWidget {
 
 class _ReminderTileState extends State<ReminderTile> {
   final ValueNotifier<bool> _showOptions = ValueNotifier(false);
-  final ValueNotifier<bool> _isCurrentlySelected = ValueNotifier(false);
-  late final ValueNotifier<bool> _markedAsCompleted;
+  late bool _markedAsCompleted;
 
   @override
   void initState() {
     super.initState();
-    _markedAsCompleted = ValueNotifier(widget.reminder.eventIsCompleted);
+    _markedAsCompleted = widget.reminder.eventIsCompleted;
   }
 
   @override
@@ -52,7 +49,7 @@ class _ReminderTileState extends State<ReminderTile> {
                       shape: CircleBorder(),
                       color: AppColors.reminderTileCheckColor,
                     ),
-                    child: _markedAsCompleted.value
+                    child: _markedAsCompleted
                         ? Icon(Icons.check,
                             size: 12,
                             color: context.themeExtension.reminderColor)
@@ -66,7 +63,7 @@ class _ReminderTileState extends State<ReminderTile> {
                     duration: Durations.short4,
                     child: Container(
                       width: 1.w,
-                      height: _showOptions.value ? 125.h : 65.h,
+                      height: _showOptions.value ? 115.h : 55.h,
                       decoration: const BoxDecoration(
                           color: AppColors.reminderTileCheckColor),
                     ),
@@ -78,14 +75,17 @@ class _ReminderTileState extends State<ReminderTile> {
               child: AnimatedSize(
                 duration: Durations.short4,
                 child: GestureDetector(
-                  onTap: () => _showOptions.value = !_showOptions.value,
+                  onTap: () {
+                    if (!_markedAsCompleted) {
+                      _showOptions.value = !_showOptions.value;
+                    }
+                  },
                   child: DottedBorder(
                     strokeWidth: 2,
                     padding: [12, 8].symmetricPadding,
                     borderType: BorderType.RRect,
                     radius: Radius.circular(12.r),
-                    dashPattern:
-                        _markedAsCompleted.value ? [8, 0] : const [8, 4],
+                    dashPattern: _markedAsCompleted ? [8, 0] : const [8, 4],
                     color: switch (widget.reminder.type) {
                       ReminderType.drug => context.themeExtension.drugColor,
                       ReminderType.food => context.themeExtension.foodColor,
@@ -142,17 +142,17 @@ class _ReminderTileState extends State<ReminderTile> {
                                 ],
                               ),
                             ),
-                            AnimatedOpacity(
-                              opacity: value ? 1 : 0,
-                              duration: Durations.short1,
-                              child: SvgPicture.asset(
-                                AssetStrings.editIcon,
-                                colorFilter: ColorFilter.mode(
-                                  context.themeExtension.reminderInverseColor,
-                                  BlendMode.srcIn,
-                                ),
-                              ).alignCenter,
-                            )
+                            // AnimatedOpacity(
+                            //   opacity: value ? 1 : 0,
+                            //   duration: Durations.short1,
+                            //   child: SvgPicture.asset(
+                            //     AssetStrings.editIcon,
+                            //     colorFilter: ColorFilter.mode(
+                            //       context.themeExtension.reminderInverseColor,
+                            //       BlendMode.srcIn,
+                            //     ),
+                            //   ).alignCenter,
+                            // )
                           ],
                         ),
                         if (value)
@@ -166,9 +166,12 @@ class _ReminderTileState extends State<ReminderTile> {
                                   Expanded(
                                     child: FilledButton(
                                       onPressed: () {
-                                        _markedAsCompleted.value = !_markedAsCompleted.value;
-                                        widget.reminder
-                                            .copyWith(eventIsCompleted: true);
+                                        setState(
+                                            () => _markedAsCompleted = true);
+                                        widget.reminder.copyWith(
+                                            eventIsCompleted:
+                                                _markedAsCompleted);
+                                        _showOptions.value = false;
                                       },
                                       style: FilledButton.styleFrom(
                                         padding: EdgeInsets.zero,

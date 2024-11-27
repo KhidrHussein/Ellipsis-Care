@@ -34,7 +34,10 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
 
   static AppExceptions _handleResponse(Response<dynamic>? response) {
     int statusCode = response?.statusCode ?? 0;
-    final badResponse = FailedApiResponse.fromJson(response?.data);
+    final badResponse = response?.data != null
+        ? FailedApiResponse.fromJson(response?.data)
+        : const FailedApiResponse(
+            status: "failed", message: "No response data available");
 
     switch (statusCode) {
       case 400:
@@ -57,57 +60,70 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
         return const AppExceptions.serviceUnavailable();
       default:
         return AppExceptions.defaultError(
-          "Received invalid status code: $statusCode",
+          badResponse.message ?? "Unknown error with status code: $statusCode",
         );
     }
   }
 
-  static AppExceptions handleExceptions(error) {
-    if (error is Exception) {
+  static AppExceptions handleExceptions(exception) {
+    if (exception is Exception) {
       try {
         AppExceptions networkExceptions;
-        if (error is DioException) {
-          switch (error.type) {
+        if (exception is DioException) {
+          switch (exception.type) {
             case DioExceptionType.cancel:
               networkExceptions = const AppExceptions.requestCancelled();
               break;
+
             case DioExceptionType.connectionTimeout:
               networkExceptions = const AppExceptions.requestTimeout();
               break;
+
             case DioExceptionType.receiveTimeout:
               networkExceptions = const AppExceptions.receiveTimeout();
               break;
+
             case DioExceptionType.sendTimeout:
               networkExceptions = const AppExceptions.sendTimeout();
               break;
+
             case DioExceptionType.connectionError:
               networkExceptions = const AppExceptions.noInternetConnection();
               break;
+
             case DioExceptionType.badCertificate:
               networkExceptions = const AppExceptions.internalServerError();
               break;
+
             case DioExceptionType.badResponse:
-              networkExceptions = _handleResponse(error.response);
+              networkExceptions = _handleResponse(exception.response);
               break;
-            default:
-              networkExceptions = AppExceptions.defaultError(error.message);
+
+            case DioExceptionType.unknown:
+              if (exception.error is SocketException) {
+                networkExceptions = const AppExceptions.noInternetConnection();
+              } else {
+                networkExceptions = const AppExceptions.serviceUnavailable();
+              }
+              break;
           }
-        } else if (error is SocketException) {
+        } else if (exception is SocketException) {
           networkExceptions = const AppExceptions.noInternetConnection();
         } else {
+          exception.printLog();
           networkExceptions = const AppExceptions.unexpectedError();
         }
         return networkExceptions;
-      } on FormatException catch (format) {
-        format.printLog();
+      } on FormatException catch (formatError) {
+        formatError.printLog();
         return const AppExceptions.formatException();
       } catch (e) {
         e.printLog();
         return const AppExceptions.unexpectedError();
       }
     } else {
-      if (error.toString().contains("is not a subtype of")) {
-        error.toString().printLog();
+      if (exception.toString().contains("is not a subtype of")) {
+        exception.printLog();
         return const AppExceptions.unableToProcess();
       } else {
         return const AppExceptions.unexpectedError();

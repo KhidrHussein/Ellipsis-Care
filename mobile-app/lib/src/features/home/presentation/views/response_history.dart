@@ -1,7 +1,7 @@
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/home/presentation/widgets/response_history_group.dart';
-import 'package:ellipsis_care/src/shared/user_avatar.dart';
+import '../../../../../core/utils/extensions.dart';
+import '../../../../../core/utils/helpers.dart';
+import '../widgets/response_history_group.dart';
+import '../../../../shared/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -30,7 +30,7 @@ class _ResponseHistoryState extends State<ResponseHistory> {
             Row(
               children: [
                 const IconButton(
-                  onPressed: UtilHelpers.popRoute,
+                  onPressed: UtilHelpers.pop,
                   icon: Icon(Icons.navigate_before),
                 ),
                 Expanded(

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/emergency/domain/emergency_contact.dart';
-import 'package:ellipsis_care/src/features/emergency/presentation/bloc/emergency_bloc.dart';
+import '../../../../../core/utils/extensions.dart';
+import '../../domain/emergency_contact.dart';
+import '../bloc/emergency_bloc.dart';
 
 import '../../../../../core/constants/colors.dart';
 

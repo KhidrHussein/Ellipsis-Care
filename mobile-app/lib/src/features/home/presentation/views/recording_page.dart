@@ -1,17 +1,17 @@
-import 'package:ellipsis_care/src/features/home/presentation/controller/microphone_bloc/mic_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:ellipsis_care/core/constants/asset_strings.dart';
 import 'package:ellipsis_care/core/constants/colors.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/src/features/home/presentation/widgets/animated_spinner/spinner.dart';
-import 'package:ellipsis_care/src/shared/appbar.dart';
+import 'package:ellipsis_care/src/shared/widgets/appbar.dart';
 
+import '../../../../../core/constants/asset_strings.dart';
+import '../../../../../core/utils/enums/microphone_state.dart';
 import '../../../../../core/utils/helpers.dart';
-import '../controller/home_bloc/home_bloc.dart';
+import '../bloc/home_bloc.dart';
 
 class RecordingPage extends StatelessWidget {
   const RecordingPage({super.key});
@@ -19,7 +19,7 @@ class RecordingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeBloc = context.read<HomeBloc>();
-    final micBloc = context.read<MicrophoneBloc>();
+    final recordingState = context.watch<HomeBloc>().state;
 
     return Scaffold(
       body: SafeArea(
@@ -34,47 +34,34 @@ class RecordingPage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  BlocConsumer<MicrophoneBloc, MicrophoneState>(
-                    bloc: micBloc,
-                    listener: (context, state) {
-                      if (state case RecordingStopped()) {
-                        UtilHelpers.popRoute();
-                        homeBloc.add(
-                          UploadAudioToAIEvent(audioFilePath: state.filePath),
-                        );
+                  GestureDetector(
+                    onTap: () {
+                      if (recordingState.micState == MicrophoneState.paused) {
+                        homeBloc.add(ResumeRecordingEvent());
+                      } else if (recordingState.micState ==
+                          MicrophoneState.resumed) {
+                        homeBloc.add(PauseRecordingEvent());
                       }
                     },
-                    builder: (context, state) {
-                      return GestureDetector(
-                        onTap: switch (state) {
-                          RecordingPaused() => () {
-                              micBloc.add(ResumeRecordingEvent());
-                            },
-                          RecordingResumed() => () {
-                              micBloc.add(PauseRecordingEvent());
-                            },
-                          _ => null
-                        },
-                        child: Container(
-                          padding: REdgeInsets.all(20),
-                          decoration: const ShapeDecoration(
-                            shape: CircleBorder(),
-                            color: AppColors.pauseIconBgColor,
-                          ),
-                          child: switch (state) {
-                            RecordingPaused() => const Icon(
-                                Icons.play_arrow,
-                                color: AppColors.white,
-                              ),
-                            _ => SvgPicture.asset(AssetStrings.pauseIcon),
-                          },
-                        ),
-                      );
-                    },
+                    child: Container(
+                      padding: REdgeInsets.all(20),
+                      decoration: const ShapeDecoration(
+                        shape: CircleBorder(),
+                        color: AppColors.pauseIconBgColor,
+                      ),
+                      child: recordingState.micState == MicrophoneState.paused
+                          ? const Icon(
+                              Icons.play_arrow,
+                              color: AppColors.white,
+                            )
+                          : SvgPicture.asset(AssetStrings.pauseIcon),
+                    ),
                   ),
                   10.sizedBoxWidth,
                   GestureDetector(
-                    onTap: () => micBloc.add(StopRecordingEvent()),
+                    onTap: () {
+                      homeBloc.add(StopRecordingEvent());
+                    },
                     child: Container(
                       padding: REdgeInsets.all(20),
                       decoration: const ShapeDecoration(

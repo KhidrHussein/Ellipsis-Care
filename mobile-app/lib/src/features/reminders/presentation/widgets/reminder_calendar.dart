@@ -3,20 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/reminders/presentation/controller/cubit/calender_cubit.dart';
-
+import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/constants/colors.dart';
-import '../controller/bloc/reminder_bloc.dart';
+import '../bloc/reminder_bloc.dart';
 
 class ReminderCalendar extends StatelessWidget {
   const ReminderCalendar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final calendarCubit = context.read<CalendarCubit>();
-    final calendarCubitState = context.watch<CalendarCubit>();
-    final reminderBlocState = context.watch<ReminderBloc>();
+    final bloc = context.read<ReminderBloc>();
+    final blocState = context.watch<ReminderBloc>();
 
     return Container(
       decoration: BoxDecoration(
@@ -27,11 +24,10 @@ class ReminderCalendar extends StatelessWidget {
         ),
       ),
       child: BlocBuilder<ReminderBloc, ReminderState>(
-        bloc: reminderBlocState,
         builder: (context, state) {
           return TableCalendar(
-            currentDay: calendarCubitState.state,
-            focusedDay: calendarCubitState.state,
+            currentDay: blocState.state.currentDate,
+            focusedDay: blocState.state.currentDate,
             firstDay: DateTime(2020),
             lastDay: DateTime(2030),
             daysOfWeekHeight: 42.h,
@@ -77,13 +73,16 @@ class ReminderCalendar extends StatelessWidget {
               ),
             ),
             eventLoader: (date) {
-              return !isSameDay(date, calendarCubitState.state)
-                  ? []
-                  : reminderBlocState.state.events[calendarCubitState.state] ??
-                      [];
+              return isSameDay(date, blocState.state.currentDate)
+                  ? blocState
+                          .state.calendarEvent[blocState.state.currentDate] ??
+                      []
+                  : [];
             },
             onDaySelected: (selectedDay, focusedDay) {
-              calendarCubit.updateDate(selectedDay);
+              bloc.add(
+                UpdateCurrentDateEvent(newDate: selectedDay),
+              );
             },
           );
         },

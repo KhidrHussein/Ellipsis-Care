@@ -22,12 +22,14 @@ class AIChatBubble extends StatelessWidget {
             backgroundImage: AssetImage(AssetStrings.logo),
           ),
           SizedBox(width: 8.w),
-          Container(
-            constraints: BoxConstraints(minWidth: 290.w),
-            padding: REdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Text(
-              aiResponse,
-              style: context.textTheme.bodyMedium?.copyWith(fontSize: 15.sp),
+          Expanded(
+            child: Container(
+              constraints: BoxConstraints(minWidth: 290.w),
+              padding: REdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: Text(
+                aiResponse,
+                style: context.textTheme.bodyMedium?.copyWith(fontSize: 15.sp),
+              ),
             ),
           ),
         ],

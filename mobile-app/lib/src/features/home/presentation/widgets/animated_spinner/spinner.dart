@@ -1,4 +1,4 @@
-import 'package:ellipsis_care/src/features/home/presentation/widgets/animated_spinner/spinner_clipper.dart';
+import 'spinner_clipper.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,7 +21,7 @@ class _SpinnerState extends State<Spinner> with SingleTickerProviderStateMixin {
     _controller = AnimationController(
       vsync: this,
       upperBound: 3,
-      duration: Duration(seconds: 3),
+      duration: const Duration(seconds: 3),
     );
 
     _controller.repeat();

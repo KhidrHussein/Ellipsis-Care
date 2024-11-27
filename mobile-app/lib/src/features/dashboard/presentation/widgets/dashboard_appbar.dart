@@ -1,6 +1,6 @@
-import 'package:ellipsis_care/config/router/route_names.dart';
-import 'package:ellipsis_care/core/constants/asset_strings.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../../../../config/router/route_names.dart';
+import '../../../../../core/constants/asset_strings.dart';
+import '../../../../../core/utils/extensions.dart';
 import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class DashboardAppbar extends StatelessWidget {
   final String title;
   final bool canNavigate;
-  
+
   const DashboardAppbar({
     super.key,
     required this.title,
@@ -21,7 +21,7 @@ class DashboardAppbar extends StatelessWidget {
     return Row(
       children: [
         GestureDetector(
-          onTap: () => UtilHelpers.popRoute(),
+          onTap: () => UtilHelpers.pop(),
           child: SvgPicture.asset(AssetStrings.navigateBackIcon),
         ),
         5.sizedBoxWidth,
@@ -35,7 +35,7 @@ class DashboardAppbar extends StatelessWidget {
         if (canNavigate) ...<Widget>[
           const Spacer(),
           IconButton(
-            onPressed: () => UtilHelpers.pushRoute(RouteNames.addData),
+            onPressed: () => UtilHelpers.pushTo(RouteNames.addData),
             icon: const Icon(Icons.add),
           )
         ]

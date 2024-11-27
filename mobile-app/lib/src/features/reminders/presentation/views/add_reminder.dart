@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:ellipsis_care/core/constants/asset_strings.dart';
-import 'package:ellipsis_care/core/utils/enums/reminder.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/reminders/presentation/widgets/add_reminder_section.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/check_type_picker.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/date_picker.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/radio_type_picker.dart';
 
-import '../../../../../core/constants/colors.dart';
+import '../../../../../core/constants/asset_strings.dart';
+import '../../../../../core/utils/enums/reminder.dart';
+import '../../../../../core/utils/extensions.dart';
+import '../../../../../core/utils/helpers.dart';
 import '../../models/reminder.dart';
+import '../widgets/add_reminder_section.dart';
 
 class AddReminder extends StatefulWidget {
   const AddReminder({super.key});
@@ -85,57 +84,8 @@ class _AddReminderState extends State<AddReminder> {
                     .map(
                       (reminderType) => ValueListenableBuilder(
                         valueListenable: _reminderType,
-                        builder: (context, value, child) {
-                          return GestureDetector(
-                            onTap: () => _reminderType.value = reminderType,
-                            child: AnimatedContainer(
-                              duration: Durations.medium2,
-                              margin: REdgeInsets.only(right: 10),
-                              padding: REdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: switch (reminderType) {
-                                  ReminderType.drug =>
-                                    context.themeExtension.drugBgColor,
-                                  ReminderType.food =>
-                                    context.themeExtension.foodBgColor,
-                                },
-                                borderRadius: BorderRadius.circular(5.r),
-                                border: value == reminderType
-                                    ? Border.all(color: context.themeExtension.reminderInverseColor)
-                                    : null,
-                              ),
-                              child: Column(
-                                children: [
-                                  SvgPicture.asset(
-                                    reminderType.icon,
-                                    width: 32,
-                                    colorFilter: ColorFilter.mode(
-                                      switch (reminderType) {
-                                        ReminderType.drug =>
-                                          context.themeExtension.drugColor,
-                                        ReminderType.food =>
-                                          context.themeExtension.foodColor,
-                                      },
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                                  10.sizedBoxHeight,
-                                  Text(
-                                    reminderType.name,
-                                    style:
-                                        context.textTheme.bodyMedium?.copyWith(
-                                      fontSize: 14.sp,
-                                      color: context.themeExtension.reminderInverseColor.withOpacity(.3),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+                        builder: (context, value, child) =>
+                            _buildReminderTypeButton(reminderType, value),
                       ),
                     )
                     .toList(),
@@ -168,42 +118,8 @@ class _AddReminderState extends State<AddReminder> {
                       ),
                       child: ValueListenableBuilder(
                         valueListenable: _reminderInterval,
-                        builder: (context, value, child) {
-                          return DropdownButton<ReminderInterval>(
-                            elevation: 4,
-                            menuWidth: 84.w,
-                            isExpanded: true,
-                            borderRadius: BorderRadius.circular(5.r),
-                            padding: REdgeInsets.only(left: 12),
-                            style: context.textTheme.labelSmall?.copyWith(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w400,
-                              color: context.textTheme.labelSmall?.color!
-                                  .withOpacity(.87),
-                            ),
-                            underline: const SizedBox(),
-                            hint: Text(
-                              "Daily, twice, etc",
-                              style: context.textTheme.labelSmall?.copyWith(
-                                fontSize: 14.sp,
-                                color: context.textTheme.labelSmall?.color!
-                                    .withOpacity(.3),
-                              ),
-                            ),
-                            value: value,
-                            items: ReminderInterval.values
-                                .map(
-                                  (interval) =>
-                                      DropdownMenuItem<ReminderInterval>(
-                                    value: interval,
-                                    child: Text(interval.intervalName),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) =>
-                                _reminderInterval.value = value,
-                          );
-                        },
+                        builder: (context, value, child) =>
+                            _buildDropDownButton(value),
                       ),
                     ),
                   ),
@@ -268,17 +184,16 @@ class _AddReminderState extends State<AddReminder> {
                     name: _nameController.text,
                     dosage: _dosageController.text,
                     type: _reminderType.value,
-                    eventIsCompleted: false,
                     interval: _reminderInterval.value ?? ReminderInterval.daily,
                     schedule: _manageSchedules,
                     instruction: _instruction.first,
                     startDate: _startDate.value!,
                     endDate: _endDate.value!,
-                    reminderStartTime: _startReminderAt.value!,
-                    reminderEndTime: _endReminderAt.value!,
+                    eventIsCompleted: false,
+                    reminderStartTime: _startReminderAt.value,
+                    reminderEndTime: _endReminderAt.value,
                   );
-
-                  UtilHelpers.popRoute(model);
+                  UtilHelpers.pop(model);
                 }
               },
               style: context.filledButtonTheme?.copyWith(
@@ -300,6 +215,88 @@ class _AddReminderState extends State<AddReminder> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildReminderTypeButton(
+      ReminderType reminderType, ReminderType currentType) {
+    return GestureDetector(
+      onTap: () => _reminderType.value = reminderType,
+      child: AnimatedContainer(
+        duration: Durations.medium2,
+        margin: REdgeInsets.only(right: 10),
+        padding: REdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 10,
+        ),
+        decoration: BoxDecoration(
+          color: switch (reminderType) {
+            ReminderType.drug => context.themeExtension.drugBgColor,
+            ReminderType.food => context.themeExtension.foodBgColor,
+          },
+          borderRadius: BorderRadius.circular(5.r),
+          border: currentType == reminderType
+              ? Border.all(color: context.themeExtension.reminderInverseColor)
+              : null,
+        ),
+        child: Column(
+          children: [
+            SvgPicture.asset(
+              reminderType.icon,
+              width: 32,
+              colorFilter: ColorFilter.mode(
+                switch (reminderType) {
+                  ReminderType.drug => context.themeExtension.drugColor,
+                  ReminderType.food => context.themeExtension.foodColor,
+                },
+                BlendMode.srcIn,
+              ),
+            ),
+            10.sizedBoxHeight,
+            Text(
+              reminderType.name,
+              style: context.textTheme.bodyMedium?.copyWith(
+                fontSize: 14.sp,
+                color:
+                    context.themeExtension.reminderInverseColor.withOpacity(.3),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropDownButton(ReminderInterval? value) {
+    return DropdownButton<ReminderInterval>(
+      elevation: 4,
+      menuWidth: 84.w,
+      isExpanded: true,
+      borderRadius: BorderRadius.circular(5.r),
+      padding: REdgeInsets.only(left: 12),
+      style: context.textTheme.labelSmall?.copyWith(
+        fontSize: 16.sp,
+        fontWeight: FontWeight.w400,
+        color: context.textTheme.labelSmall?.color!.withOpacity(.87),
+      ),
+      underline: const SizedBox(),
+      hint: Text(
+        "Daily, twice, etc",
+        style: context.textTheme.labelSmall?.copyWith(
+          fontSize: 14.sp,
+          color: context.textTheme.labelSmall?.color!.withOpacity(.3),
+        ),
+      ),
+      value: value,
+      items: ReminderInterval.values
+          .map(
+            (interval) => DropdownMenuItem<ReminderInterval>(
+              value: interval,
+              child: Text(interval.intervalName),
+            ),
+          )
+          .toList(),
+      onChanged: (value) => _reminderInterval.value = value,
     );
   }
 }

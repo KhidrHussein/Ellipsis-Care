@@ -45,9 +45,9 @@ class AppColors {
   static const Color reminderSheetBorderColor = Color(0xFFBBBBBB);
 
   // Emergency Colors
-  static const Color contactTileColorLight = Color(0xFF797979);
+  static const Color contactTileColorLight = Color(0xFFFFFFFF);
   static const Color contactTileColorDark = Color(0xFF0D0D0D);
-  static const Color contactTileBorderColorLight = Color(0xFF797979);
+  static const Color contactTileBorderColorLight = Color(0xFFD0D5DD);
   static const Color contactTileBorderColorDark = Color(0xFF2D333E);
   static const Color contactNumberTextColor = Color(0xFF797979);
   static const Color deleteButtonColorLight = Color(0xFFFF3B30);

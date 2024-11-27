@@ -2,7 +2,7 @@ import 'package:community_charts_flutter/community_charts_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../../../../core/utils/extensions.dart';
 
 class Overview extends StatelessWidget {
   const Overview({super.key});
@@ -19,20 +19,20 @@ class Overview extends StatelessWidget {
           ),
         ).alignLeft,
         30.sizedBoxHeight,
-        SizedBox(
-          width: .4.sw,
-          height: .2.sh,
-          child: PieChart(
-            [
-              Series(
-                id: "",
-                data: [],
-                domainFn: (data, index) => "",
-                measureFn: (data, index) => 4,
-              )
-            ],
-          ),
-        ),
+        // SizedBox(
+        //   width: .4.sw,
+        //   height: .2.sh,
+        //   child: PieChart(
+        //     [
+        //       Series(
+        //         id: "",
+        //         data: [],
+        //         domainFn: (data, index) => "",
+        //         measureFn: (data, index) => 4,
+        //       )
+        //     ],
+        //   ),
+        // ),
         30.sizedBoxHeight,
       ],
     );

@@ -1,13 +1,11 @@
 import 'package:community_charts_flutter/community_charts_flutter.dart';
-import 'package:ellipsis_care/src/features/settings/presentation/widgets/health_option_picker.dart';
+import '../../../../settings/presentation/widgets/health_option_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/config/router/route_names.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
-
-import '../../../../../../core/constants/colors.dart';
+import '../../../../../../config/router/route_names.dart';
+import '../../../../../../core/utils/extensions.dart';
+import '../../../../../../core/utils/helpers.dart';
 
 class ChartSection extends StatelessWidget {
   final String chartTitle;
@@ -41,12 +39,12 @@ class ChartSection extends StatelessWidget {
                   const HealthOptionPicker(),
                   // const Spacer(),
                   IconButton(
-                    onPressed: () => UtilHelpers.pushRoute(RouteNames.addData),
+                    onPressed: () => UtilHelpers.pushTo(RouteNames.addData),
                     icon: const Icon(Icons.add),
                   ),
                   IconButton(
                     onPressed: () =>
-                        UtilHelpers.pushRoute(RouteNames.chartDetails),
+                        UtilHelpers.pushTo(RouteNames.chartDetails),
                     icon: const Icon(Icons.navigate_next),
                   )
                 ],

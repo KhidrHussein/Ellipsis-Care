@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../../../../core/utils/extensions.dart';
 
 class SettingCardOption extends StatelessWidget {
   final String title;

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../../../../../core/utils/extensions.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_appbar.dart';
-import 'package:ellipsis_care/src/shared/textfield.dart';
-import 'package:ellipsis_care/src/shared/user_avatar.dart';
+import 'package:ellipsis_care/src/shared/widgets/textfield.dart';
+import 'package:ellipsis_care/src/shared/widgets/user_avatar.dart';
 
 import '../../../../../../core/constants/colors.dart';
 

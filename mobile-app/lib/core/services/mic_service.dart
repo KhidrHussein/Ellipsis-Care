@@ -17,9 +17,12 @@ class MicrophoneService {
     final tempDir = await getApplicationCacheDirectory();
 
     try {
+      AudioEncoder audioEncoder = AudioEncoder.wav;
+      String fileType = ".wav";
+
       await _mic.start(
-        const RecordConfig(encoder: AudioEncoder.wav),
-        path: "${tempDir.path}/${const Uuid().v4()}.wav",
+        RecordConfig(encoder: audioEncoder),
+        path: "${tempDir.path}/${const Uuid().v4()}$fileType",
       );
     } catch (e) {
       "$runtimeType Error: $e".printLog();

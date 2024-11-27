@@ -1,10 +1,8 @@
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/dashboard_section.dart';
+import '../../../../../../core/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/constants/asset_strings.dart';
-import '../../../../../../core/constants/colors.dart';
 import 'meal_section_card.dart';
 
 class MealAndNutritionSection extends StatelessWidget {

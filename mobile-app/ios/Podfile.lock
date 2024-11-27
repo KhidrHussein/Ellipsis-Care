@@ -5,6 +5,8 @@ PODS:
   - AppAuth/Core (1.7.5)
   - AppAuth/ExternalUserAgent (1.7.5):
     - AppAuth/Core
+  - audioplayers_darwin (0.0.1):
+    - Flutter
   - awesome_notifications (0.10.0):
     - Flutter
     - IosAwnCore (~> 0.10.0)
@@ -65,6 +67,7 @@ PODS:
   - Try (2.1.1)
 
 DEPENDENCIES:
+  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
   - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
@@ -90,6 +93,8 @@ SPEC REPOS:
     - Try
 
 EXTERNAL SOURCES:
+  audioplayers_darwin:
+    :path: ".symlinks/plugins/audioplayers_darwin/ios"
   awesome_notifications:
     :path: ".symlinks/plugins/awesome_notifications/ios"
   firebase_core:
@@ -113,6 +118,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
+  audioplayers_darwin: ccf9c770ee768abb07e26d90af093f7bab1c12ab
   awesome_notifications: 0f432b28098d193920b11a44cfa9d2d9313a3888
   Firebase: cf1b19f21410b029b6786a54e9764a0cacad3c99
   firebase_core: 84a16d041be8bc166b6e00350f89849e06daf9d1

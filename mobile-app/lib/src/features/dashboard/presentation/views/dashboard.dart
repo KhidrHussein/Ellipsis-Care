@@ -1,10 +1,11 @@
-import 'package:ellipsis_care/core/utils/enums/reminder.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/chart/chart_section.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/dashboard_section.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/overview.dart';
+import '../../../../../core/utils/enums/reminder.dart';
+
+// import '../widgets/chart/chart_section.dart';
+import '../widgets/dashboard_section.dart';
+// import '../widgets/overview.dart';
 
 class Dashboard extends StatelessWidget {
   const Dashboard({super.key});
@@ -13,11 +14,11 @@ class Dashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: REdgeInsets.symmetric(horizontal: 16),
+        padding: REdgeInsets.only(left: 16, right: 16, top: 16),
         child: const Column(
           children: [
-            Overview(),
-            ChartSection(chartTitle: "Health Overview"),
+            // Overview(),
+            // ChartSection(chartTitle: "Health Overview"),
             DashboardSection(
               name: "Meal & Nutrition",
               type: ReminderType.food,

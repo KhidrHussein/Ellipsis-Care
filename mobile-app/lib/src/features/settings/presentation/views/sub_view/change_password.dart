@@ -1,9 +1,9 @@
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
+import '../../../../../../core/utils/extensions.dart';
+import '../../../../../../core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../shared/textfield.dart';
+import '../../../../../shared/widgets/textfield.dart';
 import '../../widgets/settings_appbar.dart';
 
 class ChangePassword extends StatefulWidget {

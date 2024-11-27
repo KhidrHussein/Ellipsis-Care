@@ -1,7 +1,7 @@
-import 'package:ellipsis_care/config/router/route_names.dart';
-import 'package:ellipsis_care/core/constants/colors.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/shared/user_avatar.dart';
+import '../../../../../config/router/route_names.dart';
+import '../../../../../core/constants/colors.dart';
+import '../../../../../core/utils/helpers.dart';
+import '../../../../shared/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -46,7 +46,7 @@ class UserProfile extends StatelessWidget {
                       color: context.textTheme.labelMedium?.color,
                       // FIXME: use the correct color for border
                       border: Border.all(
-                        color: context.themeExtension.homeColor,
+                        color: AppColors.white,
                       ),
                       borderRadius: BorderRadius.circular(8.r),
                     ),
@@ -61,8 +61,7 @@ class UserProfile extends StatelessWidget {
                   ),
                   8.sizedBoxHeight,
                   GestureDetector(
-                    onTap: () =>
-                        UtilHelpers.pushRoute(RouteNames.complianceScore),
+                    onTap: () => UtilHelpers.pushTo(RouteNames.complianceScore),
                     child: Container(
                       padding:
                           REdgeInsets.symmetric(horizontal: 8, vertical: 4),

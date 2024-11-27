@@ -1,7 +1,9 @@
+import 'package:ellipsis_care/core/services/storage_service.dart';
+import 'package:ellipsis_care/src/shared/models/user_information/user_information_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import 'package:ellipsis_care/core/utils/enums/api_state.dart';
 
 import '../../../../../core/api/exceptions/exceptions.dart';
 import '../../../../../core/utils/locator.dart';
@@ -14,7 +16,8 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc()
       : _apiRepository = injector<AuthenticationRepository>(),
-        super(InitialState()) {
+        _storageService = injector<StorageService>(),
+        super(const AuthenticationState()) {
     on<SignInEvent>(_signIn);
     on<SignUpEvent>(_signUp);
     on<OTPVerificationEvent>(_verifyOTP);
@@ -23,30 +26,35 @@ class AuthenticationBloc
   }
 
   final AuthenticationRepository _apiRepository;
+  final StorageService _storageService;
 
-  void _signIn(SignInEvent event, Emitter<AuthenticationState> handler) async {
-    final Map<String, dynamic> payload = {
+  void _signIn(SignInEvent event, Emitter<AuthenticationState> emit) async {
+    Map<String, dynamic> payload = {
       "email": event.email,
       "password": event.password,
     };
 
-    handler.call(LoadingState());
+    emit(state.copyWith(apiState: ApiState.loading));
+    try {
+      final result = await _apiRepository.signIn(payload);
 
-    final result = await _apiRepository.signIn(payload);
-
-    if (result.response != null) {
-      handler.call(
-        AuthenticationPassed(data: result.response!),
+      result.fold(
+        (success) {
+          _updateUserAccount(success.data!);
+          emit(state.copyWith(apiState: ApiState.success));
+        },
+        (exception) {
+          final errorMessage = AppExceptions.getErrorMessage(exception);
+          emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
+        },
       );
-    } else {
-      final String errorMessage =
-          AppExceptions.getErrorMessage(result.exception!);
-      handler.call(AuthenticationFailed(error: errorMessage));
+    } catch (e) {
+      emit(state.copyWith(apiState: ApiState.failed, error: "$e"));
     }
   }
 
-  void _signUp(SignUpEvent event, Emitter<AuthenticationState> handler) async {
-    final Map<String, dynamic> payload = {
+  void _signUp(SignUpEvent event, Emitter<AuthenticationState> emit) async {
+    Map<String, dynamic> payload = {
       "email": event.email,
       "password": event.password,
       "re_password": event.password,
@@ -54,92 +62,137 @@ class AuthenticationBloc
       "last_name": event.lastName
     };
 
-    handler.call(LoadingState());
+    emit(state.copyWith(apiState: ApiState.loading));
+    try {
+      final result = await _apiRepository.signUp(payload);
 
-    final result = await _apiRepository.signUp(payload);
+      result.fold(
+        (success) {
+          _createUserAccount(success.data!.email, success.data!.username);
 
-    if (result.response != null) {
-      handler.call(
-        AuthenticationPassed(data: result.response!.data),
+          emit(state.copyWith(apiState: ApiState.success));
+        },
+        (exception) {
+          final errorMessage = AppExceptions.getErrorMessage(exception);
+          emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
+        },
       );
-    } else {
-      final String errorMessage =
-          AppExceptions.getErrorMessage(result.exception!);
-      handler.call(AuthenticationFailed(error: errorMessage));
+    } catch (e) {
+      emit(state.copyWith(apiState: ApiState.failed, error: "$e"));
     }
-  }
-
-  void _useGoogleOAuth(
-      GoogleOAuthEvent event, Emitter<AuthenticationState> handler) async {
-    handler.call(LoadingState());
-
-    final result = await _apiRepository.signInWithGoogle();
-
-    if (result.response != null) {
-      List<String>? names = result.response?.displayName?.split(' ');
-
-      if (event.isNewUser) {
-        final Map<String, dynamic> payload = {
-          "email": result.response?.email,
-          "first_name": names?.first,
-          "last_name": names?.last,
-        };
-
-        final apiResponse = await _apiRepository.signUp(payload);
-
-        if (apiResponse.response != null) {
-          handler.call(
-            AuthenticationPassed(data: apiResponse.response!),
-          );
-        } else {
-          final String errorMessage =
-              AppExceptions.getErrorMessage(result.exception);
-          handler.call(AuthenticationFailed(error: errorMessage));
-        }
-      } else {
-        final Map<String, dynamic> payload = {"email": result.response?.email};
-
-        final apiResponse = await _apiRepository.signIn(payload);
-
-        if (apiResponse.response != null) {
-          handler.call(
-            AuthenticationPassed(data: apiResponse.response!),
-          );
-        } else {
-          final String errorMessage =
-              AppExceptions.getErrorMessage(result.exception);
-          handler.call(AuthenticationFailed(error: errorMessage));
-        }
-      }
-    }
-  }
-
-  void _forgotPassword(
-      ForgotPasswordEvent event, Emitter<AuthenticationState> handler) async {
-    handler.call(LoadingState());
   }
 
   void _verifyOTP(
-      OTPVerificationEvent event, Emitter<AuthenticationState> handler) async {
-    "Attemp to register event".printLog();
-
-    final Map<String, dynamic> payload = {
+      OTPVerificationEvent event, Emitter<AuthenticationState> emit) async {
+    Map<String, dynamic> payload = {
       "email": event.email,
       "verification_code": event.verificationCode,
     };
 
-    handler.call(LoadingState());
-
-    final result = await _apiRepository.verifyEmail(payload);
-
-    if (result.response != null) {
-      handler.call(
-        AuthenticationPassed(data: result.response!.data),
+    emit(state.copyWith(apiState: ApiState.loading));
+    try {
+      final result = await _apiRepository.verifyEmail(payload);
+      result.fold(
+        (successfulResponse) {
+          emit(state.copyWith(apiState: ApiState.success));
+        },
+        (exception) {
+          final errorMessage = AppExceptions.getErrorMessage(exception);
+          emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
+        },
       );
-    } else {
-      final String errorMessage =
-          AppExceptions.getErrorMessage(result.exception!);
-      handler.call(AuthenticationFailed(error: errorMessage));
+    } catch (e) {
+      emit(state.copyWith(apiState: ApiState.failed, error: "$e"));
     }
+  }
+
+  void _useGoogleOAuth(
+      GoogleOAuthEvent event, Emitter<AuthenticationState> emit) async {
+    emit(state.copyWith(apiState: ApiState.loading, isUsingOauth: true));
+    try {
+      final oauthResult = await _apiRepository.signInWithGoogle();
+
+      oauthResult.fold(
+        (googleCredentials) {
+          List<String>? names = googleCredentials?.displayName?.split(' ');
+
+          if (event.isNewUser) {
+            final Map<String, dynamic> payload = {
+              "email": googleCredentials?.email,
+              "first_name": names?.first,
+              "last_name": names?.last,
+            };
+            _signUpNewUser(payload, emit);
+          } else {
+            Map<String, dynamic> payload = {"email": googleCredentials?.email};
+            _signInNewUser(payload, emit);
+          }
+        },
+        (exception) {
+          final errorMessage = AppExceptions.getErrorMessage(exception);
+          emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(apiState: ApiState.failed, error: "$e"));
+    }
+  }
+
+  void _forgotPassword(
+      ForgotPasswordEvent event, Emitter<AuthenticationState> emit) async {}
+
+  void _signInNewUser(
+      Map<String, dynamic> payload, Emitter<AuthenticationState> emit) async {
+    try {
+      final result = await _apiRepository.signIn(payload);
+
+      result.fold(
+        (successfulResponse) {
+          emit(
+            state.copyWith(apiState: ApiState.success),
+          );
+        },
+        (exception) {
+          final errorMessage = AppExceptions.getErrorMessage(exception);
+          emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(apiState: ApiState.failed, error: "$e"));
+    }
+  }
+
+  void _signUpNewUser(
+      Map<String, dynamic> payload, Emitter<AuthenticationState> emit) async {
+    try {
+      final result = await _apiRepository.signUp(payload);
+
+      result.fold(
+        (successfulResponse) {
+          emit(
+            state.copyWith(apiState: ApiState.success),
+          );
+        },
+        (exception) {
+          final errorMessage = AppExceptions.getErrorMessage(exception);
+          emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(apiState: ApiState.failed, error: "$e"));
+    }
+  }
+
+  void _createUserAccount(String email, String username) async {
+    final user = await _storageService.getUser();
+    user?.email = email;
+    user?.username = username;
+    await user?.save();
+  }
+
+  void _updateUserAccount(String id) async {
+    final user = await _storageService.getUser();
+    user?.userID = id;
+    await user?.save();
   }
 }

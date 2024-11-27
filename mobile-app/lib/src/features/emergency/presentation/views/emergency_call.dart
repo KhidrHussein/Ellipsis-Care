@@ -1,6 +1,8 @@
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import 'package:ellipsis_care/core/utils/helpers.dart';
 
-import 'package:ellipsis_care/src/features/emergency/presentation/widgets/nearest_contacts.dart';
+import '../../../../../core/utils/extensions.dart';
+
+import '../widgets/nearest_contacts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -44,7 +46,9 @@ class EmergencyCall extends StatelessWidget {
             const NearestContacts(),
             75.sizedBoxHeight,
             FilledButton(
-              onPressed: () {},
+              onPressed: () {
+                UtilHelpers.pop();
+              },
               style: Theme.of(context).filledButtonTheme.style?.copyWith(
                     backgroundColor:
                         const WidgetStatePropertyAll(AppColors.white),

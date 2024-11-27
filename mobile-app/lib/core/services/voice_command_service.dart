@@ -1,3 +1,5 @@
+import 'package:speech_to_text/speech_recognition_result.dart';
+
 import '../utils/extensions.dart';
 
 import 'package:speech_to_text/speech_to_text.dart';
@@ -26,20 +28,15 @@ class VoiceCommandService {
     }
   }
 
-  Future<String?> listenAndConvertToWords() async {
-    String? recognizedWords;
+  Future<void> startListening(
+      {void Function(SpeechRecognitionResult)? onResult}) async {
     try {
       await _speech.listen(
-        onResult: (value) {
-          value.recognizedWords.printLog();
-          recognizedWords = value.recognizedWords;
-        },
+        onResult: onResult,
+        listenFor: const Duration(seconds: 30),
       );
-
-      return recognizedWords;
     } catch (e) {
       "$runtimeType Error: ${e.toString()}\n".printLog();
-      return recognizedWords;
     }
   }
 

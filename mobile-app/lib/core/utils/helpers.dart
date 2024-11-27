@@ -1,21 +1,22 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 
 import '../../config/router/router.dart' show router;
-import '../../src/shared/in_app_alert.dart';
-import '../constants/voice_commands.dart';
+import '../../src/shared/widgets/in_app_alert.dart';
 import 'extensions.dart';
 
 class UtilHelpers {
   UtilHelpers._();
-  static void pushRoute(String routeName, [Map<String, String>? pathParams]) {
+
+  static void pushTo(String routeName, [Map<String, String>? pathParams]) {
     router.pushNamed(
       routeName,
       pathParameters: pathParams ?? {},
     );
   }
 
-  static void clearPreviousAndPushRoute(String routeName) {
+  static void goTo(String routeName) {
     router.goNamed(routeName);
   }
 
@@ -23,7 +24,7 @@ class UtilHelpers {
     router.pushReplacementNamed(routeName);
   }
 
-  static void popRoute<T>([T? result]) {
+  static void pop<T>([T? result]) {
     router.pop(result);
   }
 
@@ -77,8 +78,14 @@ class UtilHelpers {
   static String dateFormatter2(DateTime date) =>
       DateFormat("d MMMM y").format(date);
 
+  static String dateFormatter3(DateTime date) =>
+      DateFormat("yyyy-MM-dd").format(date);
+
   static String timeFormatter1(DateTime date) =>
       DateFormat("h:mm a").format(date);
+
+  static TimeOfDay timeFormatter2(DateTime date) =>
+      TimeOfDay.fromDateTime(date);
 
   static void showAlert({required String title, required String message}) {
     const Duration duration = Duration(milliseconds: 2500);
@@ -87,13 +94,5 @@ class UtilHelpers {
       position: ToastPosition.top,
       duration: duration,
     );
-  }
-
-  static void scanVoicedText(String voicedText) async {
-    switch (voicedText) {
-      case VoiceCommands.addReminder:
-      case VoiceCommands.speakToDoctor:
-      default:
-    }
   }
 }

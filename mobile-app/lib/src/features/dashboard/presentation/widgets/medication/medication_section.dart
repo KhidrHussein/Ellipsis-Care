@@ -1,4 +1,4 @@
-import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/medication/medication_section_card.dart';
+import 'medication_section_card.dart';
 import 'package:flutter/material.dart';
 
 class MedicationSection extends StatelessWidget {

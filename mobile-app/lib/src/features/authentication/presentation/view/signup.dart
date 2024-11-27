@@ -1,6 +1,6 @@
+import 'package:ellipsis_care/core/utils/enums/api_state.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -10,7 +10,7 @@ import '../../../../../core/utils/helpers.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/widgets/divider.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/widgets/oauth_options.dart';
-import 'package:ellipsis_care/src/shared/textfield.dart';
+import 'package:ellipsis_care/src/shared/widgets/textfield.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -117,7 +117,7 @@ class _SignupState extends State<Signup> {
                 TextSpan(
                   text: "Sign in",
                   recognizer: TapGestureRecognizer()
-                    ..onTap = () => UtilHelpers.pushRoute(RouteNames.signIn),
+                    ..onTap = () => UtilHelpers.pushTo(RouteNames.signIn),
                   style: context.textTheme.bodyLarge?.copyWith(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
@@ -193,38 +193,38 @@ class _SignupState extends State<Signup> {
           BlocConsumer<AuthenticationBloc, AuthenticationState>(
             bloc: authenticationBloc,
             listener: (context, state) {
-              switch (state) {
-                case AuthenticationPassed():
-                  UtilHelpers.pushRoute(
+              switch (state.apiState) {
+                case ApiState.success:
+                  UtilHelpers.pushTo(
                     RouteNames.verifyEmail,
                     {"email": _emailController.text},
                   );
-                case AuthenticationFailed(error: var error):
-                  UtilHelpers.showAlert(title: "Error", message: "$error");
+                case ApiState.failed:
+                  UtilHelpers.showAlert(title: "Error", message: state.error);
                 default:
               }
             },
             builder: (context, state) {
               return FilledButton(
-                onPressed: switch (state) {
-                  LoadingState() => null,
+                onPressed: switch (state.apiState) {
+                  ApiState.loading => null,
                   _ => () {
-                      // if (_formKey.currentState!.validate()) {
-                      //   authenticationBloc.add(
-                      //     SignUpEvent(
-                      //       email: _emailController.text,
-                      //       firstName: _firstnameController.text,
-                      //       lastName: _lastnameController.text,
-                      //       password: _passwordController.text,
-                      //       hasAcceptedTerms: _hasAcceptedTerms.value,
-                      //     ),
-                      //   );
-                      // }
+                      if (_formKey.currentState!.validate()) {
+                        authenticationBloc.add(
+                          SignUpEvent(
+                            email: _emailController.text,
+                            firstName: _firstnameController.text,
+                            lastName: _lastnameController.text,
+                            password: _passwordController.text,
+                            hasAcceptedTerms: _hasAcceptedTerms.value,
+                          ),
+                        );
+                      }
 
-                      UtilHelpers.pushRoute(
-                        RouteNames.verifyEmail,
-                        {"email": _emailController.text},
-                      );
+                      // UtilHelpers.pushTo(
+                      //   RouteNames.verifyEmail,
+                      //   {"email": _emailController.text},
+                      // );
                     }
                 },
                 child: const Text("Continue"),
@@ -240,7 +240,7 @@ class _SignupState extends State<Signup> {
                 TextSpan(
                   text: "Sign in",
                   recognizer: TapGestureRecognizer()
-                    ..onTap = () => UtilHelpers.pushRoute(RouteNames.signIn),
+                    ..onTap = () => UtilHelpers.pushTo(RouteNames.signIn),
                   style: context.textTheme.bodyLarge?.copyWith(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,

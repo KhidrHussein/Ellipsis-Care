@@ -1,14 +1,14 @@
-import 'package:ellipsis_care/config/router/route_names.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/emergency/presentation/widgets/contacts_sheet.dart';
+import '../../../../../config/router/route_names.dart';
+import '../../../../../core/utils/helpers.dart';
+import '../widgets/contacts_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/constants/colors.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../../../../core/constants/colors.dart';
+import '../../../../../core/utils/extensions.dart';
 
 import '../../../../../core/constants/asset_strings.dart';
-import '../../../../shared/page_info.dart';
+import '../../../../shared/widgets/page_info.dart';
 
 class SosPage extends StatelessWidget {
   const SosPage({super.key});
@@ -19,8 +19,7 @@ class SosPage extends StatelessWidget {
       child: Stack(
         children: [
           GestureDetector(
-            onTap: () =>
-                UtilHelpers.pushRoute(RouteNames.callEmergencyContacts),
+            onTap: () => UtilHelpers.pushTo(RouteNames.callEmergencyContacts),
             child: Center(
               child: Container(
                 height: 300.h,

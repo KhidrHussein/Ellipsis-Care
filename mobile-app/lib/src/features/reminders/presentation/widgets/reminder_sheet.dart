@@ -1,15 +1,15 @@
+import 'package:ellipsis_care/core/utils/enums/api_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/reminders/models/reminder.dart';
-import 'package:ellipsis_care/src/features/reminders/presentation/controller/cubit/calender_cubit.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/views/add_reminder.dart';
 
 import '../../../../../core/constants/colors.dart';
 import '../../../../../core/utils/extensions.dart';
-import '../controller/bloc/reminder_bloc.dart';
+import '../../../../../core/utils/helpers.dart';
+import '../../models/reminder.dart';
+import '../bloc/reminder_bloc.dart';
 import 'reminder_tile.dart';
 
 class ReminderSheet extends StatelessWidget {
@@ -17,9 +17,8 @@ class ReminderSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reminderBloc = context.read<ReminderBloc>();
-    final calendarCubitState = context.watch<CalendarCubit>();
-    final reminderBlocState = context.watch<ReminderBloc>();
+    final bloc = context.read<ReminderBloc>();
+    final blocState = context.watch<ReminderBloc>();
 
     return DraggableScrollableSheet(
       minChildSize: .35,
@@ -47,7 +46,7 @@ class ReminderSheet extends StatelessWidget {
                     Container(height: 3.h, width: 64.w, color: AppColors.black),
                     12.sizedBoxHeight,
                     Text(
-                      UtilHelpers.dateFormatter2(calendarCubitState.state),
+                      UtilHelpers.dateFormatter2(blocState.state.currentDate),
                       style: context.textTheme.headlineSmall?.copyWith(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w400,
@@ -58,42 +57,51 @@ class ReminderSheet extends StatelessWidget {
                 ),
               ),
               BlocBuilder<ReminderBloc, ReminderState>(
-                bloc: reminderBlocState,
+                bloc: bloc,
                 builder: (context, state) {
-                  final reminders = state.events[calendarCubitState.state];
-                  return reminders != null
-                      ? SliverList.builder(
-                          itemCount:
-                              state.events[calendarCubitState.state]?.length,
-                          itemBuilder: (context, index) {
-                            return ReminderTile(reminder: reminders[index]);
-                          },
-                        )
-                      : const SliverToBoxAdapter(child: SizedBox());
+                  final reminders =
+                      state.calendarEvent[blocState.state.currentDate];
+
+                  if (state.apiState == ApiState.loading &&
+                      state.error.isEmpty) {
+                    return const SliverToBoxAdapter(
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  } else  {
+                    return state.calendarEvent.isNotEmpty
+                        ? SliverList.builder(
+                            itemCount: state
+                                .calendarEvent[blocState.state.currentDate]
+                                ?.length,
+                            itemBuilder: (context, index) {
+                              return ReminderTile(reminder: reminders![index]);
+                            },
+                          )
+                        : const SliverToBoxAdapter(child: SizedBox());
+                  }
                 },
               ),
               SliverToBoxAdapter(
                 child: GestureDetector(
                   onTap: () async {
-                    final result = await showAdaptiveDialog<ReminderModel>(
+                    final reminder = await showAdaptiveDialog<ReminderModel>(
                       context: context,
                       barrierDismissible: true,
                       builder: (context) => const AddReminder(),
                     );
-                    if (result != null) {
-                      reminderBloc.add(
+                    if (reminder != null) {
+                      bloc.add(
                         CreateReminderEvent(
-                          name: result.name,
-                          dosage: result.dosage,
-                          type: result.type,
-                          interval: result.interval,
-                          schedule: result.schedule,
-                          instruction: result.instruction,
-                          startDate: result.startDate,
-                          endDate: result.endDate,
-                          eventDate: calendarCubitState.state,
-                          eventStartTime: result.reminderStartTime,
-                          eventEndTime: result.reminderEndTime,
+                          name: reminder.name,
+                          dosage: reminder.dosage,
+                          type: reminder.type,
+                          interval: reminder.interval,
+                          schedule: reminder.schedule,
+                          instruction: reminder.instruction,
+                          startDate: reminder.startDate,
+                          endDate: reminder.endDate,
+                          eventStartTime: reminder.reminderStartTime,
+                          eventEndTime: reminder.reminderEndTime,
                         ),
                       );
                     }

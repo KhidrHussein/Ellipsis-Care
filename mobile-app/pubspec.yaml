@@ -75,6 +75,8 @@ dependencies:
   mocktail: ^1.0.4
   community_charts_flutter: ^1.0.4
   image_picker: ^1.1.2
+  audioplayers: ^6.1.0
+  fpdart: ^1.1.1
 
 dev_dependencies:
   flutter_test:

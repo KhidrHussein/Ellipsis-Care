@@ -3,7 +3,7 @@ import '../../../../../core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../shared/textfield.dart';
+import '../../../../shared/widgets/textfield.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -56,7 +56,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ),
               SizedBox(height: 28.h),
               OutlinedButton(
-                onPressed: UtilHelpers.popRoute,
+                onPressed: UtilHelpers.pop,
                 style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
                       side: const WidgetStatePropertyAll(BorderSide.none),
                       textStyle: WidgetStatePropertyAll(

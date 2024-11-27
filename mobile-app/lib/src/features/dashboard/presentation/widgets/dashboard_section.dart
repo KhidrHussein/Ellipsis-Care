@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/utils/enums/reminder.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/meal/meal_section.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/medication/medication_section.dart';
-import 'package:ellipsis_care/src/shared/progress_bar.dart';
+import '../../../../../core/utils/enums/reminder.dart';
+import '../../../../../core/utils/extensions.dart';
+import 'meal/meal_section.dart';
+import 'medication/medication_section.dart';
+import '../../../../shared/widgets/progress_bar.dart';
 
 import '../../../../../core/constants/asset_strings.dart';
-import '../../../../../core/constants/colors.dart';
 
 class DashboardSection extends StatelessWidget {
   final String name;

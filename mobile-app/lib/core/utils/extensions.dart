@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ellipsis_care/config/theme/theme_extensions.dart';
+import '../../config/theme/theme_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

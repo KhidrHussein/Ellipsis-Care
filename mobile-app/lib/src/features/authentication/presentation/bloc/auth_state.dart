@@ -1,23 +1,32 @@
 part of 'auth_bloc.dart';
 
-sealed class AuthenticationState {}
+class AuthenticationState<T> extends Equatable {
+  const AuthenticationState({
+    this.data,
+    this.error = "",
+    this.isUsingOauth = false,
+    this.apiState = ApiState.none,
+  });
+  
+  final T? data;
+  final String error;
+  final bool isUsingOauth;
+  final ApiState apiState;
 
-class InitialState implements AuthenticationState {}
-
-class LoadingState implements AuthenticationState {}
-
-class AuthenticationFailed extends Equatable implements AuthenticationState {
-  const AuthenticationFailed({this.error});
-  final String? error;
+  AuthenticationState<T> copyWith({
+    T? data,
+    String? error,
+    bool? isUsingOauth,
+    ApiState? apiState,
+  }) {
+    return AuthenticationState<T>(
+      data: data ?? this.data,
+      error: error ?? this.error,
+      isUsingOauth: isUsingOauth ?? this.isUsingOauth,
+      apiState: apiState ?? this.apiState,
+    );
+  }
 
   @override
-  List<Object?> get props => [error];
-}
-
-class AuthenticationPassed<S> extends Equatable implements AuthenticationState {
-  const AuthenticationPassed({this.data});
-  final S? data;
-
-  @override
-  List<Object?> get props => [data];
+  List<Object?> get props => [data, error, isUsingOauth, apiState];
 }

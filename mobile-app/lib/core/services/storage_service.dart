@@ -1,27 +1,31 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../utils/extensions.dart';
-import '../../src/features/authentication/models/userdata/userdata.dart';
 import '../../src/features/emergency/domain/emergency_contact.dart';
+import '../../src/shared/models/user_information/user_information_model.dart';
+import '../../src/shared/models/app_session/app_session_model.dart';
+import '../utils/extensions.dart';
 
 class StorageService {
   Future<void> initializeStorage() => Hive.initFlutter();
 
   void registerModels() async {
-    Hive.registerAdapter(UserDataAdapter());
+    Hive.registerAdapter(AppSessionModelAdapter());
+    Hive.registerAdapter(UserInformationModelAdapter());
     Hive.registerAdapter(EmergencyContactAdapter());
   }
 
-  Future<void> initSession() async {
+  Future<void> initializeAppSession() async {
     try {
-      final sessionBox = await Hive.openBox<UserData>('user_session');
-      await sessionBox.put(
-        'user_data_session',
-        UserData(
+      final box = await Hive.openBox<AppSessionModel>('app_session_box');
+
+      await box.put(
+        'app_session',
+        AppSessionModel(
           isLoggedIn: false,
-          enableDarkMode: false,
-          showNotifications: false,
-          hasViewedOnboarding: false,
+          hasUserOnboard: false,
+          hasEnabledDarkMode: false,
+          canPushNotifications: false,
+          canUseEmergencyServices: false,
         ),
       );
     } catch (e) {
@@ -29,10 +33,29 @@ class StorageService {
     }
   }
 
-  Future<UserData?> getUserData() async {
+  Future<AppSessionModel?> getAppSession() async {
     try {
-      var sessionBox = await Hive.openBox<UserData>('user_session');
-      return sessionBox.get('user_data_session')!;
+      var box = await Hive.openBox<AppSessionModel>('app_session_box');
+      return box.get('app_session');
+    } catch (e) {
+      "$runtimeType Error: $e".printLog();
+      return null;
+    }
+  }
+
+  Future<void> createNewUser() async {
+    try {
+      final box = await Hive.openBox<UserInformationModel>('user_box');
+      await box.put('user', UserInformationModel());
+    } catch (e) {
+      "$runtimeType Error: $e".printLog();
+    }
+  }
+
+  Future<UserInformationModel?> getUser() async {
+    try {
+      var box = await Hive.openBox<UserInformationModel>('user_box');
+      return box.get('user');
     } catch (e) {
       "$runtimeType Error: $e".printLog();
       return null;

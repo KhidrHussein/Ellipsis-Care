@@ -1,4 +1,6 @@
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import 'package:fpdart/fpdart.dart';
+
+import '../../../../core/utils/extensions.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/services/api_service.dart';
@@ -17,7 +19,7 @@ class AuthenticationRepository {
   final ApiService _service;
   final OAuthService _oAuthService;
 
-  Future<ApiResult<SuccessfulApiResponse<User>?, AppExceptions>> signUp(
+  Future<Either<SuccessfulApiResponse<User>, AppExceptions>> signUp(
       Map<String, dynamic> payload) async {
     try {
       final response = await _service.client.post(ApiUrl.signUp, data: payload);
@@ -30,31 +32,40 @@ class AuthenticationRepository {
         },
       );
 
-      return (response: apiResult, exception: null);
+      return left(apiResult);
     } catch (e) {
+      "$runtimeType exception \n Exception Type: ${e.runtimeType} \n Exception Details: $e \n"
+          .printLog();
+
       final exception = AppExceptions.handleExceptions(e);
-      return (response: null, exception: exception);
+      return right(exception);
     }
   }
 
-  Future<ApiResult<SuccessfulApiResponse?, AppExceptions>> signIn(
+  Future<Either<SuccessfulApiResponse<String>, AppExceptions>> signIn(
       Map<String, dynamic> payload) async {
     try {
       final response = await _service.client.post(ApiUrl.signIn, data: payload);
 
-      final apiResult = SuccessfulApiResponse<User>.fromJson(
-        response.data["user"],
-        (json) => User.fromJson(json as Map<String, dynamic>),
+      final apiResult = SuccessfulApiResponse<String>.fromJson(
+        response.data,
+        (json) {
+          final data = json as Map<String, dynamic>;
+          return data["token"];
+        },
       );
 
-      return (response: apiResult, exception: null);
-    } on Exception catch (e) {
+      return left(apiResult);
+    } catch (e) {
+      "$runtimeType exception \n Exception Type: ${e.runtimeType} \n Exception Details: $e \n"
+          .printLog();
+
       final exception = AppExceptions.handleExceptions(e);
-      return (response: null, exception: exception);
+      return right(exception);
     }
   }
 
-  Future<ApiResult<SuccessfulApiResponse?, AppExceptions>> verifyEmail(
+  Future<Either<SuccessfulApiResponse, AppExceptions>> verifyEmail(
       Map<String, dynamic> payload) async {
     try {
       final response =
@@ -65,36 +76,41 @@ class AuthenticationRepository {
         (json) {},
       );
 
-      return (response: apiResult, exception: null);
+      return left(apiResult);
     } catch (e) {
+      "$runtimeType exception \n Exception Type: ${e.runtimeType} \n Exception Details: $e \n"
+          .printLog();
+
       final exception = AppExceptions.handleExceptions(e);
-      return (response: null, exception: exception);
+      return right(exception);
     }
   }
 
-  Future<ApiResult<OAuthCredentials, AppExceptions>> signInWithGoogle() async {
+  Future<Either<OAuthCredentials?, AppExceptions>> signInWithGoogle() async {
     try {
       final result = await _oAuthService.signInWithGoogle();
 
-      return (response: result, exception: null);
+      return left(result);
     } catch (e) {
-      "$runtimeType Error: $e".printLog();
+      "$runtimeType exception \n Exception Type: ${e.runtimeType} \n Exception Details: $e \n"
+          .printLog();
 
       final exception = AppExceptions.handleExceptions(e);
-      return (response: null, exception: exception);
+      return right(exception);
     }
   }
 
-  Future<ApiResult<OAuthCredentials, AppExceptions>> signOutFromGoogle() async {
+  Future<Either<OAuthCredentials?, AppExceptions>> signOutFromGoogle() async {
     try {
       final result = await _oAuthService.signOutFromGoogle();
 
-      return (response: result, exception: null);
+      return left(result);
     } catch (e) {
-      "$runtimeType Error: $e".printLog();
+      "$runtimeType exception \n Exception Type: ${e.runtimeType} \n Exception Details: $e \n"
+          .printLog();
 
       final exception = AppExceptions.handleExceptions(e);
-      return (response: null, exception: exception);
+      return right(exception);
     }
   }
 }

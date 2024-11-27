@@ -1,5 +1,5 @@
-import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/time_picker.dart';
+import '../../../../../../core/utils/helpers.dart';
+import 'time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

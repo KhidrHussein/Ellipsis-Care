@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/controller/cubit/medications_cubit.dart';
+import '../../../../../../core/utils/extensions.dart';
+import '../../controller/cubit/medications_cubit.dart';
 
 import '../../../../../../core/constants/colors.dart';
 

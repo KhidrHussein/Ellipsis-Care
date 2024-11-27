@@ -1,5 +1,7 @@
-import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth_bloc.dart';
-import 'package:flutter/services.dart';
+import 'package:ellipsis_care/core/services/api_service.dart';
+import 'package:ellipsis_care/core/utils/enums/api_state.dart';
+
+import '../bloc/auth_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../config/router/route_names.dart';
@@ -7,7 +9,7 @@ import '../../../../../core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../../../../core/utils/extensions.dart';
 
 import '../widgets/otp_field.dart';
 
@@ -58,13 +60,13 @@ class _VerifyEmailState extends State<VerifyEmail> {
               BlocConsumer<AuthenticationBloc, AuthenticationState>(
                 bloc: authenticationBloc,
                 listener: (context, state) {
-                  switch (state) {
-                    case AuthenticationPassed():
-                      UtilHelpers.clearPreviousAndPushRoute(
-                          RouteNames.dashboard);
+                  switch (state.apiState) {
+                    case ApiState.success:
+                      UtilHelpers.goTo(RouteNames.home);
                       break;
-                    case AuthenticationFailed(error: var error):
-                      UtilHelpers.showAlert(title: "Error", message: "$error");
+                    case ApiState.failed:
+                      UtilHelpers.showAlert(
+                          title: "Error", message: state.error);
                       break;
                     default:
                       break;
@@ -72,19 +74,17 @@ class _VerifyEmailState extends State<VerifyEmail> {
                 },
                 builder: (context, state) {
                   return FilledButton(
-                    onPressed: switch (state) {
-                      LoadingState() => null,
+                    onPressed: switch (state.apiState) {
+                      ApiState.loading => null,
                       _ => () {
-                          // authenticationBloc.add(
-                          //   OTPVerificationEvent(
-                          //     email: widget.email,
-                          //     verificationCode: _otpController.text,
-                          //   ),
-                          // );
+                          authenticationBloc.add(
+                            OTPVerificationEvent(
+                              email: widget.email,
+                              verificationCode: _otpController.text,
+                            ),
+                          );
 
-                          debugPrint(_otpController.text);
-                          UtilHelpers.clearPreviousAndPushRoute(
-                              RouteNames.dashboard);
+                          // debugPrint(_otpController.text);
                         }
                     },
                     child: const Text("Continue"),

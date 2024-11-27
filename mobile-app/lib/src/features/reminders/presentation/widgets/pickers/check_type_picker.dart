@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/utils/enums/reminder.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../../../../../core/utils/enums/reminder.dart';
+import '../../../../../../core/utils/extensions.dart';
 
 class CheckTypePicker extends StatefulWidget {
   final String option;

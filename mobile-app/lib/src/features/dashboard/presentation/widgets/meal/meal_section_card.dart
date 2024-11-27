@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../../../../../core/utils/extensions.dart';
 
 class MealSectionCard extends StatelessWidget {
   final String icon;
@@ -27,7 +27,9 @@ class MealSectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: stretchToFill ? BoxConstraints(maxHeight: 174.h) : null,
+      constraints: stretchToFill
+          ? BoxConstraints(minHeight: 174.h)
+          : BoxConstraints(minHeight: 84.h),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(10.r),

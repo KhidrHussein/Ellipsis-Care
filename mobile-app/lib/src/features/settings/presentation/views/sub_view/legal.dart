@@ -1,7 +1,7 @@
-import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_card_option.dart';
-import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_appbar.dart';
-import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_group.dart';
+import '../../../../../../core/utils/helpers.dart';
+import '../../widgets/settings_card_option.dart';
+import '../../widgets/settings_appbar.dart';
+import '../../widgets/settings_group.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -27,12 +27,11 @@ class Legal extends StatelessWidget {
                     svgIcon: AssetStrings.privacyPolicyIcon,
                     title: "Privacy Policy",
                     onPressed: () =>
-                        UtilHelpers.pushRoute(RouteNames.privacyPolicy),
+                        UtilHelpers.pushTo(RouteNames.privacyPolicy),
                   ),
                   SettingCardOption(
                     title: "Terms of Use",
-                    onPressed: () =>
-                        UtilHelpers.pushRoute(RouteNames.termsOfUse),
+                    onPressed: () => UtilHelpers.pushTo(RouteNames.termsOfUse),
                   ),
                 ],
               )

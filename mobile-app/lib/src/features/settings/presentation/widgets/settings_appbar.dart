@@ -1,6 +1,6 @@
-import 'package:ellipsis_care/core/constants/asset_strings.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
+import '../../../../../core/constants/asset_strings.dart';
+import '../../../../../core/utils/extensions.dart';
+import '../../../../../core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,7 +14,7 @@ class SettingsAppbar extends StatelessWidget {
     return Row(
       children: [
         GestureDetector(
-          onTap: () => UtilHelpers.popRoute(),
+          onTap: () => UtilHelpers.pop(),
           child: SvgPicture.asset(
             AssetStrings.navigateBackIcon,
             colorFilter: ColorFilter.mode(

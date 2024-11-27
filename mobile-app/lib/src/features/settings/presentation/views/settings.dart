@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +11,7 @@ import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_card_option.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_group.dart';
 
-import '../../../../../config/app_session/app_session_bloc.dart';
+import '../../../../shared/controller/app_session_bloc.dart';
 import '../../../../../core/utils/locator.dart';
 import '../widgets/user_profile.dart';
 
@@ -50,26 +51,24 @@ class _SettingsState extends State<Settings> {
                       SettingCardOption(
                         svgIcon: AssetStrings.profileIcon,
                         title: "Profile",
-                        onPressed: () =>
-                            UtilHelpers.pushRoute(RouteNames.profile),
+                        onPressed: () => UtilHelpers.pushTo(RouteNames.profile),
                       ),
                       SettingCardOption(
                         svgIcon: AssetStrings.changePasswordIcon,
                         title: "Change Password",
                         onPressed: () =>
-                            UtilHelpers.pushRoute(RouteNames.changePassword),
+                            UtilHelpers.pushTo(RouteNames.changePassword),
                       ),
                       SettingCardOptionWithSwitch(
                         title: "Dark Mode",
                         initialSwitchValue:
-                            appSessionState.session!.enableDarkMode,
+                            appSessionState.appSession!.hasEnabledDarkMode,
                         onChanged: (value) async {
-                          if (value != null) {
-                            _updateUserData(value);
-                            appSessionBloc.add(
-                              EnableDarkModeEvent(darkModeIsEnabled: value),
-                            );
-                          }
+                          // if (value != null) {
+                          //   appSessionBloc.add(
+                          //     EnableDarkModeEvent(darkModeIsEnabled: value),
+                          //   );
+                          // }
                         },
                       ),
                     ],
@@ -110,13 +109,12 @@ class _SettingsState extends State<Settings> {
                       SettingCardOption(
                         svgIcon: AssetStrings.faqIcon,
                         title: "FAQs",
-                        onPressed: () => UtilHelpers.pushRoute(RouteNames.faq),
+                        onPressed: () => UtilHelpers.pushTo(RouteNames.faq),
                       ),
                       SettingCardOption(
                         svgIcon: AssetStrings.legalIcon,
                         title: "Legal",
-                        onPressed: () =>
-                            UtilHelpers.pushRoute(RouteNames.legal),
+                        onPressed: () => UtilHelpers.pushTo(RouteNames.legal),
                       ),
                     ],
                   ),
@@ -129,9 +127,9 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-  void _updateUserData(bool value) async {
-    final userdata = await injector<StorageService>().getUserData();
-    userdata!.enableDarkMode = value;
-    await userdata.save();
-  }
+  // void _updateUserData(bool value) async {
+  //   final userdata = await injector<StorageService>().getUserData();
+  //   userdata!.enableDarkMode = value;
+  //   await userdata.save();
+  // }
 }

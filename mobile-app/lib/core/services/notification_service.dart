@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../utils/extensions.dart';
 
-import '../../src/features/reminders/models/event.dart';
+import '../../src/features/reminders/models/notification_event.dart';
 
 class NotificationService {
   final AwesomeNotifications _service = AwesomeNotifications();
@@ -32,7 +32,8 @@ class NotificationService {
     return _service.requestPermissionToSendNotifications();
   }
 
-  Future<void> createReminderNotification({required Event event}) async {
+  Future<void> createReminderNotification(
+      {required NotificationEvent notification}) async {
     final int id = Random().nextInt(50);
 
     try {
@@ -41,22 +42,17 @@ class NotificationService {
           id: id,
           category: NotificationCategory.Event,
           channelKey: "ellipsis_care_reminder",
-          title: event.name,
-          body: event.content,
+          title: notification.name,
+          body: notification.content,
+          customSound: "file://${notification.customSoundFilePath}",
         ),
         schedule: NotificationCalendar(
           repeats: true,
-          day: event.day,
-          month: event.month,
-          year: event.year,
-          hour: event.timeInHours,
-          minute: event.timeInMinutes,
+          hour: notification.eventTimeInHours,
+          minute: notification.eventTimeInMinutes,
         ),
         actionButtons: [
-          NotificationActionButton(
-            key: "complete_button",
-            label: "Mark as complete",
-          )
+          NotificationActionButton(key: "complete_button", label: "Done")
         ],
       );
     } catch (e) {
