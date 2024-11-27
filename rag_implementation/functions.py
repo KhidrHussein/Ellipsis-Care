@@ -1,4 +1,5 @@
 import os
+import json
 
 # Add OpenAI library
 import openai
@@ -31,7 +32,7 @@ openai_embeddings: OpenAIEmbeddings = OpenAIEmbeddings(
 from langchain.chat_models import ChatOpenAI
 
 # LLM
-llm = ChatOpenAI(temperature = 0.6, openai_api_key = os.getenv("API_KEY"), openai_api_base = os.getenv("ENDPOINT"), model_name="gpt-35-turbo", engine="Voicetask")
+llm = ChatOpenAI(temperature = 0.6, openai_api_key = os.getenv("API_KEY"), openai_api_base = os.getenv("ENDPOINT"), model_name="gpt-35-turbo", engine="gpt-4o-mini")
 
 # Handling vector database
 from langchain_chroma import Chroma
@@ -77,8 +78,8 @@ langchain.verbose = False
 def context_document_retreival_similarity(question_summary):
     results = vector_store_ellipsis.similarity_search(question_summary, k=3)
     context = ""
-    check_sources = set()
     sources = []
+    print("Processing retreived documents...")
     for result in results:
         # cur_source = dict()
         # cur_source["page_number"] = []
@@ -142,6 +143,7 @@ def get_conversation_summary(history, question):
 def qa_response(prompt):
 
     # Query the Azure OpenAI LLM with the formatted prompt
+    print("Querying Azure OpenAI LLM...")
     response = openai.ChatCompletion.create(
         engine="gpt-4o-mini",  # Replace with your Azure OpenAI deployment name
         # prompt=formatted_prompt,
@@ -176,15 +178,51 @@ def reminder_notification_prompt(reminder, history):
         input_variables=["history", "medication"],
         template=template,
     )
+    print("Reminder Notification Prompt processing...")
     medication = "\n".join([f"{k.capitalize()}: {v}" for k, v in reminder.items()])
     return prompt.format(history=history, medication=medication)
 
+def function_tool_reminder():
+    extration_tool = [
+        {
+            'type': 'function',
+            'function': {
+                'name': 'extract_header',
+                'description': 'Extract/Generate a concise subject/title and subtitle for a reminder post notification from from the provided text.',
+                'parameters': {
+                    'type': 'object',
+                    'properties': {
+                        'title': {
+                            'type': 'string',
+                            'items': {
+                                'type': 'string',
+                            },
+                            'description': 'The subject/title for a reminder post notification.'
+                        },
+                        'subtitle': {
+                            'type': 'string',
+                            'items': {
+                                'type': 'string',
+                            },
+                            'description': 'A concise and formatted subtitle for a reminder post notification from the provided text that will contain a hint of the action point in the reminder notification.'
+                        }
+                    }
+                },
+                'required': ['title', 'subtitle']
+            },
+            'instruction': "You are a great personal assistant that helps draft a concise header and subtitle from reminder messages."
+        }
+    ]    
+
+    # Return tool and system prompt(instruction)
+    return extration_tool, extration_tool[0]['instruction']
 
 def reminder_message(reminder, history):
     # Get the conversation summary prompt
     formatted_prompt = reminder_notification_prompt(reminder, history)
 
     # Query the Azure OpenAI LLM with the formatted prompt
+    print("Reminder Message processing...")
     response = openai.ChatCompletion.create(
         engine="gpt-4o-mini",  # Replace with your Azure OpenAI deployment name
         # prompt=formatted_prompt,
@@ -195,6 +233,23 @@ def reminder_message(reminder, history):
         # max_tokens=50,
         temperature=0.5
     )
-    
-    # Extract and return the summary from the response
-    return response.choices[0].message['content']
+
+    extract = openai.ChatCompletion.create(
+        engine="gpt-4o-mini",  # Replace with your Azure OpenAI deployment name
+        # prompt=formatted_prompt,
+        messages=[
+            {"role": "system", "content": function_tool_reminder()[1]},
+            {"role": "user", "content": formatted_prompt}
+        ],
+        # max_tokens=50,
+        temperature=0.5,
+        tools = function_tool_reminder()[0],
+        tool_choice='required'
+    )
+
+    # Extract and return the title, subtitle and body of reminder notification
+    extract = extract.choices[0].message.tool_calls[0].function.arguments
+    extract['response'] = response.choices[0].message['content']
+    final_response = json.loads(extract)
+    return final_response
+    # return response.choices[0].message['content']
