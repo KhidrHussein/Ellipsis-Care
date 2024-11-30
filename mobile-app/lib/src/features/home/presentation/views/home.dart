@@ -27,18 +27,18 @@ class Home extends StatelessWidget {
             return PromptResponses(responses: state.aiResponses);
           }
           if (state.apiState == ApiState.failed && state.error.isNotEmpty) {
-            return Center(
-              child: Column(
-                children: [
-                  Text(state.error),
-                  TextButton(
-                    onPressed: () {
-                      context.read<HomeBloc>().add(ResetEvent());
-                    },
-                    child: const Text("Reset"),
-                  )
-                ],
-              ),
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(state.error),
+                TextButton.icon(
+                  onPressed: () {
+                    context.read<HomeBloc>().add(ResetEvent());
+                  },
+                  icon: const Icon(Icons.redo),
+                  label: const Text("Reset"),
+                )
+              ],
             );
           }
           if (state.apiState == ApiState.loading && state.error.isEmpty) {

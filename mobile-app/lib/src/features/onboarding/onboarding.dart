@@ -11,6 +11,7 @@ class Onboarding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   
     final cubit = context.read<OnboardingCubit>();
 
     return Scaffold(

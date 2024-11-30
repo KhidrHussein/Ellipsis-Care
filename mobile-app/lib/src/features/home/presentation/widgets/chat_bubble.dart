@@ -50,7 +50,7 @@ class UserChatBubble extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
-            constraints: BoxConstraints(minWidth: 314.w),
+            constraints: BoxConstraints(maxWidth: 314.w),
             padding: REdgeInsets.symmetric(horizontal: 16, vertical: 16),
             decoration: BoxDecoration(
               color: context.themeExtension.homeColor,

@@ -33,23 +33,43 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
   initialLocation: "/",
-  navigatorKey: _mainRouterKey,
   debugLogDiagnostics: true,
+  navigatorKey: _mainRouterKey,
   redirect: (context, state) async {
     final appSession = await injector<StorageService>().getAppSession();
     final user = await injector<StorageService>().getUser();
 
-    bool redirectToSignUp =
-        !(appSession?.hasUserOnboard == true && user?.email.isEmpty == true);
-    bool redirectToHome =
-        (appSession?.hasUserOnboard == true && appSession?.isLoggedIn == true);
+    final isNavigatingToPeerRoutes =
+        state.matchedLocation.startsWith('/sign-up') ||
+            state.matchedLocation.startsWith('/sign-in') ||
+            state.matchedLocation.startsWith('/forgot-password');
 
-    if (redirectToSignUp) {
+    final isNavigatingToShellRoute =
+        state.matchedLocation.startsWith('/home') ||
+            state.matchedLocation.startsWith('/reminders') ||
+            state.matchedLocation.startsWith('/sos') ||
+            state.matchedLocation.startsWith('/dashboard') ||
+            state.matchedLocation.startsWith('/settings');
+
+    // Determine redirection conditions
+    final bool redirectToOnboarding = appSession?.hasUserOnboard != true;
+    final bool redirectToSignUp = appSession?.hasUserOnboard == true &&
+        (user?.userID == null || user?.userID?.isEmpty == true);
+    final bool redirectToHome = appSession?.hasUserOnboard == true &&
+        appSession?.isLoggedIn == true &&
+        user?.userID?.isNotEmpty == true;
+
+    // Redirect logic
+    if (redirectToOnboarding && state.matchedLocation != '/') {
+      return '/';
+    } else if (redirectToSignUp &&
+        !isNavigatingToShellRoute &&
+        !isNavigatingToPeerRoutes) {
       return '/sign-up';
-    } else if (redirectToHome) {
+    } else if (redirectToHome && !isNavigatingToShellRoute) {
       return '/home';
     }
-
+    // Allow navigation within shell routes
     return null;
   },
   routes: [
@@ -84,14 +104,14 @@ final GoRouter router = GoRouter(
               email: Uri.decodeComponent(state.pathParameters["email"] ?? ""),
             ),
           ),
-        ),
+         ),
       ],
     ),
     GoRoute(
       path: '/forgot-password',
       name: RouteNames.forgotPassword,
       pageBuilder: (context, state) => const MaterialPage<ForgotPassword>(
-        child: ForgotPassword(),
+         child: ForgotPassword(),
       ),
     ),
     ShellRoute(

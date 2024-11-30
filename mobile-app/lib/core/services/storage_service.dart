@@ -14,48 +14,22 @@ class StorageService {
     Hive.registerAdapter(EmergencyContactAdapter());
   }
 
-  Future<void> initializeAppSession() async {
-    try {
-      final box = await Hive.openBox<AppSessionModel>('app_session_box');
-
-      await box.put(
-        'app_session',
-        AppSessionModel(
-          isLoggedIn: false,
-          hasUserOnboard: false,
-          hasEnabledDarkMode: false,
-          canPushNotifications: false,
-          canUseEmergencyServices: false,
-        ),
-      );
-    } catch (e) {
-      "$runtimeType Error: $e".printLog();
-    }
-  }
-
   Future<AppSessionModel?> getAppSession() async {
     try {
       var box = await Hive.openBox<AppSessionModel>('app_session_box');
-      return box.get('app_session');
+      "${box.values}".printLog();
+      return box.get('app_session', defaultValue: AppSessionModel());
     } catch (e) {
       "$runtimeType Error: $e".printLog();
       return null;
     }
   }
 
-  Future<void> createNewUser() async {
-    try {
-      final box = await Hive.openBox<UserInformationModel>('user_box');
-      await box.put('user', UserInformationModel());
-    } catch (e) {
-      "$runtimeType Error: $e".printLog();
-    }
-  }
-
   Future<UserInformationModel?> getUser() async {
     try {
       var box = await Hive.openBox<UserInformationModel>('user_box');
-      return box.get('user');
+      "${box.values}".printLog();
+      return box.get('user', defaultValue: UserInformationModel());
     } catch (e) {
       "$runtimeType Error: $e".printLog();
       return null;

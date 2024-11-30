@@ -6,33 +6,38 @@ part 'user_information_model.g.dart';
 @HiveType(typeId: 1)
 class UserInformationModel extends HiveObject {
   @HiveField(0)
-  String userID;
+  String? userID;
 
   @HiveField(1)
-  String email;
+  String? email;
 
   @HiveField(2)
-  String firstname;
+  String? firstname;
 
   @HiveField(3)
-  String lastname;
+  String? lastname;
 
   @HiveField(4)
-  String username;
+  String? username;
 
   @HiveField(5)
-  String photoUrl;
+  String? photoUrl;
 
   @HiveField(6)
-  String googleOAuthID;
+  String? googleOAuthID;
 
   UserInformationModel({
-    this.userID = "",
-    this.firstname = "",
-    this.lastname = "",
-    this.photoUrl = "",
-    this.googleOAuthID = "",
-    this.email = "",
-    this.username = "",
+    this.userID,
+    this.firstname,
+    this.lastname,
+    this.photoUrl,
+    this.googleOAuthID,
+    this.email,
+    this.username,
   });
+
+  @override
+  String toString() {
+    return 'UserInformationModel(userID: $userID, email: $email, firstname: $firstname, lastname: $lastname, username: $username, photoUrl: $photoUrl, googleOAuthID: $googleOAuthID)';
+  }
 }

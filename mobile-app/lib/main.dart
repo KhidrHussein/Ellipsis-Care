@@ -9,9 +9,9 @@ import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth
 import 'package:ellipsis_care/src/features/emergency/presentation/bloc/emergency_bloc.dart';
 import 'package:ellipsis_care/src/features/onboarding/cubit/onboarding_cubit.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/bloc/reminder_bloc.dart';
+import 'package:ellipsis_care/src/shared/controller/user_bloc/user_bloc.dart';
 import 'package:ellipsis_care/src/shared/widgets/navigator_shell/navigator_shell.dart';
 
-import 'src/shared/controller/app_session_bloc.dart';
 import 'config/router/router.dart';
 import 'config/theme/theme.dart';
 import 'core/services/notification_service.dart';
@@ -19,6 +19,7 @@ import 'core/services/storage_service.dart';
 import 'core/utils/locator.dart';
 import 'src/features/dashboard/presentation/controller/cubit/medications_cubit.dart';
 import 'src/features/home/presentation/bloc/home_bloc.dart';
+import 'src/shared/controller/app_session_bloc/app_session_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,8 +51,10 @@ class EllipsisCare extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              AppSessionBloc()..add(InitializeAppSessionEvent()),
+          create: (context) => AppSessionBloc()..add(LoadAppSessionEvent()),
+        ),
+        BlocProvider(
+          create: (context) => UserBloc()..add(GetUserEvent()),
         ),
         BlocProvider(
           create: (context) => OnboardingCubit(),
@@ -80,8 +83,6 @@ class EllipsisCare extends StatelessWidget {
         ensureScreenSize: true,
         designSize: const Size(393, 852),
         builder: (context, child) {
-          context.read<AppSessionBloc>().add(LoadAppSessionEvent());
-
           return BlocBuilder<AppSessionBloc, AppSessionState>(
             builder: (context, state) {
               return OKToast(

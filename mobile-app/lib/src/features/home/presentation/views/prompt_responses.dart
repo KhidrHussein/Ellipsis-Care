@@ -21,11 +21,6 @@ class PromptResponses extends StatelessWidget {
       padding: REdgeInsets.only(top: 30),
       child: Column(
         children: [
-          // PageInfo(
-          //         info:
-          //             "The user taps the microphone and says a command such as “Remind me to take my medication at 9 AM.")
-          //     .alignRight,
-          // 40.verticalSpace,
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -41,12 +36,12 @@ class PromptResponses extends StatelessWidget {
               );
             },
           ),
+          .4.sh.verticalSpace,
           Padding(
             padding: REdgeInsets.only(top: 33, bottom: 15),
             child: GestureDetector(
               onTap: () {
-                  context.read<HomeBloc>().add(ResetEvent());
-                // context.read<HomeBloc>().add(StartRecordingEvent());
+                context.read<HomeBloc>().add(StartRecordingEvent());
               },
               child: SvgPicture.asset(
                 AssetStrings.microphoneIcon,

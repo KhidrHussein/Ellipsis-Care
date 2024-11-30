@@ -17,13 +17,13 @@ class UserInformationModelAdapter extends TypeAdapter<UserInformationModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return UserInformationModel(
-      userID: fields[0] as String,
-      firstname: fields[2] as String,
-      lastname: fields[3] as String,
-      photoUrl: fields[5] as String,
-      googleOAuthID: fields[6] as String,
-      email: fields[1] as String,
-      username: fields[4] as String,
+      userID: fields[0] as String?,
+      firstname: fields[2] as String?,
+      lastname: fields[3] as String?,
+      photoUrl: fields[5] as String?,
+      googleOAuthID: fields[6] as String?,
+      email: fields[1] as String?,
+      username: fields[4] as String?,
     );
   }
 

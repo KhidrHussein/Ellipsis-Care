@@ -1,18 +1,24 @@
-import '../../../../../config/router/route_names.dart';
-import '../../../../../core/constants/colors.dart';
-import '../../../../../core/utils/helpers.dart';
-import '../../../../shared/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:ellipsis_care/src/shared/controller/app_session_bloc/app_session_bloc.dart';
+import 'package:ellipsis_care/src/shared/controller/user_bloc/user_bloc.dart';
+
+import '../../../../../config/router/route_names.dart';
 import '../../../../../core/constants/asset_strings.dart';
+import '../../../../../core/constants/colors.dart';
 import '../../../../../core/utils/extensions.dart';
+import '../../../../../core/utils/helpers.dart';
+import '../../../../shared/widgets/user_avatar.dart';
 
 class UserProfile extends StatelessWidget {
   const UserProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final userBloc = context.watch<UserBloc>().state;
+
     return Padding(
       padding: REdgeInsets.only(left: 16, right: 16, bottom: 25),
       child: Column(
@@ -33,7 +39,7 @@ class UserProfile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "James David",
+                    "${userBloc.user?.firstname ?? ""} ${userBloc.user?.lastname ?? ""} ",
                     style: context.textTheme.bodyMedium?.copyWith(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w400,
@@ -51,7 +57,7 @@ class UserProfile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
-                      "jamesmadison@gmail.com",
+                      "${userBloc.user?.email ?? ""} ",
                       style: context.textTheme.labelMedium?.copyWith(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w400,

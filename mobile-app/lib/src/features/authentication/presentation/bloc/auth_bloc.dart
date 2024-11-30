@@ -69,7 +69,6 @@ class AuthenticationBloc
       result.fold(
         (success) {
           _createUserAccount(success.data!.email, success.data!.username);
-
           emit(state.copyWith(apiState: ApiState.success));
         },
         (exception) {
@@ -191,8 +190,13 @@ class AuthenticationBloc
   }
 
   void _updateUserAccount(String id) async {
-    final user = await _storageService.getUser();
-    user?.userID = id;
-    await user?.save();
+    await _storageService.getAppSession().then((session) async {
+      session?.isLoggedIn = true;
+      await session?.save();
+    });
+    await _storageService.getUser().then((user) async {
+      user?.userID = id;
+      await user?.save();
+    });
   }
 }

@@ -6,9 +6,7 @@ class AppSessionState extends Equatable {
   final AppSessionModel? appSession;
 
   AppSessionState copyWith({AppSessionModel? appSession}) {
-    return AppSessionState(
-      appSession: appSession ?? this.appSession,
-    );
+    return AppSessionState(appSession: appSession ?? this.appSession);
   }
 
   @override

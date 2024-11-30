@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/utils/extensions.dart';
@@ -7,6 +8,7 @@ import 'package:ellipsis_care/src/shared/widgets/textfield.dart';
 import 'package:ellipsis_care/src/shared/widgets/user_avatar.dart';
 
 import '../../../../../../core/constants/colors.dart';
+import '../../../../../shared/controller/user_bloc/user_bloc.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -38,6 +40,8 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    final userBloc = context.watch<UserBloc>().state;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(

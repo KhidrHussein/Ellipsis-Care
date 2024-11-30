@@ -11,7 +11,7 @@ import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_card_option.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_group.dart';
 
-import '../../../../shared/controller/app_session_bloc.dart';
+import '../../../../shared/controller/app_session_bloc/app_session_bloc.dart';
 import '../../../../../core/utils/locator.dart';
 import '../widgets/user_profile.dart';
 
@@ -63,12 +63,12 @@ class _SettingsState extends State<Settings> {
                         title: "Dark Mode",
                         initialSwitchValue:
                             appSessionState.appSession!.hasEnabledDarkMode,
-                        onChanged: (value) async {
-                          // if (value != null) {
-                          //   appSessionBloc.add(
-                          //     EnableDarkModeEvent(darkModeIsEnabled: value),
-                          //   );
-                          // }
+                        onChanged: (value) {
+                          if (value != null) {
+                            appSessionBloc.add(
+                              EnableDarkModeEvent(darkModeIsEnabled: value),
+                            );
+                          }
                         },
                       ),
                     ],

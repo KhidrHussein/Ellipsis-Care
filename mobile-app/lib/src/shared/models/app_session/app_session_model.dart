@@ -21,10 +21,15 @@ class AppSessionModel extends HiveObject {
   bool canUseEmergencyServices;
 
   AppSessionModel({
-    required this.isLoggedIn,
-    required this.hasUserOnboard,
-    required this.hasEnabledDarkMode,
-    required this.canPushNotifications,
-    required this.canUseEmergencyServices,
+    this.isLoggedIn = false,
+    this.hasUserOnboard = false,
+    this.hasEnabledDarkMode = false,
+    this.canPushNotifications = false,
+    this.canUseEmergencyServices = false,
   });
+
+  @override
+  String toString() {
+    return 'AppSessionModel(hasEnabledDarkMode: $hasEnabledDarkMode, hasUserOnboard: $hasUserOnboard, isLoggedIn: $isLoggedIn, canPushNotifications: $canPushNotifications, canUseEmergencyServices: $canUseEmergencyServices)';
+  }
 }

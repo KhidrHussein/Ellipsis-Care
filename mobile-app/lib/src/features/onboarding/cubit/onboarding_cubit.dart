@@ -34,8 +34,11 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
   void nextSlide() async {
     switch (state.currentIndex) {
-      case 1:
+      case 0:
         _initializeAudio();
+        break;
+
+      case 1:
         _initializeNotificationServiceChannel();
         break;
 
@@ -49,7 +52,6 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
       case 4:
         _hasViewedOnboarding();
-        UtilHelpers.pushTo(RouteNames.signup);
         break;
 
       default:
@@ -60,7 +62,9 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   void _hasViewedOnboarding() async {
     final userdata = await injector<StorageService>().getAppSession();
     userdata?.hasUserOnboard = true;
-    await userdata?.save();
+    await userdata?.save().then((value) {
+      UtilHelpers.pushTo(RouteNames.signup);
+    });
   }
 
   void _initializeAudio() async {
@@ -73,7 +77,6 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
   void _initializeSpeechToTextService() async {
     final voiceCommandService = injector<VoiceCommandService>();
-
     await voiceCommandService.init().then((hasInitialized) {
       "${voiceCommandService.runtimeType} has permission? $hasInitialized"
           .printLog();

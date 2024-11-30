@@ -67,8 +67,9 @@ class ReminderSheet extends StatelessWidget {
                     return const SliverToBoxAdapter(
                       child: Center(child: CircularProgressIndicator()),
                     );
-                  } else  {
-                    return state.calendarEvent.isNotEmpty
+                  } else {
+                    return state.calendarEvent[blocState.state.currentDate] !=
+                            null
                         ? SliverList.builder(
                             itemCount: state
                                 .calendarEvent[blocState.state.currentDate]
