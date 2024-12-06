@@ -214,9 +214,9 @@ DATABASES = {
         # 'HOST': 'localhost',
         'HOST': os.getenv('POSTGRESQL_SERVER_NAME'),
         'PORT': '5432',
-        'OPTIONS': {
-            'sslmode': 'require',
-        },
+        # 'OPTIONS': {
+        #     'sslmode': 'require',
+        # },
     }
 }
 
