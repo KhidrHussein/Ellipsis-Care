@@ -328,7 +328,7 @@ import io
 
 # Define the endpoint and subscription key
 url = f"https://eastus.api.cognitive.microsoft.com/speechtotext/transcriptions:transcribe?api-version=2024-05-15-preview"
-subscription_key = os.getenv('SUBSCRIPTION_KEY')
+subscription_key = os.getenv('SPEECH_KEY')
 
 
 # def transcribe_audio(audio_path):
