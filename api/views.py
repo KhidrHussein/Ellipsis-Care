@@ -35,8 +35,6 @@ from django.core.cache import cache
 from pydub import AudioSegment
 from wsgiref.util import FileWrapper
 
-
-
 logger = logging.getLogger(__name__)
 
 class UserCreateViewSet(viewsets.ModelViewSet):
@@ -378,175 +376,6 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     serializer_class = AppointmentSerializer
 
 
-# class AudioViewSet(viewsets.ModelViewSet):
-#     """
-#     Handles audio uploads, transcriptions, and AI response generation.
-#     """
-#     queryset = Audio.objects.all()
-#     serializer_class = AudioSerializer
-#     parser_classes = [MultiPartParser, FormParser]
-
-#     def create(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         instance = serializer.save(user=self.request.user)
-#         postgres_user = self.request.user
-#         mongo_user = get_or_create_mongo_user(postgres_user)
-
-#         # Process audio and return the response directly
-#         return self.process_audio(instance, mongo_user)
-
-#     def process_audio(self, instance, mongo_user):
-#         print("Processing audio...")
-#         audio_file = self.request.FILES.get('audio_file')
-
-#         if not audio_file or audio_file.size == 0:
-#             print("Audio file missing or empty.")
-#             response_data = {
-#                 "status": "fail",
-#                 "message": "Audio file is required and cannot be empty."
-#             }
-#             return Response(response_data, status=400)
-
-#         allowed_formats = {
-#             'audio/opus': '.opus',
-#             'audio/wav': '.wav',
-#             'audio/mpeg': '.mp3',  # Add more formats as needed
-#             'audio/x-wav': '.wav',
-#             'audio/m4a': '.m4a',
-#             'audio/mp4': '.m4a',
-#             'audio/ogg': '.opus'
-#         }
-
-#         # Streaming the audio to the frontend in sections instead of in one bulk.
-
-#         # def convert_to_wav(input_file_path, output_file_path):
-#         #     audio = AudioSegment.from_file(input_file_path)
-#         #     audio.export(output_file_path, format="wav")
-
-#         # content_type = audio_file.content_type
-#         # print(f"Detected content type: {content_type}")
-
-#         # if content_type not in ['audio/wav', 'audio/x-wav']:
-#         #     converted_path = temp_audio_file.name.replace(suffix, '.wav')
-#         #     convert_to_wav(temp_audio_file.name, converted_path)
-#         #     temp_audio_file_name = converted_path
-#         # else:
-#         #     temp_audio_file_name = temp_audio_file.name
-
-#         try:
-#             # Get the content type of the audio file
-#             content_type = audio_file.content_type
-#             print(f"Detected content type: {content_type}")
-
-#             # Check if the content type is allowed
-#             if content_type not in allowed_formats:
-#                 print("Unsupported audio format.")
-#                 response_data = {
-#                     "status": "fail",
-#                     "message": "Unsupported audio format."
-#                 }
-#                 return Response(response_data, status=400)
-
-#             # Get the appropriate file extension based on content type
-#             suffix = allowed_formats[content_type]
-
-#             print("Saving temporary audio file for transcription...")
-#             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_audio_file:
-#                 audio_file.seek(0)
-#                 temp_audio_file.write(audio_file.read())
-#                 temp_audio_file.flush()
-
-#             print(f"Temp audio file saved at {temp_audio_file.name}.")
-
-#             # Transcribe the audio file
-#             transcription = transcribe_audio(temp_audio_file.name)
-#             if not transcription or 'Error' in transcription:
-#                 print(f"Transcription failed: {transcription}")
-#                 response_data = {
-#                     "status": "fail",
-#                     "message": "Transcription failed. Reason: " + transcription
-#                 }
-#                 return Response(response_data, status=400)
-
-#             print(f"Transcription result: {transcription}")
-#             instance.transcription = transcription
-#             instance.save()
-#             print("Transcription saved to the database.")
-
-#             # Call RAG model to generate AI response
-#             print("Calling RAG model to generate AI response...")
-#             ai_result = rag_response(
-#                 user_id=mongo_user['_id'],
-#                 query=transcription,
-#                 knowledge_base="some_knowledge_base"
-#             )
-
-#             # Check if the AI response is valid
-#             if not ai_result or 'response' not in ai_result:
-#                 print("AI response retrieval failed or 'response' key missing.")
-#                 response_data = {
-#                     "status": "fail",
-#                     "message": "AI response generation failed."
-#                 }
-#                 return Response(response_data, status=500)
-
-#             instance.ai_response = ai_result['response']
-#             instance.save()
-#             print("AI response saved to the database.")
-
-#             # Synthesize speech based on AI response
-#             print("Starting speech synthesis...")
-#             audio_file_path = synthesize_speech(ai_result['response'])
-
-#             if audio_file_path is None:
-#                 print("Speech synthesis failed, returning error.")
-#                 response_data = {
-#                     "status": "fail",
-#                     "message": "Speech synthesis failed."
-#                 }
-#                 return Response(response_data, status=500)
-
-#             print("Returning audio response to frontend.")
-
-
-#             audio_file_path = synthesize_speech(ai_result['response'])
-
-#             # Calculate file size
-#             file_size = os.path.getsize(audio_file_path)
-
-#             # Open the file for streaming
-#             audio_file = open(audio_file_path, 'rb')
-
-#             # Use StreamingHttpResponse
-#             response = StreamingHttpResponse(
-#                 audio_file,  # Pass the open file handle
-#                 content_type="audio/wav"
-#             )
-#             response['Content-Disposition'] = 'inline; filename="response.wav"'
-#             response['Content-Length'] = str(file_size)  # Set the correct file size
-
-#             # Add transcription and AI response as custom headers
-#             response['X-Transcription'] = instance.transcription  # User transcription
-#             response['X-AI-Response'] = instance.ai_response      # AI response
-#             return response
-
-
-#         except Exception as e:
-#             print(f"Error during audio processing: {e}")
-#             response_data = {
-#                 "status": "fail",
-#                 "message": "Audio processing failed. " + str(e)
-#             }
-#             return Response(response_data, status=500)
-
-#         finally:
-#             if 'temp_audio_file' in locals() and os.path.exists(temp_audio_file.name):
-#                 print(f"Deleting temporary audio file: {temp_audio_file.name}")
-#                 os.remove(temp_audio_file.name)
-
-
-
 class AudioViewSet(viewsets.ModelViewSet):
     """
     Handles audio uploads, transcriptions, and AI response generation.
@@ -654,7 +483,86 @@ class AudioViewSet(viewsets.ModelViewSet):
             if 'temp_audio_file' in locals() and os.path.exists(temp_audio_file.name):
                 print(f"Deleting temporary audio file: {temp_audio_file.name}")
                 os.remove(temp_audio_file.name)
-                
+
+
+# The version of the audio endpoint that send a video url instead of streaming it directly.
+
+# class AudioViewSet(viewsets.ModelViewSet):
+#     queryset = Audio.objects.all()
+#     serializer_class = AudioSerializer
+#     parser_classes = [MultiPartParser, FormParser]
+
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         instance = serializer.save(user=self.request.user)
+#         postgres_user = self.request.user
+#         mongo_user = get_or_create_mongo_user(postgres_user)
+
+#         return self.process_audio(instance, mongo_user)
+
+#     def process_audio(self, instance, mongo_user):
+#         audio_file = self.request.FILES.get('audio_file')
+
+#         if not audio_file or audio_file.size == 0:
+#             return Response({"status": "fail", "message": "Audio file is required and cannot be empty."}, status=400)
+
+#         allowed_formats = {
+#             'audio/opus': '.opus',
+#             'audio/wav': '.wav',
+#             'audio/mpeg': '.mp3',
+#             'audio/x-wav': '.wav',
+#             'audio/m4a': '.m4a',
+#             'audio/mp4': '.m4a',
+#             'audio/ogg': '.opus'
+#         }
+
+#         try:
+#             content_type = audio_file.content_type
+#             if content_type not in allowed_formats:
+#                 return Response({"status": "fail", "message": "Unsupported audio format."}, status=400)
+
+#             suffix = allowed_formats[content_type]
+#             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_audio_file:
+#                 audio_file.seek(0)
+#                 temp_audio_file.write(audio_file.read())
+#                 temp_audio_file.flush()
+
+#             transcription = transcribe_audio(temp_audio_file.name)
+#             if not transcription or 'Error' in transcription:
+#                 return Response({"status": "fail", "message": f"Transcription failed: {transcription}"}, status=400)
+
+#             instance.transcription = transcription
+#             instance.save()
+
+#             ai_result = rag_response(user_id=mongo_user['_id'], query=transcription, knowledge_base="some_knowledge_base")
+#             if not ai_result or 'response' not in ai_result:
+#                 return Response({"status": "fail", "message": "AI response generation failed."}, status=500)
+
+#             instance.ai_response = ai_result['response']
+#             instance.save()
+
+#             audio_file_path = synthesize_speech(ai_result['response'])
+#             if not audio_file_path:
+#                 return Response({"status": "fail", "message": "Speech synthesis failed."}, status=500)
+
+#             # Store audio file temporarily or upload to a storage service (optional improvement)
+#             audio_download_url = f"/media/{os.path.basename(audio_file_path)}"  # Replace with actual storage logic
+
+#             # JSON response with metadata and download URL
+#             return Response({
+#                 "status": "success",
+#                 "transcription": instance.transcription,
+#                 "ai_response": instance.ai_response,
+#                 "audio_url": audio_download_url
+#             }, status=200)
+
+#         except Exception as e:
+#             return Response({"status": "fail", "message": f"Audio processing failed: {str(e)}"}, status=500)
+
+#         finally:
+#             if 'temp_audio_file' in locals() and os.path.exists(temp_audio_file.name):
+#                 os.remove(temp_audio_file.name)
 
 # class ReminderView(APIView):
 #     """
@@ -701,99 +609,6 @@ class AudioViewSet(viewsets.ModelViewSet):
 #                 "message": "An error occurred while processing the request",
 #                 "data": str(e)
 #             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-# class ReminderView(APIView):
-#     """
-#     API View to handle POST requests for personalized reminder notifications with audio.
-#     """
-
-#     def post(self, request, *args, **kwargs):
-#         # Deserialize incoming data
-#         serializer = ReminderSerializer(data=request.data)
-
-#         # Validate the request data
-#         if not serializer.is_valid():
-#             return Response({
-#                 "status": "error",
-#                 "message": "Validation failed",
-#                 "data": serializer.errors
-#             }, status=status.HTTP_400_BAD_REQUEST)
-
-#         try:
-#             validated_data = serializer.validated_data
-#             reminder = validated_data['reminder']
-
-#             # Retrieve the current user from the request
-#             postgres_user = self.request.user
-
-#             # Get or create MongoDB user for this postgres_user
-#             mongo_user = get_or_create_mongo_user(postgres_user)
-
-#             # Generate personalized reminder content
-#             personalized_message = reminder_message_full(mongo_user["_id"], reminder)
-
-#             if not personalized_message:
-#                 return Response({
-#                     "status": "fail",
-#                     "message": "Could not generate reminder message."
-#                 }, status=status.HTTP_400_BAD_REQUEST)
-
-#             # Synthesize speech based on AI response
-#             print("Starting speech synthesis...")
-#             audio_file_path = synthesize_speech(personalized_message)
-
-#             if audio_file_path is None:
-#                 print("Speech synthesis failed, returning error.")
-#                 response_data = {
-#                     "status": "fail",
-#                     "message": "Speech synthesis failed."
-#                 }
-#                 return Response(response_data, status=500)
-
-#             print("Returning audio response to frontend.")
-
-
-#             audio_file_path = synthesize_speech(personalized_message)
-
-#             # Calculate file size
-#             file_size = os.path.getsize(audio_file_path)
-
-#             # Open the file for streaming
-#             audio_file = open(audio_file_path, 'rb')
-
-#             # Use StreamingHttpResponse
-#             response = StreamingHttpResponse(
-#                 audio_file,  # Pass the open file handle
-#                 content_type="audio/wav"
-#             )
-#             response['Content-Disposition'] = 'inline; filename="response.wav"'
-#             response['Content-Length'] = str(file_size)  # Set the correct file size
-
-#             # Add transcription and AI response as custom headers
-#             # response['X-Transcription'] = instance.transcription  # User transcription
-#             # response['X-AI-Response'] = instance.ai_response      # AI response
-#             return response
-
-#             # Return the response with the open audio file stream
-#             # return response
-
-#         except Exception as e:
-#             # Handle any unexpected errors gracefully
-#             return Response({
-#                 "status": "error",
-#                 "message": "An error occurred while processing the reminder",
-#                 "data": str(e)
-#             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-#         finally:
-#             # Ensure the temporary audio file is deleted after response is streamed
-#             if 'audio_file_path' in locals() and os.path.exists(audio_file_path):
-#                 try:
-#                     os.remove(audio_file_path)
-#                     print(f"Audio file deleted: {audio_file_path}")
-#                 except PermissionError as e:
-#                     print(f"Failed to delete audio file: {e}")
 
 
 class ReminderView(APIView):
@@ -893,113 +708,6 @@ class ReminderView(APIView):
                     print(f"Failed to delete audio file: {e}")
 
 
-
-# import os
-# import threading
-# from django.http import StreamingHttpResponse
-# from django.core.files.temp import NamedTemporaryFile
-# import time
-
-# class ReminderView(APIView):
-#     """
-#     API View to handle POST requests for personalized reminder notifications with audio.
-#     """
-
-#     def post(self, request, *args, **kwargs):
-#         # Deserialize incoming data
-#         serializer = ReminderSerializer(data=request.data)
-
-#         # Validate the request data
-#         if not serializer.is_valid():
-#             return Response({
-#                 "status": "error",
-#                 "message": "Validation failed",
-#                 "data": serializer.errors
-#             }, status=status.HTTP_400_BAD_REQUEST)
-
-#         try:
-#             validated_data = serializer.validated_data
-#             reminder = validated_data['reminder']
-
-#             # Retrieve the current user from the request
-#             postgres_user = self.request.user
-
-#             # Get or create MongoDB user for this postgres_user
-#             mongo_user = get_or_create_mongo_user(postgres_user)
-
-#             # Generate personalized reminder content
-#             personalized_message = reminder_message_full(mongo_user["_id"], reminder)
-
-#             if not personalized_message:
-#                 return Response({
-#                     "status": "fail",
-#                     "message": "Could not generate reminder message."
-#                 }, status=status.HTTP_400_BAD_REQUEST)
-
-#             # Synthesize speech based on AI response
-#             print("Starting speech synthesis...")
-#             audio_file_path = synthesize_speech(personalized_message)
-
-#             if audio_file_path is None:
-#                 print("Speech synthesis failed, returning error.")
-#                 response_data = {
-#                     "status": "fail",
-#                     "message": "Speech synthesis failed."
-#                 }
-#                 return Response(response_data, status=500)
-
-#             print(f"Speech synthesized to file: {audio_file_path}")
-
-#             # Calculate file size
-#             file_size = os.path.getsize(audio_file_path)
-
-#             # Open the file for streaming
-#             audio_file = open(audio_file_path, 'rb')
-
-#             # Clean header values by replacing newline characters
-#             sanitized_message = personalized_message.replace("\n", " ")
-
-#             # Use StreamingHttpResponse to stream the audio file
-#             response = StreamingHttpResponse(
-#                 audio_file,  # Pass the open file handle
-#                 content_type="audio/wav"
-#             )
-#             response['Content-Disposition'] = 'inline; filename="response.wav"'
-#             response['Content-Length'] = str(file_size)  # Set the correct file size
-
-#             # Add sanitized header with the personalized message
-#             response['X-Reminder-Message'] = sanitized_message  # Transcription version
-#             response['X-Reminder-Time'] = reminder.get('time')  # Time for reminder
-
-#             # Asynchronously delete the audio file after streaming is complete
-#             threading.Thread(target=self.delete_file_after_streaming, args=(audio_file_path,)).start()
-
-#             return response
-
-#         except Exception as e:
-#             # Handle any unexpected errors gracefully
-#             return Response({
-#                 "status": "error",
-#                 "message": "An error occurred while processing the reminder",
-#                 "data": str(e)
-#             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-#     def delete_file_after_streaming(self, file_path):
-#         """
-#         This method is called asynchronously to delete the file after streaming.
-#         """
-#         try:
-#             # Give some time for streaming to finish, then delete the file
-#             print(f"Deleting audio file: {file_path}")
-#             os.remove(file_path)
-#             print(f"Audio file deleted: {file_path}")
-#         except PermissionError as e:
-#             print(f"Failed to delete audio file: {e}")
-#         except Exception as e:
-#             print(f"Error while deleting the file: {e}")
-
-
-    
 class HealthSyncScoreView(APIView):
     permission_classes = [IsAuthenticated]
 
