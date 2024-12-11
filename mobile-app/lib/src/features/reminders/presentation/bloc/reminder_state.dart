@@ -1,12 +1,13 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'reminder_bloc.dart';
 
 class ReminderState extends Equatable {
   const ReminderState({
     this.error = "",
     this.spokenCommand = "",
+    this.reminders = const [],
     this.apiState = ApiState.none,
     this.hasInitializedVoiceCommand = false,
-    this.calendarEvent = const {},
     required this.currentDate,
   });
 
@@ -15,7 +16,7 @@ class ReminderState extends Equatable {
   final ApiState apiState;
   final DateTime currentDate;
   final bool hasInitializedVoiceCommand;
-  final Map<DateTime, List<ReminderModel>> calendarEvent;
+  final List<ReminderModel> reminders;
 
   ReminderState copyWith({
     String? error,
@@ -23,7 +24,7 @@ class ReminderState extends Equatable {
     ApiState? apiState,
     DateTime? currentDate,
     bool? hasInitializedVoiceCommand,
-    Map<DateTime, List<ReminderModel>>? calendarEvent,
+    List<ReminderModel>? reminders,
   }) {
     return ReminderState(
       error: error ?? this.error,
@@ -32,7 +33,7 @@ class ReminderState extends Equatable {
       currentDate: currentDate ?? this.currentDate,
       hasInitializedVoiceCommand:
           hasInitializedVoiceCommand ?? this.hasInitializedVoiceCommand,
-      calendarEvent: calendarEvent ?? this.calendarEvent,
+      reminders: reminders ?? this.reminders,
     );
   }
 
@@ -43,8 +44,11 @@ class ReminderState extends Equatable {
       spokenCommand,
       apiState,
       currentDate,
+      reminders,
       hasInitializedVoiceCommand,
-      calendarEvent,
     ];
   }
+
+  @override
+  bool get stringify => true;
 }

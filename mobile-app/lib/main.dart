@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 
+import 'package:ellipsis_care/core/services/background_audio_handler.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:ellipsis_care/src/features/emergency/presentation/bloc/emergency_bloc.dart';
 import 'package:ellipsis_care/src/features/onboarding/cubit/onboarding_cubit.dart';
@@ -14,12 +15,12 @@ import 'package:ellipsis_care/src/shared/widgets/navigator_shell/navigator_shell
 
 import 'config/router/router.dart';
 import 'config/theme/theme.dart';
+import 'core/services/hive_storage_service.dart';
 import 'core/services/notification_service.dart';
-import 'core/services/storage_service.dart';
-import 'core/utils/locator.dart';
+import 'core/utils/injector.dart';
 import 'src/features/dashboard/presentation/controller/cubit/medications_cubit.dart';
 import 'src/features/home/presentation/bloc/home_bloc.dart';
-import 'src/shared/controller/app_session_bloc/app_session_bloc.dart';
+import 'src/features/settings/presentation/bloc/settings_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,12 +32,14 @@ void main() async {
   initService();
 
   // Initialize [Hive]
-  await injector<StorageService>().initializeStorage();
+  await injector<HiveStorageService>().initializeStorage();
 
   // Register [Storage Service] type adapters
-  injector<StorageService>().registerModels();
+  injector<HiveStorageService>().registerModels();
 
   await injector<NotificationService>().init();
+
+  injector<BackgroundAudioService>().init();
 
   await Firebase.initializeApp();
 
@@ -51,7 +54,7 @@ class EllipsisCare extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => AppSessionBloc()..add(LoadAppSessionEvent()),
+          create: (context) => SettingsBloc()..add(LoadSettingsEvent()),
         ),
         BlocProvider(
           create: (context) => UserBloc()..add(GetUserEvent()),
@@ -69,11 +72,13 @@ class EllipsisCare extends StatelessWidget {
           create: (context) => HomeBloc(),
         ),
         BlocProvider(
-          create: (context) =>
-              ReminderBloc()..add(InitializeVoiceCommandEvent()),
+          create: (context) => ReminderBloc()
+            ..add(InitializeVoiceCommandEvent())
+            ..add(GetAllReminders()),
         ),
         BlocProvider(
-          create: (context) => EmergencyContactBloc(),
+          create: (context) =>
+              EmergencyContactBloc()..add(FetchContactsEvent()),
         ),
         BlocProvider(
           create: (context) => MedicationProgressCubit(),
@@ -83,15 +88,14 @@ class EllipsisCare extends StatelessWidget {
         ensureScreenSize: true,
         designSize: const Size(393, 852),
         builder: (context, child) {
-          return BlocBuilder<AppSessionBloc, AppSessionState>(
+          return BlocBuilder<SettingsBloc, SettingsState>(
             builder: (context, state) {
               return OKToast(
                 child: MaterialApp.router(
                   title: "Ellipsis Care",
                   routerConfig: router,
-                  themeMode: state.appSession?.hasEnabledDarkMode == true
-                      ? ThemeMode.dark
-                      : ThemeMode.light,
+                  themeMode:
+                      state.enabledDarkMode ? ThemeMode.dark : ThemeMode.light,
                   theme: AppTheme.lightTheme,
                   darkTheme: AppTheme.darkTheme,
                   debugShowCheckedModeBanner: false,

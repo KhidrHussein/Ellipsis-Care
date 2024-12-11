@@ -1,5 +1,5 @@
 import '../../../../../../core/utils/helpers.dart';
-import 'time_picker.dart';
+import 'custom_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -7,12 +7,12 @@ import 'package:ellipsis_care/core/utils/extensions.dart';
 
 import '../../../../../../core/constants/colors.dart';
 
-class DatePicker extends StatefulWidget {
+class CustomDatePicker extends StatefulWidget {
   final String hint;
   final ValueNotifier<DateTime?> dateListenable;
   final ValueNotifier<TimeOfDay?> timeListenable;
 
-  const DatePicker({
+  const CustomDatePicker({
     super.key,
     required this.hint,
     required this.dateListenable,
@@ -20,45 +20,46 @@ class DatePicker extends StatefulWidget {
   });
 
   @override
-  State<DatePicker> createState() => _DatePickerState();
+  State<CustomDatePicker> createState() => _CustomDatePickerState();
 }
 
-class _DatePickerState extends State<DatePicker> {
+class _CustomDatePickerState extends State<CustomDatePicker> {
   DateTime? _selectedDate;
   final OverlayPortalController _portalController = OverlayPortalController();
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
-        padding: REdgeInsets.symmetric(horizontal: 10, vertical: 12),
-        decoration: BoxDecoration(
-          //FIXME: change the border color here
-          border: Border.all(color: AppColors.homeColorLight),
-          borderRadius: BorderRadius.circular(5.r),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ValueListenableBuilder(
-              valueListenable: widget.dateListenable,
-              builder: (context, value, child) {
-                return Text(
-                  value != null
-                      ? UtilHelpers.dateFormatter1(value)
-                      : widget.hint,
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    fontSize: 14.sp,
-                    color: value != null
-                        ? context.textTheme.bodyMedium?.color
-                        : context.textTheme.bodyMedium?.color?.withOpacity(.3),
-                  ),
-                );
-              },
-            ),
-            InkWell(
-              onTap: () => _portalController.show(),
-              child: OverlayPortal(
+      child: InkWell(
+        onTap: () => _portalController.show(),
+        child: Container(
+          padding: REdgeInsets.symmetric(horizontal: 10, vertical: 12),
+          decoration: BoxDecoration(
+            //FIXME: change the border color here
+            border: Border.all(color: AppColors.homeColorLight),
+            borderRadius: BorderRadius.circular(5.r),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ValueListenableBuilder(
+                valueListenable: widget.dateListenable,
+                builder: (context, value, child) {
+                  return Text(
+                    value != null
+                        ? UtilHelpers.dateFormatter1(value)
+                        : widget.hint,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      fontSize: 14.sp,
+                      color: value != null
+                          ? context.textTheme.bodyMedium?.color
+                          : context.textTheme.bodyMedium?.color
+                              ?.withOpacity(.3),
+                    ),
+                  );
+                },
+              ),
+              OverlayPortal(
                 controller: _portalController,
                 overlayChildBuilder: (context) {
                   return Positioned(
@@ -68,10 +69,10 @@ class _DatePickerState extends State<DatePicker> {
                           BoxConstraints(maxWidth: 1.sw, maxHeight: .55.sh),
                       child: Dialog(
                         backgroundColor: context.themeExtension.reminderColor,
-                        shadowColor: context.themeExtension.reminderInverseColor,
+                        shadowColor:
+                            context.themeExtension.reminderInverseColor,
                         shape: const ContinuousRectangleBorder(),
                         child: Column(
-                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Padding(
                               padding: REdgeInsets.all(9),
@@ -107,9 +108,9 @@ class _DatePickerState extends State<DatePicker> {
                   );
                 },
                 child: const Icon(Icons.calendar_month),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

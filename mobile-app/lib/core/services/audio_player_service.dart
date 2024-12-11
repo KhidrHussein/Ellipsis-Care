@@ -6,6 +6,8 @@ import '../utils/extensions.dart';
 class AudioPlayerService {
   final AudioPlayer _audioPlayer = AudioPlayer(playerId: const Uuid().v4());
 
+  AudioPlayer get player => _audioPlayer;
+
   Future<void> playAudio(Source audioSource) async {
     try {
       await _audioPlayer.play(audioSource);

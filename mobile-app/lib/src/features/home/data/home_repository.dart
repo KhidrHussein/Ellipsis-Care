@@ -1,22 +1,21 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:path_provider/path_provider.dart';
 
+import 'package:ellipsis_care/core/utils/extensions.dart';
 import '../../../../core/api/exceptions/exceptions.dart';
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/services/api_service.dart';
-import '../../../../core/utils/locator.dart';
-import '../models/data_from_ai.dart';
+import '../../../../core/utils/injector.dart';
+import '../models/home_response.dart';
 
 class HomeRepository {
   HomeRepository() : _apiService = injector<ApiService>();
 
   final ApiService _apiService;
 
-  Future<Either<DataFromAI, AppExceptions>> uploadAudio(File audio) async {
+  Future<Either<HomeResponse, AppExceptions>> uploadAudio(File audio) async {
     final data = FormData.fromMap({
       "audio_file": await MultipartFile.fromFile(
         audio.path,
@@ -25,24 +24,17 @@ class HomeRepository {
     });
 
     try {
-      final response = await _apiService.client.post(
+      final response = await _apiService.post(
         ApiUrl.uploadAudio,
         data: data,
         options: Options(responseType: ResponseType.bytes),
       );
 
-      // Save the audio file locally
-      final Directory tempDir = await getTemporaryDirectory();
-      final String filePath = "${tempDir.path}/response_audio.wav";
-
-      //Write to file
-      final File audioFile = File(filePath);
-      await audioFile.writeAsBytes(response.data!);
-
-      final result = DataFromAI(
-        aiResponse: response.headers.map["x-ai-response"]!,
-        transcription: response.headers.map["x-transcription"]!,
-        pathToAudiFile: filePath,
+      final result = HomeResponse(
+        ai: response.headers.map["x-ai-response"]!,
+        user: response.headers.map["x-transcription"]!,
+        bytes: response.data,
+        createdAt: DateTime.now().toIso8601String(),
       );
 
       return left(result);

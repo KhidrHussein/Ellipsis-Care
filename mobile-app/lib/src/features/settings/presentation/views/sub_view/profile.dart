@@ -40,7 +40,8 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    final userBloc = context.watch<UserBloc>().state;
+    final bloc = context.read<UserBloc>();
+    final state = context.watch<UserBloc>().state;
 
     return Scaffold(
       body: SafeArea(
@@ -53,7 +54,9 @@ class _ProfileState extends State<Profile> {
               const UserAvatar(radius: 40),
               8.sizedBoxHeight,
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  
+                },
                 child: Text(
                   "Edit Photo",
                   style: TextStyle(
@@ -80,7 +83,9 @@ class _ProfileState extends State<Profile> {
               ),
               .29.sh.sizedBoxHeight,
               FilledButton(
-                onPressed: () {},
+                onPressed: () {
+                  bloc.add(SaveUserEvent());
+                },
                 child: const Text("Save"),
               )
             ],

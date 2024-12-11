@@ -32,7 +32,7 @@ class ContactSheet extends StatelessWidget {
             controller: scrollController,
             slivers: [
               const SliverToBoxAdapter(child: Header()),
-              BlocBuilder<EmergencyContactBloc, EmergencyContactState>(
+              BlocBuilder<EmergencyContactBloc, EmergencyState>(
                 bloc: emergencyContactBloc..add(FetchContactsEvent()),
                 builder: (context, state) {
                   if (state.contacts.isNotEmpty) {

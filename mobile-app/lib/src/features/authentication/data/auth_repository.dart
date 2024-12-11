@@ -1,11 +1,12 @@
 import 'package:fpdart/fpdart.dart';
 
+import '../../../../core/services/secure_storage.dart';
 import '../../../../core/utils/extensions.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/services/api_service.dart';
 import '../../../../core/services/oauth_service.dart';
-import '../../../../core/utils/locator.dart';
+import '../../../../core/utils/injector.dart';
 
 import '../../../../core/api/exceptions/exceptions.dart';
 import '../../../../core/api/response/response.dart';
@@ -19,16 +20,16 @@ class AuthenticationRepository {
   final ApiService _service;
   final OAuthService _oAuthService;
 
-  Future<Either<SuccessfulApiResponse<User>, AppExceptions>> signUp(
+  Future<Either<SuccessfulApiResponse<UserResponse>, AppExceptions>> signUp(
       Map<String, dynamic> payload) async {
     try {
-      final response = await _service.client.post(ApiUrl.signUp, data: payload);
+      final response = await _service.post(ApiUrl.signUp, data: payload);
 
-      final apiResult = SuccessfulApiResponse<User>.fromJson(
+      final apiResult = SuccessfulApiResponse<UserResponse>.fromJson(
         response.data,
         (dataJson) {
           final json = dataJson as Map<String, dynamic>;
-          return User.fromJson(json["user"]);
+          return UserResponse.fromJson(json["user"]);
         },
       );
 
@@ -45,7 +46,7 @@ class AuthenticationRepository {
   Future<Either<SuccessfulApiResponse<String>, AppExceptions>> signIn(
       Map<String, dynamic> payload) async {
     try {
-      final response = await _service.client.post(ApiUrl.signIn, data: payload);
+      final response = await _service.post(ApiUrl.signIn, data: payload);
 
       final apiResult = SuccessfulApiResponse<String>.fromJson(
         response.data,
@@ -54,6 +55,8 @@ class AuthenticationRepository {
           return data["token"];
         },
       );
+
+      await injector<SecureStorage>().storeAccessToken(apiResult.data!);
 
       return left(apiResult);
     } catch (e) {
@@ -68,8 +71,7 @@ class AuthenticationRepository {
   Future<Either<SuccessfulApiResponse, AppExceptions>> verifyEmail(
       Map<String, dynamic> payload) async {
     try {
-      final response =
-          await _service.client.post(ApiUrl.verifyEmail, data: payload);
+      final response = await _service.post(ApiUrl.verifyEmail, data: payload);
 
       final apiResult = SuccessfulApiResponse.fromJson(
         response.data,

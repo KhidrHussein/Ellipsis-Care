@@ -2,6 +2,7 @@ import 'package:ellipsis_care/core/utils/enums/api_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:logman/logman.dart';
 
 import '../../../../../config/router/route_names.dart';
 import '../../../../../core/utils/extensions.dart';
@@ -22,6 +23,16 @@ class _SigninState extends State<Signin> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Logman.instance.attachOverlay(
+        context: context,
+      );
+    });
+  }
 
   @override
   void dispose() {
@@ -85,6 +96,7 @@ class _SigninState extends State<Signin> {
                 BlocConsumer<AuthenticationBloc, AuthenticationState>(
                   bloc: authenticationBloc,
                   listener: (context, state) {
+                 
                     switch (state.apiState) {
                       case ApiState.success:
                         UtilHelpers.pushTo(RouteNames.home);
@@ -102,14 +114,16 @@ class _SigninState extends State<Signin> {
                       onPressed: switch (state.apiState) {
                         ApiState.loading => null,
                         _ => () {
-                            if (_formKey.currentState!.validate()) {
-                              authenticationBloc.add(
-                                SignInEvent(
-                                  email: _emailController.text,
-                                  password: _passwordController.text,
-                                ),
-                              );
-                            }
+                            // if (_formKey.currentState!.validate()) {
+                            //   authenticationBloc.add(
+                            //     SignInEvent(
+                            //       email: _emailController.text,
+                            //       password: _passwordController.text,
+                            //     ),
+                            //   );
+                            // }
+
+                               UtilHelpers.pushTo(RouteNames.home);
                           }
                       },
                       child: const Text("Continue"),

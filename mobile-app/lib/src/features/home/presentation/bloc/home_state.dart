@@ -3,28 +3,25 @@ part of 'home_bloc.dart';
 class HomeState extends Equatable {
   const HomeState({
     this.error = "",
-    this.filePath = "",
     this.apiState = ApiState.none,
     this.micState = MicrophoneState.none,
     this.aiResponses = const [],
   });
 
   final String error;
-  final String filePath;
   final ApiState apiState;
   final MicrophoneState micState;
-  final List<DataFromAI> aiResponses;
+  final List<HomeResponse> aiResponses;
 
   HomeState copyWith({
     String? error,
     String? filePath,
     ApiState? apiState,
     MicrophoneState? micState,
-    List<DataFromAI>? aiResponses,
+    List<HomeResponse>? aiResponses,
   }) {
     return HomeState(
       error: error ?? this.error,
-      filePath: filePath ?? this.filePath,
       apiState: apiState ?? this.apiState,
       micState: micState ?? this.micState,
       aiResponses: aiResponses ?? this.aiResponses,
@@ -35,7 +32,6 @@ class HomeState extends Equatable {
   List<Object> get props {
     return [
       error,
-      filePath,
       apiState,
       micState,
       aiResponses,

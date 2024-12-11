@@ -1,18 +1,21 @@
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:ellipsis_care/core/utils/enums/api_state.dart';
-import 'package:ellipsis_care/core/utils/enums/microphone_state.dart';
-import 'package:ellipsis_care/src/features/home/models/data_from_ai.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:ellipsis_care/core/services/file_storage_service.dart';
+import 'package:ellipsis_care/core/utils/enums/api_state.dart';
+import 'package:ellipsis_care/core/utils/enums/file_storage_type.dart';
+import 'package:ellipsis_care/core/utils/enums/microphone_state.dart';
+import 'package:ellipsis_care/src/features/home/models/home_response.dart';
 
 import '../../../../../core/api/exceptions/exceptions.dart';
 import '../../../../../core/services/audio_player_service.dart';
 import '../../../../../core/services/mic_service.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/helpers.dart';
-import '../../../../../core/utils/locator.dart';
+import '../../../../../core/utils/injector.dart';
 import '../../data/home_repository.dart';
 
 part 'home_event.dart';
@@ -20,7 +23,8 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvents, HomeState> {
   HomeBloc()
-      : _dashboardRepository = injector<HomeRepository>(),
+      : _fileStorageService = injector<FileStorageService>(),
+        _dashboardRepository = injector<HomeRepository>(),
         _microphoneService = injector<MicrophoneService>(),
         _audioPlayerService = injector<AudioPlayerService>(),
         super(const HomeState()) {
@@ -33,6 +37,7 @@ class HomeBloc extends Bloc<HomeEvents, HomeState> {
 
   final HomeRepository _dashboardRepository;
   final MicrophoneService _microphoneService;
+  final FileStorageService _fileStorageService;
   final AudioPlayerService _audioPlayerService;
 
   void _reset(ResetEvent event, Emitter<HomeState> emit) {
@@ -69,31 +74,31 @@ class HomeBloc extends Bloc<HomeEvents, HomeState> {
     UtilHelpers.pop();
 
     if (path == null) {
-      emit(
-        state.copyWith(error: "No audio file path provided."),
-      );
+      emit(state.copyWith(error: "No audio file path provided."));
       return;
     }
 
     final File audioFile = File(path);
     if (!audioFile.existsSync()) {
-      emit(
-        state.copyWith(error: "Audio file does not exist."),
-      );
+      emit(state.copyWith(error: "Audio file does not exist."));
       return;
     }
 
-    emit(
-      state.copyWith(apiState: ApiState.loading),
-    );
+    emit(state.copyWith(apiState: ApiState.loading));
 
     try {
       final repoResponse = await _dashboardRepository.uploadAudio(audioFile);
 
       repoResponse.fold(
-        (dataFromAi) {
-          _playAudio(dataFromAi.pathToAudiFile);
-          _emitData(dataFromAi, emit);
+        (response) async {
+          await _fileStorageService.storeFile(
+            type: FileStorageType.prompt,
+            bytes: response.bytes,
+            date: UtilHelpers.getDateFromIsoString(response.createdAt),
+          );
+
+          _playAudio(response.createdAt);
+          _emitData(response, emit);
         },
         (exception) {
           final errorMessage = AppExceptions.getErrorMessage(exception);
@@ -109,7 +114,7 @@ class HomeBloc extends Bloc<HomeEvents, HomeState> {
     }
   }
 
-  void _emitData(DataFromAI data, Emitter<HomeState> emit) {
+  void _emitData(HomeResponse data, Emitter<HomeState> emit) {
     emit(
       state.copyWith(
         apiState: ApiState.success,
@@ -118,13 +123,15 @@ class HomeBloc extends Bloc<HomeEvents, HomeState> {
     );
   }
 
-  void _playAudio(String file) async {
-    await _audioPlayerService.playAudio(DeviceFileSource(file));
+  void _playAudio(String date) async {
+    final file = await _fileStorageService.getFile(
+        FileStorageType.prompt, UtilHelpers.getDateFromIsoString(date));
+    await _audioPlayerService.playAudio(DeviceFileSource(file!.path));
   }
 
   @override
-  void onTransition(Transition<HomeEvents, HomeState> transition) {
-    super.onTransition(transition);
-    "$runtimeType $transition".printLog();
+  void onChange(Change<HomeState> change) {
+    super.onChange(change);
+    "$runtimeType ${change.currentState}".printLog();
   }
 }

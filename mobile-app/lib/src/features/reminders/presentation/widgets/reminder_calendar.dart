@@ -13,7 +13,6 @@ class ReminderCalendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<ReminderBloc>();
-    final blocState = context.watch<ReminderBloc>();
 
     return Container(
       decoration: BoxDecoration(
@@ -26,10 +25,10 @@ class ReminderCalendar extends StatelessWidget {
       child: BlocBuilder<ReminderBloc, ReminderState>(
         builder: (context, state) {
           return TableCalendar(
-            currentDay: blocState.state.currentDate,
-            focusedDay: blocState.state.currentDate,
+            currentDay: bloc.state.currentDate,
+            focusedDay: DateTime.now(),
             firstDay: DateTime(2020),
-            lastDay: DateTime(2030),
+            lastDay: DateTime(2040),
             daysOfWeekHeight: 42.h,
             headerStyle: HeaderStyle(
               formatButtonVisible: false,
@@ -73,11 +72,10 @@ class ReminderCalendar extends StatelessWidget {
               ),
             ),
             eventLoader: (date) {
-              return isSameDay(date, blocState.state.currentDate)
-                  ? blocState
-                          .state.calendarEvent[blocState.state.currentDate] ??
-                      []
-                  : [];
+              return bloc.state.reminders.where((event) {
+                final startDate = DateTime.parse(event.startDate);
+                return isSameDay(bloc.state.currentDate, startDate);
+              }).toList();
             },
             onDaySelected: (selectedDay, focusedDay) {
               bloc.add(

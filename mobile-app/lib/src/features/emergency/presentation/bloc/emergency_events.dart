@@ -1,18 +1,20 @@
 part of 'emergency_bloc.dart';
 
-sealed class EmergencyContactEvent {}
+sealed class EmergencyEvents {}
 
-class AddContactEvent implements EmergencyContactEvent {}
+class AddContactEvent implements EmergencyEvents {}
 
-class FetchContactsEvent implements EmergencyContactEvent {}
+class FetchContactsEvent implements EmergencyEvents {}
 
-class EditContactEvent implements EmergencyContactEvent {
+class AlertContactsEvent implements EmergencyEvents {}
+
+class EditContactEvent implements EmergencyEvents {
   EditContactEvent({required this.contact});
 
   final EmergencyContact contact;
 }
 
-class DeleteContactEvent implements EmergencyContactEvent {
+class DeleteContactEvent implements EmergencyEvents {
   DeleteContactEvent({required this.id});
 
   final String id;

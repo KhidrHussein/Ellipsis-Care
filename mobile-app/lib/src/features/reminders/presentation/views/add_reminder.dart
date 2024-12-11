@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/check_type_picker.dart';
-import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/date_picker.dart';
+import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/custom_date_picker.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/radio_type_picker.dart';
 
 import '../../../../../core/constants/asset_strings.dart';
-import '../../../../../core/utils/enums/reminder.dart';
+import '../../../../../core/utils/enums/reminder_options/reminder_options.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/helpers.dart';
-import '../../models/reminder.dart';
+import '../bloc/reminder_bloc.dart';
 import '../widgets/add_reminder_section.dart';
 
 class AddReminder extends StatefulWidget {
@@ -29,14 +30,49 @@ class _AddReminderState extends State<AddReminder> {
 
   final ValueNotifier<ReminderType> _reminderType =
       ValueNotifier(ReminderType.food);
-  final ValueNotifier<ReminderInterval?> _reminderInterval =
-      ValueNotifier(null);
+  final ValueNotifier<ReminderInterval> _reminderInterval =
+      ValueNotifier(ReminderInterval.daily);
   final ValueNotifier<DateTime?> _startDate = ValueNotifier(null);
   final ValueNotifier<DateTime?> _endDate = ValueNotifier(null);
   final ValueNotifier<TimeOfDay> _startReminderAt =
       ValueNotifier(TimeOfDay.now());
   final ValueNotifier<TimeOfDay> _endReminderAt =
       ValueNotifier(TimeOfDay.now());
+
+  void _createEventAndPop() {
+    final bloc = context.read<ReminderBloc>();
+
+    DateTime eventStartDate = _startDate.value!.add(
+      Duration(
+        hours: _startReminderAt.value.hour,
+        minutes: _startReminderAt.value.minute,
+      ),
+    );
+
+    DateTime eventEndDate = _endDate.value!.add(
+      Duration(
+        hours: _endReminderAt.value.hour,
+        minutes: _endReminderAt.value.minute,
+      ),
+    );
+
+    if (_manageSchedules.isNotEmpty) {
+      bloc.add(
+        CreateReminderEvent(
+          name: _nameController.text,
+          dosage: _dosageController.text,
+          type: _reminderType.value,
+          interval: _reminderInterval.value,
+          schedule: _manageSchedules,
+          instruction: _instruction.first,
+          startDate: eventStartDate.toIso8601String(),
+          endDate: eventEndDate.toIso8601String(),
+        ),
+      );
+      bloc.add(GetAllReminders());
+      UtilHelpers.pop();
+    }
+  }
 
   @override
   void dispose() {
@@ -141,13 +177,13 @@ class _AddReminderState extends State<AddReminder> {
               sectionName: "Duration",
               subsection: Row(
                 children: [
-                  DatePicker(
+                  CustomDatePicker(
                     hint: "Start Date",
                     dateListenable: _startDate,
                     timeListenable: _startReminderAt,
                   ),
                   16.sizedBoxWidth,
-                  DatePicker(
+                  CustomDatePicker(
                     hint: "End Date",
                     dateListenable: _endDate,
                     timeListenable: _endReminderAt,
@@ -178,24 +214,7 @@ class _AddReminderState extends State<AddReminder> {
               ),
             ),
             FilledButton(
-              onPressed: () {
-                if (_manageSchedules.isNotEmpty) {
-                  final model = ReminderModel(
-                    name: _nameController.text,
-                    dosage: _dosageController.text,
-                    type: _reminderType.value,
-                    interval: _reminderInterval.value ?? ReminderInterval.daily,
-                    schedule: _manageSchedules,
-                    instruction: _instruction.first,
-                    startDate: _startDate.value!,
-                    endDate: _endDate.value!,
-                    eventIsCompleted: false,
-                    reminderStartTime: _startReminderAt.value,
-                    reminderEndTime: _endReminderAt.value,
-                  );
-                  UtilHelpers.pop(model);
-                }
-              },
+              onPressed: _createEventAndPop,
               style: context.filledButtonTheme?.copyWith(
                 textStyle: WidgetStatePropertyAll(
                   TextStyle(
@@ -296,7 +315,7 @@ class _AddReminderState extends State<AddReminder> {
             ),
           )
           .toList(),
-      onChanged: (value) => _reminderInterval.value = value,
+      onChanged: (value) => _reminderInterval.value = value!,
     );
   }
 }

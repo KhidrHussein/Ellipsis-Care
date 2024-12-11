@@ -31,7 +31,7 @@ class ContactsTimer extends StatelessWidget {
             color: AppColors.white,
             shape: BoxShape.circle,
           ),
-          child: BlocBuilder<EmergencyContactBloc, EmergencyContactState>(
+          child: BlocBuilder<EmergencyContactBloc, EmergencyState>(
             builder: (context, state) {
               return Container(
                 width: 65.w,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/src/shared/controller/app_session_bloc/app_session_bloc.dart';
 import 'package:ellipsis_care/src/shared/controller/user_bloc/user_bloc.dart';
 
 import '../../../../../config/router/route_names.dart';

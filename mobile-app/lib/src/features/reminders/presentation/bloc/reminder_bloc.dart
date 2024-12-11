@@ -1,38 +1,55 @@
-import 'package:ellipsis_care/src/features/reminders/models/notification_model.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:ellipsis_care/core/services/background_audio_handler.dart';
+import 'package:ellipsis_care/core/services/hive_storage_service.dart';
 import 'package:ellipsis_care/core/services/voice_command_service.dart';
 import 'package:ellipsis_care/core/utils/enums/api_state.dart';
 import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:ellipsis_care/src/features/reminders/data/reminders_repository.dart';
+import 'package:ellipsis_care/src/features/reminders/models/reminder_response.dart';
 
 import '../../../../../core/api/exceptions/exceptions.dart';
 import '../../../../../core/services/notification_service.dart';
-import '../../../../../core/utils/enums/reminder.dart';
+import '../../../../../core/utils/enums/reminder_options/reminder_options.dart';
 import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/locator.dart';
-import '../../models/notification_event.dart';
-import '../../models/reminder.dart';
+import '../../../../../core/utils/injector.dart';
+import '../../models/reminder_model.dart/reminder_model.dart';
 
 part 'reminder_event.dart';
 part 'reminder_state.dart';
 
 class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
-  ReminderBloc()
-      : _repository = injector<ReminderRepository>(),
-        _voiceCommandService = injector<VoiceCommandService>(),
-        _notificationService = injector<NotificationService>(),
-        super(ReminderState(currentDate: DateTime.now())) {
+  ReminderBloc() : super(ReminderState(currentDate: DateTime.now())) {
+    on<GetAllReminders>(_getAllReminders);
+    on<CreateReminderEvent>(_createReminder);
+    on<UpdateCurrentDateEvent>(_updateCurrentDate);
+    on<EditReminderEvent>(_editReminder);
     on<InitializeVoiceCommandEvent>(_initializeVoiceCommand);
     on<ActivateVoiceCommandEvent>(_activateVoiceCommand);
-    on<UpdateCurrentDateEvent>(_updateCurrentDate);
-    on<CreateReminderEvent>(_createReminder);
   }
-  final ReminderRepository _repository;
-  final VoiceCommandService _voiceCommandService;
-  final NotificationService _notificationService;
+  final ReminderRepository _repository = injector<ReminderRepository>();
+  final VoiceCommandService _voiceCommandService =
+      injector<VoiceCommandService>();
+  final NotificationService _notificationService =
+      injector<NotificationService>();
+  final BackgroundAudioService _backgroundAudioService =
+      injector<BackgroundAudioService>();
+  final HiveStorageService _storageService = injector<HiveStorageService>();
+
+  void _getAllReminders(
+      GetAllReminders event, Emitter<ReminderState> emit) async {
+    await _storageService.getAllReminders().then((reminders) {
+      emit(state.copyWith(reminders: reminders));
+    }).onError((error, stackTrace) {
+      emit(state.copyWith(error: "Could not fetch reminders."));
+    });
+  }
+
+  void _editReminder(
+      EditReminderEvent event, Emitter<ReminderState> emit) async {
+    await _storageService.editReminder(event.reminder);
+  }
 
   void _updateCurrentDate(
       UpdateCurrentDateEvent event, Emitter<ReminderState> emit) {
@@ -67,7 +84,6 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
   void _createReminder(
       CreateReminderEvent event, Emitter<ReminderState> emit) async {
     String schedule = "";
-
     for (var s in event.schedule) {
       schedule = schedule + s.scheduleName;
     }
@@ -80,25 +96,23 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
         "interval": event.interval.intervalName,
         "dosage": event.dosage,
         "duration": {
-          "start": UtilHelpers.dateFormatter3(event.startDate!),
-          "end": UtilHelpers.dateFormatter3(event.endDate!),
+          "start": UtilHelpers.getDateFromIsoString(event.startDate),
+          "end": UtilHelpers.getDateFromIsoString(event.endDate),
         },
         "instruction": event.instruction.instructionName,
-        "time": UtilHelpers.timeFormatter1(state.currentDate),
+        "time": UtilHelpers.getTimeFromIsoString(event.startDate),
       }
     };
 
-    emit(
-      state.copyWith(apiState: ApiState.loading),
-    );
+    emit(state.copyWith(apiState: ApiState.loading));
 
     try {
       final apiResponse = await _repository.createReminder(payload);
-
       apiResponse.fold(
         (cutomNotification) {
+          _storeReminder(event);
           _createNotification(event, cutomNotification);
-          cutomNotification.printLog();
+          emit(state.copyWith(apiState: ApiState.success));
         },
         (exception) {
           final errorMessage = AppExceptions.getErrorMessage(exception);
@@ -107,8 +121,6 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
           );
         },
       );
-
-      _emitReminderEvent(event, emit);
     } catch (e) {
       emit(
         state.copyWith(
@@ -117,46 +129,36 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
     }
   }
 
-  void _emitReminderEvent(
-      CreateReminderEvent event, Emitter<ReminderState> emit) {
+  void _storeReminder(CreateReminderEvent event) async {
     final reminder = ReminderModel(
       name: event.name,
       dosage: event.dosage,
-      eventIsCompleted: false,
       type: event.type,
       instruction: event.instruction,
       schedule: event.schedule,
       interval: event.interval,
-      startDate: event.startDate!,
-      endDate: event.endDate!,
-      reminderStartTime: event.eventStartTime!,
-      reminderEndTime: event.eventEndTime!,
+      startDate: event.startDate,
+      endDate: event.endDate,
+      createdAt: event.createdAt,
     );
-
-    final newEvent = {
-      state.currentDate: [...?state.calendarEvent[state.currentDate], reminder]
-    };
-
-    emit(
-      state.copyWith(
-        apiState: ApiState.success,
-        calendarEvent: {...state.calendarEvent, ...newEvent},
-      ),
-    );
+    await _storageService.storeReminder(reminder);
   }
 
-  void _createNotification(CreateReminderEvent event,
-      CustomNotificationEventModel notificationEvent) async {
+  void _createNotification(
+      CreateReminderEvent event, ReminderResponse response) async {
     try {
+      final date = UtilHelpers.getDateFromIsoString(event.startDate);
       await _notificationService.createReminderNotification(
-        notification: NotificationEvent(
-          name: notificationEvent.title,
-          content: notificationEvent.subTitle,
-          eventTimeInHours: event.eventStartTime!.hour,
-          eventTimeInMinutes: event.eventStartTime!.minute,
-          customSoundFilePath: notificationEvent.pathToAudioFile,
-        ),
+        title: response.title,
+        desc: response.description,
+        hours: int.parse(date.split(":")[0]),
+        minute: int.parse(date.split(":")[1]),
       );
+
+      // _backgroundAudioService.handler.setSource(
+      //   DeviceFileSource(response.pathToAudioFile),
+      // );
+      // _backgroundAudioService.handler.play();
     } catch (e) {
       "${e.runtimeType}: $e".printLog();
     }
@@ -165,6 +167,6 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
   @override
   void onTransition(Transition<ReminderEvent, ReminderState> transition) {
     super.onTransition(transition);
-    "$runtimeType $transition".printLog();
+    "\n$runtimeType $transition\n".printLog();
   }
 }

@@ -2,7 +2,6 @@ import 'package:ellipsis_care/core/constants/voice_commands.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../models/reminder.dart';
 import '../bloc/reminder_bloc.dart';
 import '../widgets/reminder_bar.dart';
 import '../widgets/reminder_calendar.dart';
@@ -41,27 +40,27 @@ class Reminders extends StatelessWidget {
   }
 
   void _handleVoiceCommand(BuildContext context, ReminderBloc bloc) async {
-    final reminder = await showAdaptiveDialog<ReminderModel>(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) => const AddReminder(),
-    );
+    // final reminder = await showAdaptiveDialog(
+    //   context: context,
+    //   barrierDismissible: true,
+    //   builder: (context) => const AddReminder(),
+    // );
 
-    if (reminder != null) {
-      bloc.add(
-        CreateReminderEvent(
-          name: reminder.name,
-          dosage: reminder.dosage,
-          type: reminder.type,
-          interval: reminder.interval,
-          schedule: reminder.schedule,
-          instruction: reminder.instruction,
-          startDate: reminder.startDate,
-          endDate: reminder.endDate,
-          eventStartTime: reminder.reminderStartTime,
-          eventEndTime: reminder.reminderEndTime,
-        ),
-      );
-    }
+    // if (reminder != null) {
+    //   bloc.add(
+    //     CreateReminderEvent(
+    //       name: reminder.name,
+    //       dosage: reminder.dosage,
+    //       type: reminder.type,
+    //       interval: reminder.interval,
+    //       schedule: reminder.schedule,
+    //       instruction: reminder.instruction,
+    //       startDate: reminder.startDate,
+    //       endDate: reminder.endDate,
+    //       eventStartTime: reminder.reminderStartTime,
+    //       eventEndTime: reminder.reminderEndTime,
+    //     ),
+    //   );
+    // }
   }
 }

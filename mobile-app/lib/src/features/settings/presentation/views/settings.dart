@@ -5,28 +5,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:ellipsis_care/config/router/route_names.dart';
 import 'package:ellipsis_care/core/constants/asset_strings.dart';
-import 'package:ellipsis_care/core/services/storage_service.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_card_option.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_group.dart';
 
-import '../../../../shared/controller/app_session_bloc/app_session_bloc.dart';
-import '../../../../../core/utils/locator.dart';
+import '../bloc/settings_bloc.dart';
 import '../widgets/user_profile.dart';
 
-class Settings extends StatefulWidget {
+class Settings extends StatelessWidget {
   const Settings({super.key});
 
   @override
-  State<Settings> createState() => _SettingsState();
-}
-
-class _SettingsState extends State<Settings> {
-  @override
   Widget build(BuildContext context) {
-    final appSessionState = context.watch<AppSessionBloc>().state;
-    final appSessionBloc = context.read<AppSessionBloc>();
+    final bloc = context.read<SettingsBloc>();
+    final state = context.watch<SettingsBloc>().state;
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -61,13 +54,10 @@ class _SettingsState extends State<Settings> {
                       ),
                       SettingCardOptionWithSwitch(
                         title: "Dark Mode",
-                        initialSwitchValue:
-                            appSessionState.appSession!.hasEnabledDarkMode,
+                        initialSwitchValue: state.enabledDarkMode,
                         onChanged: (value) {
                           if (value != null) {
-                            appSessionBloc.add(
-                              EnableDarkModeEvent(darkModeIsEnabled: value),
-                            );
+                            bloc.add(UpdateThemeEvent(enableDarkMode: value));
                           }
                         },
                       ),
@@ -79,27 +69,41 @@ class _SettingsState extends State<Settings> {
                       SettingCardOptionWithSwitch(
                         svgIcon: AssetStrings.pushNotificationIcon,
                         title: "Push Notification",
-                        initialSwitchValue: true,
-                        onChanged: (value) {},
+                        initialSwitchValue: state.enabledNotifications,
+                        onChanged: (value) {
+                          if (value != null) {
+                            bloc.add(
+                              UpdateNotificationPermissionEvent(
+                                enableNotifications: value,
+                              ),
+                            );
+                          }
+                        },
                       ),
                       5.sizedBoxHeight,
                       SettingCardOptionWithSwitch(
                         svgIcon: AssetStrings.drugIcon,
                         title: "Medication",
-                        initialSwitchValue: true,
-                        onChanged: (value) {},
+                        initialSwitchValue: state.enabledNotifications,
                       ),
                       SettingCardOptionWithSwitch(
                         svgIcon: AssetStrings.foodIcon,
                         title: "Food",
-                        initialSwitchValue: true,
-                        onChanged: (value) {},
+                        initialSwitchValue: state.enabledNotifications,
                       ),
                       SettingCardOptionWithSwitch(
                         svgIcon: AssetStrings.emergencyNotificationIcon,
                         title: "Emergency",
-                        initialSwitchValue: true,
-                        onChanged: (value) {},
+                        initialSwitchValue: state.enabledLocation,
+                        onChanged: (value) {
+                          if (value != null) {
+                            bloc.add(
+                              UpdateLocationPermissionEvent(
+                                enableLocation: value,
+                              ),
+                            );
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -126,10 +130,4 @@ class _SettingsState extends State<Settings> {
       ),
     );
   }
-
-  // void _updateUserData(bool value) async {
-  //   final userdata = await injector<StorageService>().getUserData();
-  //   userdata!.enableDarkMode = value;
-  //   await userdata.save();
-  // }
 }

@@ -4,26 +4,26 @@ import 'package:json_annotation/json_annotation.dart';
 part 'user.g.dart';
 
 @JsonSerializable()
-class User {
+class UserResponse {
   final String email;
   final String username;
   final String otp;
 
-  const User({
+  const UserResponse({
     required this.email,
     required this.username,
     required this.otp,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  factory UserResponse.fromJson(Map<String, dynamic> json) => _$UserResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$UserToJson(this);
-
-  @override
-  String toString() => 'User(email: $email, username: $username, otp: $otp)';
+  Map<String, dynamic> toJson() => _$UserResponseToJson(this);
 
   @override
-  bool operator ==(covariant User other) {
+  String toString() => 'UserResponse(email: $email, username: $username, otp: $otp)';
+
+  @override
+  bool operator ==(covariant UserResponse other) {
     if (identical(this, other)) return true;
 
     return other.email == email &&

@@ -4,18 +4,20 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 
 import '../utils/extensions.dart';
 
-import '../../src/features/reminders/models/notification_event.dart';
-
 class NotificationService {
-  final AwesomeNotifications _service = AwesomeNotifications();
+  NotificationService() {
+    _setListeners();
+  }
+
   final List<NotificationChannel> _channels = [
     NotificationChannel(
       channelKey: "ellipsis_care_reminder",
       channelName: "Ellipsis Care Reminder",
-      channelDescription:
-          "This manages reminders and events created by the user.",
+      channelDescription: "This manages reminders created by the user.",
     )
   ];
+
+  final AwesomeNotifications _service = AwesomeNotifications();
 
   Future<void> init() async {
     try {
@@ -28,12 +30,16 @@ class NotificationService {
     }
   }
 
-  Future<bool> checkForPermission() {
-    return _service.requestPermissionToSendNotifications();
-  }
+  Future<bool> checkForPermission() =>
+      _service.requestPermissionToSendNotifications();
 
-  Future<void> createReminderNotification(
-      {required NotificationEvent notification}) async {
+  Future<void> createReminderNotification({
+    required String title,
+    required String desc,
+    String? filePath,
+    int? hours,
+    int? minute,
+  }) async {
     final int id = Random().nextInt(50);
 
     try {
@@ -42,15 +48,11 @@ class NotificationService {
           id: id,
           category: NotificationCategory.Event,
           channelKey: "ellipsis_care_reminder",
-          title: notification.name,
-          body: notification.content,
-          customSound: "file://${notification.customSoundFilePath}",
+          title: title,
+          body: desc,
+          customSound: "file://$filePath",
         ),
-        schedule: NotificationCalendar(
-          repeats: true,
-          hour: notification.eventTimeInHours,
-          minute: notification.eventTimeInMinutes,
-        ),
+        schedule: NotificationCalendar(hour: hours, minute: minute),
         actionButtons: [
           NotificationActionButton(key: "complete_button", label: "Done")
         ],
@@ -60,8 +62,18 @@ class NotificationService {
     }
   }
 
-  @pragma("vm:entry-point")
-  Future<void> _demo(ReceivedAction action) async {
-    "${action.toMap()}".printLog();
+  void _setListeners() async {
+    await _service.setListeners(
+      onActionReceivedMethod: (ReceivedAction receivedAction) {
+        return Future<void>.value();
+      },
+      onNotificationDisplayedMethod: (receivedNotification) {
+        return Future<void>.value();
+      },
+    );
+    // _backgroundAudioService.handler.setSource(
+    //   DeviceFileSource(response.pathToAudioFile),
+    // );
+    // _backgroundAudioService.handler.play();
   }
 }

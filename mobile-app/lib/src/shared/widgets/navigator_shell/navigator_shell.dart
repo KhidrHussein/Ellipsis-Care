@@ -1,3 +1,5 @@
+import 'package:logman/logman.dart';
+
 import '../../../../core/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +15,7 @@ import '../../../../core/constants/colors.dart';
 
 part 'bottom_bar_cubit.dart';
 
-class NavigatorShell extends StatelessWidget {
+class NavigatorShell extends StatefulWidget {
   final Widget child;
   final GoRouterState routerState;
 
@@ -24,10 +26,25 @@ class NavigatorShell extends StatelessWidget {
   });
 
   @override
+  State<NavigatorShell> createState() => _NavigatorShellState();
+}
+
+class _NavigatorShellState extends State<NavigatorShell> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Logman.instance.attachOverlay(
+        context: context,
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: child,
-      backgroundColor: switch (routerState.matchedLocation) {
+      body: widget.child,
+      backgroundColor: switch (widget.routerState.matchedLocation) {
         '/settings' ||
         '/dashboard' =>
           context.themeExtension.dashboardScaffoldColor,

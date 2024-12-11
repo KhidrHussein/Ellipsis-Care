@@ -22,10 +22,7 @@ class NearestContacts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final emergencyContactBloc = context.read<EmergencyContactBloc>();
-
-    return BlocBuilder<EmergencyContactBloc, EmergencyContactState>(
-      bloc: emergencyContactBloc..add(FetchContactsEvent()),
+    return BlocBuilder<EmergencyContactBloc, EmergencyState>(
       builder: (context, state) {
         return SizedBox(
           height: 257.h,

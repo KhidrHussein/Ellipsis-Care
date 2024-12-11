@@ -3,9 +3,9 @@ part of 'user_bloc.dart';
 
 class UserState extends Equatable {
   const UserState({this.user});
-  final UserInformationModel? user;
+  final UserModel? user;
 
-  UserState copyWith({UserInformationModel? user}) {
+  UserState copyWith({UserModel? user}) {
     return UserState(user: user ?? this.user);
   }
 

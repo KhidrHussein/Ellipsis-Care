@@ -1,9 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/utils/enums/reminder.dart';
-
 // import '../widgets/chart/chart_section.dart';
+import '../../../../../core/utils/enums/reminder_options/reminder_options.dart';
 import '../widgets/dashboard_section.dart';
 // import '../widgets/overview.dart';
 

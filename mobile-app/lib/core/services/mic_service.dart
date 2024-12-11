@@ -1,6 +1,8 @@
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
-import 'package:uuid/uuid.dart';
+
+import 'package:ellipsis_care/core/utils/enums/file_storage_type.dart';
+import 'package:ellipsis_care/core/utils/helpers.dart';
 
 import '../utils/extensions.dart';
 
@@ -13,52 +15,26 @@ class MicrophoneService {
 
   Future<bool> checkForPermission() => _mic.hasPermission();
 
+  Future<String?> stopRecording() => _mic.stop();
+
+  Future<void> pauseRecording() => _mic.pause();
+
+  Future<void> resumeRecording() => _mic.resume();
+
+  Future<void> dispose() => _mic.dispose();
+
   Future<void> startRecording() async {
-    final tempDir = await getApplicationCacheDirectory();
+    final dir = await getApplicationDocumentsDirectory();
+    final date =
+        UtilHelpers.getDateFromIsoString(DateTime.now().toIso8601String());
+    final time =
+        UtilHelpers.getTimeFromIsoString(DateTime.now().toIso8601String());
 
     try {
-      AudioEncoder audioEncoder = AudioEncoder.wav;
-      String fileType = ".wav";
-
       await _mic.start(
-        RecordConfig(encoder: audioEncoder),
-        path: "${tempDir.path}/${const Uuid().v4()}$fileType",
+        RecordConfig(encoder: AudioEncoder.wav),
+        path: "${dir.path}/${FileStorageType.microphone.name}_$date$time.wav",
       );
-    } catch (e) {
-      "$runtimeType Error: $e".printLog();
-    }
-  }
-
-  Future<void> pauseRecording() async {
-    try {
-      await _mic.pause();
-    } catch (e) {
-      "$runtimeType Error: $e".printLog();
-    }
-  }
-
-  Future<void> resumeRecording() async {
-    try {
-      await _mic.resume();
-    } catch (e) {
-      "$runtimeType Error: $e".printLog();
-    }
-  }
-
-  Future<String?> stopRecording() async {
-    try {
-      return await _mic.stop();
-    } catch (e) {
-      "$runtimeType Error: $e".printLog();
-      return null;
-    }
-  }
-
-  Future<void> dispose() async {
-    try {
-      await _mic.cancel();
-
-      "DISPOSED $runtimeType".printLog();
     } catch (e) {
       "$runtimeType Error: $e".printLog();
     }

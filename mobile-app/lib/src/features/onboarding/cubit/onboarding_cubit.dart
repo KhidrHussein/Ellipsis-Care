@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ellipsis_care/core/services/storage_service.dart';
+import 'package:ellipsis_care/core/services/hive_storage_service.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/core/utils/locator.dart';
+import 'package:ellipsis_care/core/utils/injector.dart';
 
 import '../../../../config/router/route_names.dart';
 import '../../../../core/services/contacts_service.dart';
@@ -60,7 +60,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   }
 
   void _hasViewedOnboarding() async {
-    final userdata = await injector<StorageService>().getAppSession();
+    final userdata = await injector<HiveStorageService>().getAppSession();
     userdata?.hasUserOnboard = true;
     await userdata?.save().then((value) {
       UtilHelpers.pushTo(RouteNames.signup);
@@ -91,9 +91,9 @@ class OnboardingCubit extends Cubit<OnboardingState> {
       "${notificationService.runtimeType} has permission? $hasPermission"
           .printLog();
 
-      final userdata = await injector<StorageService>().getAppSession();
-      userdata?.canPushNotifications = hasPermission;
-      await userdata?.save();
+      final settings = await injector<HiveStorageService>().getSettings();
+      settings?.isNotificationEnabled = hasPermission;
+      await settings?.save();
 
       _nextStory();
     });
@@ -107,7 +107,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
       if (hasPermission) {
         final contact = await phoneService.pickContact();
-        injector<StorageService>().storeEmergencyContact(contact);
+        injector<HiveStorageService>().storeEmergencyContact(contact);
       }
 
       _nextStory();

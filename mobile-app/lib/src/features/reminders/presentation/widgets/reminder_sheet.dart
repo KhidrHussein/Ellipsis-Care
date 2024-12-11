@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:ellipsis_care/src/features/reminders/presentation/views/add_reminder.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../../core/constants/colors.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/helpers.dart';
-import '../../models/reminder.dart';
 import '../bloc/reminder_bloc.dart';
 import 'reminder_tile.dart';
 
@@ -17,7 +17,6 @@ class ReminderSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<ReminderBloc>();
     final blocState = context.watch<ReminderBloc>();
 
     return DraggableScrollableSheet(
@@ -57,10 +56,11 @@ class ReminderSheet extends StatelessWidget {
                 ),
               ),
               BlocBuilder<ReminderBloc, ReminderState>(
-                bloc: bloc,
                 builder: (context, state) {
-                  final reminders =
-                      state.calendarEvent[blocState.state.currentDate];
+                  final eventList = state.reminders.where((event) {
+                    final createdAt = DateTime.parse(event.startDate);
+                    return isSameDay(state.currentDate, createdAt);
+                  }).toList();
 
                   if (state.apiState == ApiState.loading &&
                       state.error.isEmpty) {
@@ -68,45 +68,19 @@ class ReminderSheet extends StatelessWidget {
                       child: Center(child: CircularProgressIndicator()),
                     );
                   } else {
-                    return state.calendarEvent[blocState.state.currentDate] !=
-                            null
-                        ? SliverList.builder(
-                            itemCount: state
-                                .calendarEvent[blocState.state.currentDate]
-                                ?.length,
-                            itemBuilder: (context, index) {
-                              return ReminderTile(reminder: reminders![index]);
-                            },
-                          )
-                        : const SliverToBoxAdapter(child: SizedBox());
+                    return SliverList.builder(
+                      itemCount: eventList.length,
+                      itemBuilder: (context, index) => ReminderTile(
+                        reminder: eventList[index],
+                      ),
+                    );
+                    // : const SliverToBoxAdapter(child: SizedBox());
                   }
                 },
               ),
               SliverToBoxAdapter(
                 child: GestureDetector(
-                  onTap: () async {
-                    final reminder = await showAdaptiveDialog<ReminderModel>(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (context) => const AddReminder(),
-                    );
-                    if (reminder != null) {
-                      bloc.add(
-                        CreateReminderEvent(
-                          name: reminder.name,
-                          dosage: reminder.dosage,
-                          type: reminder.type,
-                          interval: reminder.interval,
-                          schedule: reminder.schedule,
-                          instruction: reminder.instruction,
-                          startDate: reminder.startDate,
-                          endDate: reminder.endDate,
-                          eventStartTime: reminder.reminderStartTime,
-                          eventEndTime: reminder.reminderEndTime,
-                        ),
-                      );
-                    }
-                  },
+                  onTap: () => UtilHelpers.showReminderDialog(context: context),
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Container(

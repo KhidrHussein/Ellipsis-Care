@@ -1,12 +1,12 @@
-import 'package:ellipsis_care/core/services/storage_service.dart';
-import 'package:ellipsis_care/src/shared/models/user_information/user_information_model.dart';
+import 'package:ellipsis_care/core/services/secure_storage.dart';
+import 'package:ellipsis_care/core/services/hive_storage_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:ellipsis_care/core/utils/enums/api_state.dart';
 
 import '../../../../../core/api/exceptions/exceptions.dart';
-import '../../../../../core/utils/locator.dart';
+import '../../../../../core/utils/injector.dart';
 import '../../data/auth_repository.dart';
 
 part 'auth_event.dart';
@@ -16,7 +16,7 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc()
       : _apiRepository = injector<AuthenticationRepository>(),
-        _storageService = injector<StorageService>(),
+        _HiveStorageService = injector<HiveStorageService>(),
         super(const AuthenticationState()) {
     on<SignInEvent>(_signIn);
     on<SignUpEvent>(_signUp);
@@ -26,7 +26,7 @@ class AuthenticationBloc
   }
 
   final AuthenticationRepository _apiRepository;
-  final StorageService _storageService;
+  final HiveStorageService _HiveStorageService;
 
   void _signIn(SignInEvent event, Emitter<AuthenticationState> emit) async {
     Map<String, dynamic> payload = {
@@ -183,20 +183,16 @@ class AuthenticationBloc
   }
 
   void _createUserAccount(String email, String username) async {
-    final user = await _storageService.getUser();
+    final user = await _HiveStorageService.getUser();
     user?.email = email;
     user?.username = username;
     await user?.save();
   }
 
   void _updateUserAccount(String id) async {
-    await _storageService.getAppSession().then((session) async {
+    await _HiveStorageService.getAppSession().then((session) async {
       session?.isLoggedIn = true;
       await session?.save();
-    });
-    await _storageService.getUser().then((user) async {
-      user?.userID = id;
-      await user?.save();
     });
   }
 }

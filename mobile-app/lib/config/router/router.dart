@@ -1,8 +1,9 @@
-import 'package:ellipsis_care/core/services/storage_service.dart';
+import 'package:ellipsis_care/core/services/hive_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logman/logman.dart';
 
-import '../../core/utils/locator.dart';
+import '../../core/utils/injector.dart';
 import '../../src/features/authentication/presentation/view/forgot_password.dart';
 import '../../src/features/authentication/presentation/view/signin.dart';
 import '../../src/features/authentication/presentation/view/signup.dart';
@@ -35,9 +36,10 @@ final GoRouter router = GoRouter(
   initialLocation: "/",
   debugLogDiagnostics: true,
   navigatorKey: _mainRouterKey,
+  observers: [LogmanNavigatorObserver()],
   redirect: (context, state) async {
-    final appSession = await injector<StorageService>().getAppSession();
-    final user = await injector<StorageService>().getUser();
+    final user = await injector<HiveStorageService>().getUser();
+    final appSession = await injector<HiveStorageService>().getAppSession();
 
     final isNavigatingToPeerRoutes =
         state.matchedLocation.startsWith('/sign-up') ||
@@ -54,10 +56,10 @@ final GoRouter router = GoRouter(
     // Determine redirection conditions
     final bool redirectToOnboarding = appSession?.hasUserOnboard != true;
     final bool redirectToSignUp = appSession?.hasUserOnboard == true &&
-        (user?.userID == null || user?.userID?.isEmpty == true);
+        (user?.email == null || user?.email?.isEmpty == true);
     final bool redirectToHome = appSession?.hasUserOnboard == true &&
         appSession?.isLoggedIn == true &&
-        user?.userID?.isNotEmpty == true;
+        user?.email?.isNotEmpty == true;
 
     // Redirect logic
     if (redirectToOnboarding && state.matchedLocation != '/') {
@@ -104,14 +106,14 @@ final GoRouter router = GoRouter(
               email: Uri.decodeComponent(state.pathParameters["email"] ?? ""),
             ),
           ),
-         ),
+        ),
       ],
     ),
     GoRoute(
       path: '/forgot-password',
       name: RouteNames.forgotPassword,
       pageBuilder: (context, state) => const MaterialPage<ForgotPassword>(
-         child: ForgotPassword(),
+        child: ForgotPassword(),
       ),
     ),
     ShellRoute(

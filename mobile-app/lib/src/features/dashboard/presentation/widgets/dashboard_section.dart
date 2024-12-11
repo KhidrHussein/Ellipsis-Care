@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/utils/enums/reminder.dart';
+import '../../../../../core/utils/enums/reminder_options/reminder_options.dart';
 import '../../../../../core/utils/extensions.dart';
 import 'meal/meal_section.dart';
 import 'medication/medication_section.dart';

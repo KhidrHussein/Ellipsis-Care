@@ -6,8 +6,12 @@ part 'emergency_contact.g.dart';
 
 @HiveType(typeId: 2)
 class EmergencyContact extends HiveObject {
-  EmergencyContact(
-      {required this.id, required this.name, this.phoneNumber, this.photo});
+  EmergencyContact({
+    required this.id,
+    required this.name,
+    this.phoneNumber,
+    this.photo,
+  });
 
   @HiveField(0)
   final String id;

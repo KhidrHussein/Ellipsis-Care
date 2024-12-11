@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 
 import '../../config/router/router.dart' show router;
+import '../../src/features/reminders/presentation/views/add_reminder.dart';
 import '../../src/shared/widgets/in_app_alert.dart';
 import 'extensions.dart';
 
@@ -72,8 +73,9 @@ class UtilHelpers {
     return null;
   }
 
-  static String dateFormatter1(DateTime date) =>
-      DateFormat("d/MM/y").format(date);
+  static String dateFormatter1(DateTime date) {
+    return DateFormat("d/MM/y").format(date);
+  }
 
   static String dateFormatter2(DateTime date) =>
       DateFormat("d MMMM y").format(date);
@@ -87,12 +89,29 @@ class UtilHelpers {
   static TimeOfDay timeFormatter2(DateTime date) =>
       TimeOfDay.fromDateTime(date);
 
+  static String getDateFromIsoString(String isoString) {
+    return isoString.split("T")[0];
+  }
+
+  static String getTimeFromIsoString(String isoString) {
+    final dateTime = DateTime.parse(isoString);
+    return DateFormat.jm().format(dateTime);
+  }
+
   static void showAlert({required String title, required String message}) {
     const Duration duration = Duration(milliseconds: 2500);
     showToastWidget(
       InAppAlert(title: title, message: message, duration: duration),
       position: ToastPosition.top,
       duration: duration,
+    );
+  }
+
+  static void showReminderDialog({required BuildContext context}) async {
+    await showAdaptiveDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => const AddReminder(),
     );
   }
 }

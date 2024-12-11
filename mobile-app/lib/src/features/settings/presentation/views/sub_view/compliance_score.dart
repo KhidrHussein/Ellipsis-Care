@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:ellipsis_care/core/constants/asset_strings.dart';
-import 'package:ellipsis_care/core/utils/enums/reminder.dart';
 import 'package:ellipsis_care/core/utils/enums/sync_score.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_appbar.dart';
@@ -10,6 +9,7 @@ import 'package:ellipsis_care/src/shared/widgets/progress_bar.dart';
 import 'package:ellipsis_care/src/shared/widgets/user_avatar.dart';
 
 import '../../../../../../core/constants/colors.dart';
+import '../../../../../../core/utils/enums/reminder_options/reminder_options.dart';
 
 class ComplianceScore extends StatefulWidget {
   const ComplianceScore({super.key});

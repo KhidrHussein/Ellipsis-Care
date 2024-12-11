@@ -7,11 +7,11 @@ import 'package:ellipsis_care/src/features/home/presentation/bloc/home_bloc.dart
 
 import '../../../../../core/constants/asset_strings.dart';
 import '../../../../../core/utils/extensions.dart';
-import '../../models/data_from_ai.dart';
+import '../../models/home_response.dart';
 import '../widgets/chat_bubble.dart';
 
 class PromptResponses extends StatelessWidget {
-  final List<DataFromAI> responses;
+  final List<HomeResponse> responses;
   const PromptResponses({super.key, required this.responses});
 
   @override
@@ -29,9 +29,8 @@ class PromptResponses extends StatelessWidget {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  UserChatBubble(
-                      transcription: responses[index].transcription.first),
-                  AIChatBubble(aiResponse: responses[index].aiResponse.first)
+                  UserChatBubble(transcription: responses[index].user.first),
+                  AIChatBubble(aiResponse: responses[index].ai.first)
                 ],
               );
             },
