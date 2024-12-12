@@ -14,12 +14,7 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'EllipsisCare.settings')
 
-# Add the virtual environment packages directory (specific to your deployment)
-venv_site_packages = '/tmp/antenv/lib/python3.11/site-packages'
-if os.path.exists(venv_site_packages):  # Check if the virtual environment directory exists
-    sys.path.append(venv_site_packages)
-
-sys.path.append('venv/Lib/site-packages')
+sys.path.append('C:/Users/Hp/EllipsisCare/venv/Lib/ite-packages')
 sys.path.append('/home/site/wwwroot')
 
 
