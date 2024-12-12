@@ -1,4 +1,5 @@
-import 'package:ellipsis_care/core/utils/enums/api_state.dart';
+import 'package:ellipsis_care/core/enums/api_state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,11 +28,13 @@ class _SigninState extends State<Signin> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Logman.instance.attachOverlay(
-        context: context,
-      );
-    });
+    if (kDebugMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Logman.instance.attachOverlay(
+          context: context,
+        );
+      });
+    }
   }
 
   @override
@@ -96,7 +99,6 @@ class _SigninState extends State<Signin> {
                 BlocConsumer<AuthenticationBloc, AuthenticationState>(
                   bloc: authenticationBloc,
                   listener: (context, state) {
-                 
                     switch (state.apiState) {
                       case ApiState.success:
                         UtilHelpers.pushTo(RouteNames.home);
@@ -114,16 +116,14 @@ class _SigninState extends State<Signin> {
                       onPressed: switch (state.apiState) {
                         ApiState.loading => null,
                         _ => () {
-                            // if (_formKey.currentState!.validate()) {
-                            //   authenticationBloc.add(
-                            //     SignInEvent(
-                            //       email: _emailController.text,
-                            //       password: _passwordController.text,
-                            //     ),
-                            //   );
-                            // }
-
-                               UtilHelpers.pushTo(RouteNames.home);
+                            if (_formKey.currentState!.validate()) {
+                              authenticationBloc.add(
+                                SignInEvent(
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                ),
+                              );
+                            }
                           }
                       },
                       child: const Text("Continue"),

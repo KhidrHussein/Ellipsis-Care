@@ -1,9 +1,6 @@
-import '../../../../../core/utils/enums/health_options.dart';
-import '../../../../../core/utils/extensions.dart';
+import '../../../../../core/enums/health_options.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/constants/colors.dart';
 
 class HealthOptionPicker extends StatelessWidget {
   const HealthOptionPicker({super.key});

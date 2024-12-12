@@ -1,5 +1,4 @@
-import 'package:ellipsis_care/core/services/api_service.dart';
-import 'package:ellipsis_care/core/utils/enums/api_state.dart';
+import 'package:ellipsis_care/core/enums/api_state.dart';
 
 import '../bloc/auth_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

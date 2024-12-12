@@ -1,7 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:ellipsis_care/core/services/audio_player_service.dart';
-import 'package:ellipsis_care/core/utils/injector.dart';
+import 'package:ellipsis_care/core/utils/extensions.dart';
+import 'package:uuid/uuid.dart';
 
 class BackgroundAudioService {
   AudioPlayerServiceHandler? _handler;
@@ -12,29 +12,23 @@ class BackgroundAudioService {
     _handler = await AudioService.init<AudioPlayerServiceHandler>(
       builder: () => AudioPlayerServiceHandler(),
       config: const AudioServiceConfig(
-        androidNotificationChannelId: 'com.ellipsis.ellipsis_care',
-        androidNotificationChannelName: 'AI Audio Controller',
+        androidNotificationChannelId: 'ellipsis_care_reminder',
+        androidNotificationChannelName: 'Ellipsis Care Reminder',
+        androidNotificationOngoing: true,
       ),
     );
   }
 }
 
 class AudioPlayerServiceHandler extends BaseAudioHandler with QueueHandler {
-  final AudioPlayer _audioPlayer = injector<AudioPlayerService>().player;
+  final AudioPlayer _audioPlayer = AudioPlayer(playerId: const Uuid().v4());
 
-  Source? _source;
-  void setSource(Source src) {
-    _source = src;
-  }
+  String path = '';
 
   @override
   Future<void> play() async {
-    if (_source != null) {
-      await _audioPlayer.play(_source!);
-    } else {
-      // Handle the case where _source is not set
-      throw Exception('Source not set');
-    }
+    path.printLog();
+    await _audioPlayer.play(DeviceFileSource(path));
   }
 
   @override

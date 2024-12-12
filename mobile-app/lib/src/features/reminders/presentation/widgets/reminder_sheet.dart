@@ -1,9 +1,8 @@
-import 'package:ellipsis_care/core/utils/enums/api_state.dart';
+import 'package:ellipsis_care/core/enums/api_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/src/features/reminders/presentation/views/add_reminder.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../../core/constants/colors.dart';
@@ -62,6 +61,12 @@ class ReminderSheet extends StatelessWidget {
                     return isSameDay(state.currentDate, createdAt);
                   }).toList();
 
+                  eventList.sort((a, b) {
+                    final aDate = DateTime.parse(a.startDate);
+                    final bDate = DateTime.parse(b.startDate);
+                    return aDate.compareTo(bDate);
+                  });
+
                   if (state.apiState == ApiState.loading &&
                       state.error.isEmpty) {
                     return const SliverToBoxAdapter(
@@ -74,7 +79,6 @@ class ReminderSheet extends StatelessWidget {
                         reminder: eventList[index],
                       ),
                     );
-                    // : const SliverToBoxAdapter(child: SizedBox());
                   }
                 },
               ),

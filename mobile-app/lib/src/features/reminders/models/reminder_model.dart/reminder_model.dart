@@ -2,7 +2,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../../core/utils/enums/reminder_options/reminder_options.dart';
+import '../../../../../core/enums/reminder_options/reminder_options.dart';
 
 part 'reminder_model.g.dart';
 
@@ -42,7 +42,7 @@ class ReminderModel extends HiveObject {
   final String? updatedAt;
 
   @HiveField(11)
-  final String id = const Uuid().v4();
+  final String id;
 
   ReminderModel({
     required this.name,
@@ -53,8 +53,9 @@ class ReminderModel extends HiveObject {
     required this.schedule,
     required this.startDate,
     required this.endDate,
-    this.markAsCompleted = false,
     required this.createdAt,
+    required this.id,
+    this.markAsCompleted = false,
     this.updatedAt,
   });
 
@@ -75,6 +76,7 @@ class ReminderModel extends HiveObject {
     String? endDate,
     String? createdAt,
     String? updatedAt,
+    String? id,
   }) {
     return ReminderModel(
       name: name ?? this.name,
@@ -88,6 +90,7 @@ class ReminderModel extends HiveObject {
       endDate: endDate ?? this.endDate,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      id: id ?? this.id,
     );
   }
 }

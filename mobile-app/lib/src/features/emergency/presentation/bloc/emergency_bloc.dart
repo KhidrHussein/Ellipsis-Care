@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ellipsis_care/core/utils/enums/api_state.dart';
+import 'package:ellipsis_care/core/enums/api_state.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../../core/services/contacts_service.dart';
 import '../../../../../core/services/hive_storage_service.dart';

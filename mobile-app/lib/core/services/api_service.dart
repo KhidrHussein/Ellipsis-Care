@@ -3,13 +3,12 @@ import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-import '../../config/secrets.dart';
 import '../constants/interceptor.dart';
 
 class ApiService with DioMixin implements Dio {
-  ApiService._() {
+  ApiService({required this.baseUrl}) {
     options = BaseOptions(
-      baseUrl: Secrets.baseUrl,
+      baseUrl: baseUrl,
       connectTimeout: const Duration(minutes: 2),
       receiveTimeout: const Duration(minutes: 2),
     );
@@ -27,5 +26,5 @@ class ApiService with DioMixin implements Dio {
     httpClientAdapter = IOHttpClientAdapter();
   }
 
-  static get instance => ApiService._();
+  final String baseUrl;
 }

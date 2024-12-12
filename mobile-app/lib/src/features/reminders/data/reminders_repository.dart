@@ -26,6 +26,7 @@ class ReminderRepository {
         title: response.headers.map["X-Reminder-Title"]!.first,
         description: response.headers.map["X-Reminder-Subtitle"]!.first,
         bytes: response.data,
+        createdAt: DateTime.now().toIso8601String(),
       );
 
       return left(result);

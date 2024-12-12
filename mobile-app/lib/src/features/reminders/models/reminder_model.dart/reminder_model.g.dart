@@ -25,8 +25,9 @@ class ReminderModelAdapter extends TypeAdapter<ReminderModel> {
       schedule: (fields[6] as List).cast<ReminderSchedule>(),
       startDate: fields[7] as String,
       endDate: fields[8] as String,
-      markAsCompleted: fields[2] as bool,
       createdAt: fields[9] as String,
+      id: fields[11] as String,
+      markAsCompleted: fields[2] as bool,
       updatedAt: fields[10] as String?,
     );
   }

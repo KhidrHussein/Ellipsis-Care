@@ -1,7 +1,7 @@
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 
-import 'package:ellipsis_care/core/utils/enums/file_storage_type.dart';
+import 'package:ellipsis_care/core/enums/file_storage_type.dart';
 import 'package:ellipsis_care/core/utils/helpers.dart';
 
 import '../utils/extensions.dart';
@@ -33,7 +33,8 @@ class MicrophoneService {
     try {
       await _mic.start(
         RecordConfig(encoder: AudioEncoder.wav),
-        path: "${dir.path}/${FileStorageType.microphone.name}_$date$time.wav",
+        path:
+            "${dir.path}/${FileStorageType.recording.name} $date at $time.wav",
       );
     } catch (e) {
       "$runtimeType Error: $e".printLog();

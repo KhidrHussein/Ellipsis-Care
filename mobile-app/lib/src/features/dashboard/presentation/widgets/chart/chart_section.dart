@@ -11,7 +11,7 @@ class ChartSection extends StatelessWidget {
   final String chartTitle;
   const ChartSection({super.key, required this.chartTitle});
 
-  final _items = const ["Day", "Year", "Month", "Week"];
+  // final _items = const ["Day", "Year", "Month", "Week"];
 
   @override
   Widget build(BuildContext context) {

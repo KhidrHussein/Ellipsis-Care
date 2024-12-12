@@ -9,8 +9,7 @@ import 'package:ellipsis_care/src/features/home/presentation/widgets/animated_sp
 import 'package:ellipsis_care/src/shared/widgets/appbar.dart';
 
 import '../../../../../core/constants/asset_strings.dart';
-import '../../../../../core/utils/enums/microphone_state.dart';
-import '../../../../../core/utils/helpers.dart';
+import '../../../../../core/enums/microphone_state.dart';
 import '../bloc/home_bloc.dart';
 
 class RecordingPage extends StatelessWidget {

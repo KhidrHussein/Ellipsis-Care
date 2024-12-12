@@ -17,27 +17,33 @@ class PromptResponses extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     responses.printLog();
-    return SingleChildScrollView(
+    return Padding(
       padding: REdgeInsets.only(top: 30),
       child: Column(
         children: [
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: responses.length,
-            itemBuilder: (context, index) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  UserChatBubble(transcription: responses[index].user.first),
-                  AIChatBubble(aiResponse: responses[index].ai.first)
-                ],
-              );
-            },
-          ),
-          .4.sh.verticalSpace,
           Padding(
-            padding: REdgeInsets.only(top: 33, bottom: 15),
+            padding: REdgeInsets.only(left: 16),
+            child: CloseButton(
+              onPressed: () => context.read<HomeBloc>().add(ResetEvent()),
+            ).alignLeft,
+          ),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: responses.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    UserChatBubble(transcription: responses[index].user.first),
+                    AIChatBubble(aiResponse: responses[index].ai.first)
+                  ],
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: REdgeInsets.only(bottom: 15),
             child: GestureDetector(
               onTap: () {
                 context.read<HomeBloc>().add(StartRecordingEvent());

@@ -6,7 +6,6 @@ import '../bloc/reminder_bloc.dart';
 import '../widgets/reminder_bar.dart';
 import '../widgets/reminder_calendar.dart';
 import '../widgets/reminder_sheet.dart';
-import 'add_reminder.dart';
 
 class Reminders extends StatelessWidget {
   const Reminders({super.key});

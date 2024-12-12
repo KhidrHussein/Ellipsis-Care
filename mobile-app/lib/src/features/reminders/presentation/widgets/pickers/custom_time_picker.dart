@@ -14,7 +14,8 @@ class TimePicker extends StatefulWidget {
 }
 
 class _TimePickerState extends State<TimePicker> {
-  final ValueNotifier<bool> _dayPeriodIsAM = ValueNotifier(false);
+  final ValueNotifier<bool> _dayPeriodIsAM =
+      ValueNotifier(TimeOfDay.now().period == DayPeriod.am);
   final ValueNotifier<TimeOfDay> _currentTime = ValueNotifier(TimeOfDay.now());
 
   @override
@@ -27,12 +28,8 @@ class _TimePickerState extends State<TimePicker> {
               context: context,
               initialTime: TimeOfDay.now(),
             );
-            _currentTime.value = time ?? TimeOfDay.now();
-
-            if (_currentTime.value.period == DayPeriod.am) {
-              _dayPeriodIsAM.value = true;
-            }
-
+            _currentTime.value = time ?? _currentTime.value;
+            _dayPeriodIsAM.value = _currentTime.value.period == DayPeriod.am;
             widget.onTimePicked(_currentTime.value);
           },
           child: Container(

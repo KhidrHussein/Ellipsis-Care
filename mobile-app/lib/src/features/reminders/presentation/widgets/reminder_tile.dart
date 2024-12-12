@@ -1,5 +1,4 @@
 import 'package:dotted_border/dotted_border.dart';
-import 'package:ellipsis_care/main.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/bloc/reminder_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../../core/constants/colors.dart';
 
-import '../../../../../core/utils/enums/reminder_options/reminder_options.dart';
+import '../../../../../core/enums/reminder_options/reminder_options.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/helpers.dart';
 import '../../models/reminder_model.dart/reminder_model.dart';
@@ -23,33 +22,37 @@ class ReminderTile extends StatefulWidget {
 
 class _ReminderTileState extends State<ReminderTile> {
   late bool _showOptions;
-  late bool _markedAsCompleted;
 
   @override
   void initState() {
     super.initState();
     _showOptions = false;
-    _markedAsCompleted = widget.reminder.markAsCompleted;
   }
 
   void _expandTile() {
-    if (!_markedAsCompleted) {
-      setState(() => _showOptions = !_showOptions);
+    if (!widget.reminder.markAsCompleted) {
+      setState(() => _showOptions = true);
     }
   }
 
   void _closeTile() {
-    setState(() => _showOptions = !_showOptions);
+    setState(() => _showOptions = false);
   }
 
   void _markAsComplete() {
     context.read<ReminderBloc>()
       ..add(
         EditReminderEvent(
-          reminder: widget.reminder.copyWith(markAsCompleted: true),
+          reminder: widget.reminder.copyWith(
+            id: widget.reminder.id,
+            markAsCompleted: true,
+            updatedAt: DateTime.now().toIso8601String(),
+          ),
         ),
       )
       ..add(GetAllReminders());
+
+    _closeTile();
   }
 
   @override
@@ -111,7 +114,8 @@ class _ReminderTileState extends State<ReminderTile> {
                 padding: [12, 8].symmetricPadding,
                 borderType: BorderType.RRect,
                 radius: Radius.circular(12.r),
-                dashPattern: _markedAsCompleted ? [8, 0] : const [8, 4],
+                dashPattern:
+                    widget.reminder.markAsCompleted ? [8, 0] : const [8, 4],
                 color: switch (widget.reminder.type) {
                   ReminderType.drug => context.themeExtension.drugColor,
                   ReminderType.food => context.themeExtension.foodColor,

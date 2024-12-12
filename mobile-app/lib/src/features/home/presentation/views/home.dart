@@ -2,9 +2,9 @@ import 'package:ellipsis_care/config/router/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ellipsis_care/core/utils/enums/api_state.dart';
+import 'package:ellipsis_care/core/enums/api_state.dart';
 
-import '../../../../../core/utils/enums/microphone_state.dart';
+import '../../../../../core/enums/microphone_state.dart';
 import '../../../../../core/utils/helpers.dart';
 import '../bloc/home_bloc.dart';
 import 'not_recording.dart';
@@ -24,7 +24,7 @@ class Home extends StatelessWidget {
         },
         builder: (context, state) {
           if (state.apiState == ApiState.success) {
-            return PromptResponses(responses: state.aiResponses);
+            return PromptResponses(responses: state.responses);
           }
           if (state.apiState == ApiState.failed && state.error.isNotEmpty) {
             return Column(

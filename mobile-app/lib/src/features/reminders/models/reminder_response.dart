@@ -4,12 +4,16 @@ class ReminderResponse {
     required this.title,
     required this.description,
     required this.bytes,
+    required this.createdAt,
   });
 
   final String title;
   final String description;
   final List<int> bytes;
+  final String createdAt;
 
   @override
-  String toString() => 'ReminderResponse(title: $title, description: $description, bytes: $bytes)';
+  String toString() {
+    return 'ReminderResponse(title: $title, description: $description, bytes: $bytes, createdAt: $createdAt)';
+  }
 }

@@ -1,12 +1,16 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
+
 import '../../config/theme/theme_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 extension LogExtension on Object? {
   void printLog([String? message]) {
-    log(message ?? toString(), level: 1000);
+    if (kDebugMode) {
+      log(message ?? toString(), level: 1000);
+    }
   }
 }
 

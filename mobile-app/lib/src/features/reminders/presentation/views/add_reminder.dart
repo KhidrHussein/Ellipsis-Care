@@ -8,7 +8,7 @@ import 'package:ellipsis_care/src/features/reminders/presentation/widgets/picker
 import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/radio_type_picker.dart';
 
 import '../../../../../core/constants/asset_strings.dart';
-import '../../../../../core/utils/enums/reminder_options/reminder_options.dart';
+import '../../../../../core/enums/reminder_options/reminder_options.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/helpers.dart';
 import '../bloc/reminder_bloc.dart';
@@ -56,7 +56,7 @@ class _AddReminderState extends State<AddReminder> {
       ),
     );
 
-    if (_manageSchedules.isNotEmpty) {
+    if (_manageSchedules.isNotEmpty || _instruction.isNotEmpty) {
       bloc.add(
         CreateReminderEvent(
           name: _nameController.text,

@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../../constants/asset_strings.dart';
+import '../../constants/asset_strings.dart';
 
 part 'reminder_options.g.dart';
 

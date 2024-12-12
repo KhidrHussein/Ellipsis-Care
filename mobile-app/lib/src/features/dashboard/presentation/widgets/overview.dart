@@ -1,4 +1,3 @@
-import 'package:community_charts_flutter/community_charts_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:logman/logman.dart';
 
 import '../../../../core/utils/extensions.dart';
@@ -33,11 +34,13 @@ class _NavigatorShellState extends State<NavigatorShell> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Logman.instance.attachOverlay(
-        context: context,
-      );
-    });
+    if (kDebugMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Logman.instance.attachOverlay(
+          context: context,
+        );
+      });
+    }
   }
 
   @override

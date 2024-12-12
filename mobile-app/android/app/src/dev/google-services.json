@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1038150948034",
+    "project_id": "ellipsis-care-dev",
+    "storage_bucket": "ellipsis-care-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1038150948034:android:1445995979a36715d8d75b",
+        "android_client_info": {
+          "package_name": "com.ellipsis.ellipsis_care.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoi_1FVODqRfLts5-mIctx_bt8kV3VfV0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

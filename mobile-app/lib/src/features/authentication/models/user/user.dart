@@ -15,22 +15,12 @@ class UserResponse {
     required this.otp,
   });
 
-  factory UserResponse.fromJson(Map<String, dynamic> json) => _$UserResponseFromJson(json);
+  factory UserResponse.fromJson(Map<String, dynamic> json) =>
+      _$UserResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserResponseToJson(this);
 
   @override
-  String toString() => 'UserResponse(email: $email, username: $username, otp: $otp)';
-
-  @override
-  bool operator ==(covariant UserResponse other) {
-    if (identical(this, other)) return true;
-
-    return other.email == email &&
-        other.username == username &&
-        other.otp == otp;
-  }
-
-  @override
-  int get hashCode => email.hashCode ^ username.hashCode ^ otp.hashCode;
+  String toString() =>
+      'UserResponse(email: $email, username: $username, otp: $otp)';
 }

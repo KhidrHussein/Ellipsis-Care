@@ -1,7 +1,7 @@
 import 'package:ellipsis_care/src/features/settings/model/settings_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:ellipsis_care/core/utils/enums/reminder_options/reminder_options.dart';
+import 'package:ellipsis_care/core/enums/reminder_options/reminder_options.dart';
 import 'package:ellipsis_care/src/features/reminders/models/reminder_model.dart/reminder_model.dart';
 
 import '../../src/features/emergency/domain/emergency_contact.dart';

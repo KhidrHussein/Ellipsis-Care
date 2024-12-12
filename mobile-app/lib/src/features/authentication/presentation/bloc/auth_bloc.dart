@@ -1,9 +1,8 @@
-import 'package:ellipsis_care/core/services/secure_storage.dart';
 import 'package:ellipsis_care/core/services/hive_storage_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ellipsis_care/core/utils/enums/api_state.dart';
+import 'package:ellipsis_care/core/enums/api_state.dart';
 
 import '../../../../../core/api/exceptions/exceptions.dart';
 import '../../../../../core/utils/injector.dart';
@@ -16,7 +15,7 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc()
       : _apiRepository = injector<AuthenticationRepository>(),
-        _HiveStorageService = injector<HiveStorageService>(),
+        _hiveStorage = injector<HiveStorageService>(),
         super(const AuthenticationState()) {
     on<SignInEvent>(_signIn);
     on<SignUpEvent>(_signUp);
@@ -26,7 +25,7 @@ class AuthenticationBloc
   }
 
   final AuthenticationRepository _apiRepository;
-  final HiveStorageService _HiveStorageService;
+  final HiveStorageService _hiveStorage;
 
   void _signIn(SignInEvent event, Emitter<AuthenticationState> emit) async {
     Map<String, dynamic> payload = {
@@ -39,8 +38,12 @@ class AuthenticationBloc
       final result = await _apiRepository.signIn(payload);
 
       result.fold(
-        (success) {
-          _updateUserAccount(success.data!);
+        (response) {
+          _updateSession(
+            email: response.email,
+            firstName: response.firstName,
+            lastName: response.lastName,
+          );
           emit(state.copyWith(apiState: ApiState.success));
         },
         (exception) {
@@ -183,14 +186,24 @@ class AuthenticationBloc
   }
 
   void _createUserAccount(String email, String username) async {
-    final user = await _HiveStorageService.getUser();
+    final user = await _hiveStorage.getUser();
     user?.email = email;
     user?.username = username;
     await user?.save();
   }
 
-  void _updateUserAccount(String id) async {
-    await _HiveStorageService.getAppSession().then((session) async {
+  void _updateSession({
+    required String email,
+    required String firstName,
+    required String lastName,
+  }) async {
+    await _hiveStorage.getUser().then((user) async {
+      user?.email = email;
+      user?.firstname = firstName;
+      user?.lastname = lastName;
+      await user?.save();
+    });
+    await _hiveStorage.getAppSession().then((session) async {
       session?.isLoggedIn = true;
       await session?.save();
     });

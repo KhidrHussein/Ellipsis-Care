@@ -1,5 +1,3 @@
-import 'package:ellipsis_care/src/features/authentication/models/user/user.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 // void main() {
 //   // Initialize test dependencies

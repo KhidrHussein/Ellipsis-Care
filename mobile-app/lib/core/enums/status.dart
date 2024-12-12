@@ -1,4 +1,4 @@
-import '../../constants/colors.dart';
+import '../constants/colors.dart';
 import 'package:flutter/painting.dart';
 
 enum Status {

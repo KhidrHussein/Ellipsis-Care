@@ -1,6 +1,6 @@
 import 'package:flutter/painting.dart';
 
-import '../../constants/colors.dart';
+import '../constants/colors.dart';
 
 enum SyncScore {
   optimal(

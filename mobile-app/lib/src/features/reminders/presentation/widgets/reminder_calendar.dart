@@ -26,8 +26,8 @@ class ReminderCalendar extends StatelessWidget {
         builder: (context, state) {
           return TableCalendar(
             currentDay: bloc.state.currentDate,
-            focusedDay: DateTime.now(),
-            firstDay: DateTime(2020),
+            focusedDay: bloc.state.currentDate,
+            firstDay: DateTime.now(),
             lastDay: DateTime(2040),
             daysOfWeekHeight: 42.h,
             headerStyle: HeaderStyle(

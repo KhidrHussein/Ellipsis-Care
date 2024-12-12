@@ -1,3 +1,4 @@
+import 'package:ellipsis_care/src/features/authentication/models/signin/signin_response.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/services/secure_storage.dart';
@@ -43,22 +44,15 @@ class AuthenticationRepository {
     }
   }
 
-  Future<Either<SuccessfulApiResponse<String>, AppExceptions>> signIn(
+  Future<Either<SigninResponse, AppExceptions>> signIn(
       Map<String, dynamic> payload) async {
     try {
       final response = await _service.post(ApiUrl.signIn, data: payload);
 
-      final apiResult = SuccessfulApiResponse<String>.fromJson(
-        response.data,
-        (json) {
-          final data = json as Map<String, dynamic>;
-          return data["token"];
-        },
-      );
+      final signin = SigninResponse.fromJson(response.data["data"]);
+      await injector<SecureStorage>().storeAccessToken(signin.token);
 
-      await injector<SecureStorage>().storeAccessToken(apiResult.data!);
-
-      return left(apiResult);
+      return left(signin);
     } catch (e) {
       "$runtimeType exception \n Exception Type: ${e.runtimeType} \n Exception Details: $e \n"
           .printLog();

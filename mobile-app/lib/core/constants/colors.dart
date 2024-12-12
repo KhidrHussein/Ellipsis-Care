@@ -27,12 +27,12 @@ class AppColors {
   // Reminder Colors
   static const Color reminderColorLight = Color(0xFFFFFFFF);
   static const Color reminderColorDark = Color(0xFF0D0D0D);
-  static const Color calendarChevronBgColorLight = Color(0xFF);
-  static const Color calendarChevronBgColorDark = Color(0xFF);
-  static const Color calenderMarkerColorLight = Color(0xFF);
-  static const Color calendarMarkerColorDark = Color(0xFF);
-  static const Color addEventButtonBgColorLight = Color(0xFF);
-  static const Color addEventButtonBgColorDark = Color(0xFF);
+  static const Color calendarChevronBgColorLight = Color(0x000000ff);
+  static const Color calendarChevronBgColorDark = Color(0x000000ff);
+  static const Color calenderMarkerColorLight = Color(0x000000ff);
+  static const Color calendarMarkerColorDark = Color(0x000000ff);
+  static const Color addEventButtonBgColorLight = Color(0x000000ff);
+  static const Color addEventButtonBgColorDark = Color(0x000000ff);
   static const Color drugColorLight = Color(0xFF4DA880);
   static const Color drugColorDark = Color(0xFF5BB48D);
   static const Color foodColorLight = Color(0xFF3AD3D3);
