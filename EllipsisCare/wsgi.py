@@ -16,7 +16,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'EllipsisCare.settings')
 
 sys.path.append('C:/Users/Hp/EllipsisCare/venv/Lib/ite-packages')
 sys.path.append('/home/site/wwwroot')
-
+sys.path.append('C:/Users/Hp/EllipsisCare/venv/Lib/ite-packages/django')
 
 application = get_wsgi_application()
 
