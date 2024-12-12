@@ -19,6 +19,8 @@ venv_site_packages = '/tmp/antenv/lib/python3.11/site-packages'
 if os.path.exists(venv_site_packages):  # Check if the virtual environment directory exists
     sys.path.append(venv_site_packages)
 
+sys.path.append('venv/Lib/site-packages')
+
 
 application = get_wsgi_application()
 
