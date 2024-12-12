@@ -20,6 +20,7 @@ if os.path.exists(venv_site_packages):  # Check if the virtual environment direc
     sys.path.append(venv_site_packages)
 
 sys.path.append('venv/Lib/site-packages')
+sys.path.append('/home/site/wwwroot')
 
 
 application = get_wsgi_application()
