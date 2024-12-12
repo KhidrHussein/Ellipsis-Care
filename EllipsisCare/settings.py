@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-twmmpoch5h^9e#b_cox3ihpmnpn_ep0pf-nvir7ljqce%ipp2&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'hyena-tops-rooster.ngrok-free.app', 'ellipsiscare.org', 'ellipsiscare.azurewebsites.net']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'hyena-tops-rooster.ngrok-free.app', 'ellipsiscare.org', 'ellipsiscare.azurewebsites.net', '.azurewebsites']
 
 # Allow specific origin
 CORS_ALLOWED_ORIGINS = [
