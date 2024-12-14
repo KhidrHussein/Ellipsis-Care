@@ -2,7 +2,7 @@ from django.shortcuts import render
 from djoser.views import UserViewSet, TokenCreateView
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from .models import UserProfile, Medication, HealthCondition, MealPlan, Appointment, Audio, CustomUser
 from .serializers import (
     UserSerializer, UserProfileSerializer, MedicationSerializer, 
@@ -24,6 +24,7 @@ from .utils import get_or_create_mongo_user, HealthSyncScoreCalculator
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -175,6 +176,8 @@ class CustomTokenCreateView(TokenCreateView):
         # Check for required fields in the request
         email = request.data.get('email')
         password = request.data.get('password')
+        first_name = request.data.get('first_name')
+        last_name = request.data.get('last_name')
 
         if not email or not password:
             response_data = {
@@ -198,6 +201,9 @@ class CustomTokenCreateView(TokenCreateView):
                 "message": "Login successful.",
                 "data": {
                     "token": token,
+                    "email": email,
+                    "first_name": first_name,
+                    "last_name": last_name,
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
@@ -224,6 +230,75 @@ class CustomTokenCreateView(TokenCreateView):
                     "error": "Internal server error. Please try again later."
                 }
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# class CustomTokenCreateView(TokenCreateView):
+#     serializer_class = CustomTokenCreateSerializer
+
+#     def post(self, request, *args, **kwargs):
+#         logger.debug("Login attempt with data: %s", request.data)
+
+#         email = request.data.get('email')
+#         password = request.data.get('password')
+
+#         # Validate required fields
+#         if not email or not password:
+#             return Response(
+#                 {
+#                     "status": "fail",
+#                     "message": "Email and password are required.",
+#                     "data": {
+#                         "email": "This field is required." if not email else None,
+#                         "password": "This field is required." if not password else None,
+#                     }
+#                 },
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
+
+#         # Authenticate user
+#         user = authenticate(username=email, password=password)
+#         if not user:
+#             return Response(
+#                 {
+#                     "status": "fail",
+#                     "message": "Invalid credentials.",
+#                     "data": {
+#                         "email": ["Invalid email or password."]
+#                     }
+#                 },
+#                 status=status.HTTP_400_BAD_REQUEST,
+#             )
+
+#         logger.info(f"User authenticated successfully: {user.id}")
+
+#         # Create or retrieve token
+#         try:
+#             token, created = settings.TOKEN_MODEL.objects.get_or_create(user=user)
+#             logger.info(f"Token {'created' if created else 'retrieved'} for user {user.id}")
+
+#             return Response(
+#                 {
+#                     "status": "success",
+#                     "message": "Login successful.",
+#                     "data": {
+#                         "token": token.key,
+#                         "email": user.email,
+#                         "first_name": user.first_name,
+#                         "last_name": user.last_name,
+#                     }
+#                 },
+#                 status=status.HTTP_200_OK,
+#             )
+
+#         except IntegrityError as e:
+#             logger.error(f"Database error during token generation for user {user.id}: {e}")
+#             return Response(
+#                 {
+#                     "status": "error",
+#                     "message": "An internal server error occurred. Please try again later.",
+#                 },
+#                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             )
 
 
 class PasswordResetRequestView(APIView):
