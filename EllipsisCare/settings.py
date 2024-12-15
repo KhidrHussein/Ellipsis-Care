@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     # scheduling apps
     # 'django_celery_beat',
     # 'django_q',
-    'django_apscheduler',
+    # 'django_apscheduler',
     'corsheaders',
 
     # authentication
@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',  # or any other provider
+    'allauth.socialaccount.providers.google',
     'dj_rest_auth',
     'dj_rest_auth.registration',
     'django_extensions',

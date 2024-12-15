@@ -78,7 +78,7 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['date_of_birth', 'gender', 'language_preference', 'emergency_contact']
+        fields = ['date_of_birth', 'gender', 'language_preference']
 
 
 class ChangePasswordSerializer(serializers.Serializer):
