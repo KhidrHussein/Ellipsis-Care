@@ -4,7 +4,7 @@ from .models import UserProfile, HealthCondition, Medication, Meal, MealPlan, Ap
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django import forms
 
-from django_apscheduler.models import DjangoJob, DjangoJobExecution
+# from django_apscheduler.models import DjangoJob, DjangoJobExecution
 
 # Define a custom form for user creation and change
 class UserCreationForm(forms.ModelForm):
