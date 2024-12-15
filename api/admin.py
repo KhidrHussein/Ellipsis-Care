@@ -48,7 +48,7 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'age', 'gender', 'language_preference', 'emergency_contact')
+    list_display = ('user', 'age', 'gender', 'language_preference')
     search_fields = ('user__username', 'gender', 'language_preference')
     list_filter = ('gender', 'language_preference')
 

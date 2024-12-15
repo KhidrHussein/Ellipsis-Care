@@ -66,7 +66,6 @@ class UserProfile(models.Model):
     )
     language_preference = models.CharField(max_length=20, 
                                            choices=[('en', 'English'), ('yo', 'Yoruba'), ('ha', 'Hausa'), ('ig', 'Igbo')], default='en')
-    emergency_contact = models.CharField(max_length=15, blank=True)
 
     def __str__(self):
         return f"{self.user.username}"
