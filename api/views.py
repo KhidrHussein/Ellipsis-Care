@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from djoser.views import UserViewSet, TokenCreateView
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model, authenticate
 from .models import UserProfile, Medication, HealthCondition, MealPlan, Appointment, Audio, CustomUser
 from .serializers import (
     UserSerializer, UserProfileSerializer, MedicationSerializer, 
-    HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer, CustomTokenCreateSerializer
+    HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer, CustomTokenCreateSerializer, UpdateProfileSerializer, ChangePasswordSerializer
 )
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -176,8 +176,6 @@ class CustomTokenCreateView(TokenCreateView):
         # Check for required fields in the request
         email = request.data.get('email')
         password = request.data.get('password')
-        first_name = request.data.get('first_name')
-        last_name = request.data.get('last_name')
 
         if not email or not password:
             response_data = {
@@ -193,6 +191,9 @@ class CustomTokenCreateView(TokenCreateView):
         serializer = self.get_serializer(data=request.data)
 
         try:
+            # Attempt to retrieve user by email 
+            user = CustomUser.objects.get(email=email)
+
             # Validate and create the token using the custom serializer
             serializer.is_valid(raise_exception=True)
             token = serializer.validated_data['auth_token']
@@ -202,8 +203,8 @@ class CustomTokenCreateView(TokenCreateView):
                 "data": {
                     "token": token,
                     "email": email,
-                    "first_name": first_name,
-                    "last_name": last_name,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
@@ -230,75 +231,6 @@ class CustomTokenCreateView(TokenCreateView):
                     "error": "Internal server error. Please try again later."
                 }
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-# class CustomTokenCreateView(TokenCreateView):
-#     serializer_class = CustomTokenCreateSerializer
-
-#     def post(self, request, *args, **kwargs):
-#         logger.debug("Login attempt with data: %s", request.data)
-
-#         email = request.data.get('email')
-#         password = request.data.get('password')
-
-#         # Validate required fields
-#         if not email or not password:
-#             return Response(
-#                 {
-#                     "status": "fail",
-#                     "message": "Email and password are required.",
-#                     "data": {
-#                         "email": "This field is required." if not email else None,
-#                         "password": "This field is required." if not password else None,
-#                     }
-#                 },
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-
-#         # Authenticate user
-#         user = authenticate(username=email, password=password)
-#         if not user:
-#             return Response(
-#                 {
-#                     "status": "fail",
-#                     "message": "Invalid credentials.",
-#                     "data": {
-#                         "email": ["Invalid email or password."]
-#                     }
-#                 },
-#                 status=status.HTTP_400_BAD_REQUEST,
-#             )
-
-#         logger.info(f"User authenticated successfully: {user.id}")
-
-#         # Create or retrieve token
-#         try:
-#             token, created = settings.TOKEN_MODEL.objects.get_or_create(user=user)
-#             logger.info(f"Token {'created' if created else 'retrieved'} for user {user.id}")
-
-#             return Response(
-#                 {
-#                     "status": "success",
-#                     "message": "Login successful.",
-#                     "data": {
-#                         "token": token.key,
-#                         "email": user.email,
-#                         "first_name": user.first_name,
-#                         "last_name": user.last_name,
-#                     }
-#                 },
-#                 status=status.HTTP_200_OK,
-#             )
-
-#         except IntegrityError as e:
-#             logger.error(f"Database error during token generation for user {user.id}: {e}")
-#             return Response(
-#                 {
-#                     "status": "error",
-#                     "message": "An internal server error occurred. Please try again later.",
-#                 },
-#                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-#             )
 
 
 class PasswordResetRequestView(APIView):
@@ -429,6 +361,59 @@ class CustomUserViewSet(UserViewSet):
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+
+
+class UpdateProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        profile = user.userprofile  # Assuming a OneToOne relationship
+
+        # Update user fields
+        user_serializer = UpdateProfileSerializer(user, data=request.data, partial=True)
+        profile_serializer = UserProfileSerializer(profile, data=request.data, partial=True)
+
+        if user_serializer.is_valid() and profile_serializer.is_valid():
+            user_serializer.save()
+            profile_serializer.save()
+            return Response({
+                "status": "success",
+                "message": "Profile updated successfully.",
+                "data": {
+                    "user": user_serializer.data,
+                    "profile": profile_serializer.data
+                }
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "status": "fail",
+            "message": "Profile update failed.",
+            "errors": {
+                "user": user_serializer.errors,
+                "profile": profile_serializer.errors
+            }
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ChangePasswordView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "status": "success",
+                "message": "Password updated successfully."
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "status": "fail",
+            "message": "Password update failed.",
+            "errors": serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MedicationViewSet(viewsets.ModelViewSet):
@@ -638,52 +623,6 @@ class AudioViewSet(viewsets.ModelViewSet):
 #         finally:
 #             if 'temp_audio_file' in locals() and os.path.exists(temp_audio_file.name):
 #                 os.remove(temp_audio_file.name)
-
-# class ReminderView(APIView):
-#     """
-#     API View to handle POST requests for personalized reminder notifications.
-#     """
-
-#     def post(self, request, *args, **kwargs):
-#         serializer = ReminderSerializer(data=request.data)
-
-#         # Validate the incoming request data
-#         if not serializer.is_valid():
-#             return Response({
-#                 "status": "error",
-#                 "message": "Validation failed",
-#                 "data": serializer.errors
-#             }, status=status.HTTP_400_BAD_REQUEST)
-
-#         try:
-#             validated_data = serializer.validated_data
-#             reminder = validated_data['reminder']
-
-#             # Retrieve the current user
-#             postgres_user = self.request.user
-            
-#             # Get or create MongoDB user
-#             mongo_user = get_or_create_mongo_user(postgres_user)
-
-#             # Generate the personalized reminder content
-#             personalized_message = reminder_message_full(mongo_user["_id"], reminder)
-
-#             # Return success response
-#             return Response({
-#                 "status": "success",
-#                 "message": "Reminder created successfully",
-#                 "data": {
-#                     "reminder_message": personalized_message
-#                 }
-#             }, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             # Handle any unexpected errors
-#             return Response({
-#                 "status": "error",
-#                 "message": "An error occurred while processing the request",
-#                 "data": str(e)
-#             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ReminderView(APIView):
