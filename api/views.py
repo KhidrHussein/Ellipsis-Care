@@ -38,6 +38,7 @@ from wsgiref.util import FileWrapper
 
 logger = logging.getLogger(__name__)
 
+
 class UserCreateViewSet(viewsets.ModelViewSet):
     """
     Handles user creation with email verification.
@@ -79,6 +80,8 @@ class UserCreateViewSet(viewsets.ModelViewSet):
                         "email": user.email,
                         "username": user.first_name,
                         "otp": user.verification_code,
+                        "first_name": user.first_name,
+                        "last_name": user.last_name
                     }
                 }
             }
