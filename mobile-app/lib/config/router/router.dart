@@ -97,17 +97,15 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) => const MaterialPage<Signin>(
         child: Signin(),
       ),
-      routes: [
-        GoRoute(
-          path: 'verify-email/:email',
-          name: RouteNames.verifyEmail,
-          pageBuilder: (context, state) => MaterialPage<VerifyEmail>(
-            child: VerifyEmail(
-              email: Uri.decodeComponent(state.pathParameters["email"] ?? ""),
-            ),
-          ),
+    ),
+    GoRoute(
+      path: '/verify-email/:email',
+      name: RouteNames.verifyEmail,
+      pageBuilder: (context, state) => MaterialPage<VerifyEmail>(
+        child: VerifyEmail(
+          email: Uri.decodeComponent(state.pathParameters["email"] ?? ""),
         ),
-      ],
+      ),
     ),
     GoRoute(
       path: '/forgot-password',

@@ -1,8 +1,12 @@
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:ellipsis_care/core/enums/api_state.dart';
+import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth_bloc.dart';
+
+import '../../../../../core/utils/extensions.dart';
+import '../../../../../core/utils/helpers.dart';
 import '../../../../shared/widgets/textfield.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -17,12 +21,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   @override
   void dispose() {
+    _emailController.clear();
     _emailController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<AuthenticationBloc>();
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -37,24 +44,55 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              SizedBox(height: 16.h),
+              16.verticalSpace,
               Text(
                 "Enter your registered number to receive a “How to reset your password” mail",
                 textAlign: TextAlign.center,
                 style: context.textTheme.bodyLarge?.copyWith(fontSize: 15.sp),
               ),
-              SizedBox(height: 48.h),
+              48.verticalSpace,
               AppTextField(
                 fieldname: "Email Address",
                 hint: "Input your email",
                 controller: _emailController,
               ),
-              SizedBox(height: 36.h),
-              FilledButton(
-                onPressed: () {},
-                child: const Text("Submit"),
+              36.verticalSpace,
+              BlocConsumer<AuthenticationBloc, AuthenticationState>(
+                listener: (context, state) {
+                  switch (state.apiState) {
+                    case ApiState.success:
+                      UtilHelpers.showAlert(
+                          title: "Success", message: state.data);
+                      UtilHelpers.pop();
+                      break;
+
+                    case ApiState.failed:
+                      UtilHelpers.showAlert(
+                          title: "Error", message: state.error);
+                      break;
+
+                    default:
+                      break;
+                  }
+                },
+                builder: (context, state) {
+                  return FilledButton(
+                    onPressed: switch (state.apiState) {
+                      ApiState.loading => null,
+                      _ => () {
+                          if (_emailController.text.isNotEmpty) {
+                            bloc.add(
+                              ForgotPasswordEvent(email: _emailController.text),
+                            );
+                          }
+                          UtilHelpers.killKeyboard();
+                        }
+                    },
+                    child: const Text("Submit"),
+                  );
+                },
               ),
-              SizedBox(height: 28.h),
+              28.verticalSpace,
               OutlinedButton(
                 onPressed: UtilHelpers.pop,
                 style: Theme.of(context).outlinedButtonTheme.style?.copyWith(

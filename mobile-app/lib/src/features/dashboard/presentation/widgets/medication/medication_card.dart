@@ -10,21 +10,21 @@ import 'routine.dart';
 
 import '../../../../../../core/constants/colors.dart';
 
-class MedicationSectionCard extends StatefulWidget {
+class MedicationCard extends StatefulWidget {
   final String name;
   final String dosage;
 
-  const MedicationSectionCard({
+  const MedicationCard({
     super.key,
     required this.name,
     required this.dosage,
   });
 
   @override
-  State<MedicationSectionCard> createState() => _MedicationSectionCardState();
+  State<MedicationCard> createState() => _MedicationSectionCardState();
 }
 
-class _MedicationSectionCardState extends State<MedicationSectionCard> {
+class _MedicationSectionCardState extends State<MedicationCard> {
   final ValueNotifier<bool> _showRoutines = ValueNotifier(false);
   final Tween<double> _indicatorValue = Tween<double>(begin: 0.0, end: 1.0);
 

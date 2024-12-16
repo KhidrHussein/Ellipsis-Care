@@ -25,5 +25,14 @@ class PhoneContactService {
     }
   }
 
-  Future<bool> checkForPermission() => FlutterContacts.requestPermission();
+  Future<bool?> checkForPermission() async {
+    try {
+      final hasPermission = await FlutterContacts.requestPermission();
+      "Contact Permission: $hasPermission".printLog();
+      return hasPermission;
+    } catch (e) {
+      "$runtimeType Error: $e".printLog();
+      return null;
+    }
+  }
 }

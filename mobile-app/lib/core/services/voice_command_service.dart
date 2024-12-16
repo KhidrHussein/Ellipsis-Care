@@ -9,7 +9,7 @@ class VoiceCommandService {
 
   Future<bool?> init() async {
     try {
-      final bool hasPermission = await _speech.initialize(
+      bool hasPermission = await _speech.initialize(
         debugLogging: true,
         finalTimeout: const Duration(seconds: 30),
         onStatus: (status) {
@@ -21,6 +21,7 @@ class VoiceCommandService {
         },
       );
 
+      "SpeechToText Permission: $hasPermission".printLog();
       return hasPermission;
     } catch (e) {
       "$runtimeType Error: $e\n".printLog();

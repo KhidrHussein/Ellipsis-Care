@@ -14,8 +14,8 @@ class FileStorageService {
     try {
       final Directory dir = await getApplicationDocumentsDirectory();
       final String date = UtilHelpers.getDateFromIsoString(createdAt);
-      final String time = UtilHelpers.getTimeFromIsoString(createdAt);
-      final String filePath = "${dir.path}/${type.name} $date at $time.wav";
+      final String time = UtilHelpers.getHourMinutes(createdAt);
+      final String filePath = "${dir.path}/${type.name}_${date}_$time.wav";
 
       final File file = File(filePath);
       await file.writeAsBytes(bytes).then((file) {
@@ -30,8 +30,8 @@ class FileStorageService {
     try {
       final Directory dir = await getApplicationDocumentsDirectory();
       final String date = UtilHelpers.getDateFromIsoString(createdAt);
-      final String time = UtilHelpers.getTimeFromIsoString(createdAt);
-      final String filePath = "${dir.path}/${type.name} $date at $time.wav";
+      final String time = UtilHelpers.getHourMinutes(createdAt);
+      final String filePath = "${dir.path}/${type.name}_${date}_$time.wav";
       File file = File(filePath);
 
       if (!file.existsSync()) return null;

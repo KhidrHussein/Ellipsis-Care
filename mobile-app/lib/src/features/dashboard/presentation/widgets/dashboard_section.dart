@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/enums/reminder_options/reminder_options.dart';
 import '../../../../../core/utils/extensions.dart';
-import 'meal/meal_section.dart';
-import 'medication/medication_section.dart';
+import 'meal/meal_and_nutrition.dart';
+import 'medication/medication.dart';
 import '../../../../shared/widgets/progress_bar.dart';
 
 import '../../../../../core/constants/asset_strings.dart';
@@ -12,13 +12,13 @@ import '../../../../../core/constants/asset_strings.dart';
 class DashboardSection extends StatelessWidget {
   final String name;
   final ReminderType type;
-  final int progress;
+  final Widget child;
 
   const DashboardSection({
     super.key,
     required this.name,
     required this.type,
-    required this.progress,
+    required this.child,
   });
 
   @override
@@ -40,24 +40,7 @@ class DashboardSection extends StatelessWidget {
             color: context.themeData.scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(21.r),
           ),
-          child: Column(
-            children: [
-              ProgressBar(
-                icon: switch (type) {
-                  ReminderType.food => AssetStrings.foodIcon,
-                  ReminderType.drug => AssetStrings.drugIcon,
-                },
-                title: name,
-                type: type,
-                progress: progress,
-              ),
-              20.verticalSpace,
-              switch (type) {
-                ReminderType.food => const MealAndNutritionSection(),
-                ReminderType.drug => const MedicationSection()
-              },
-            ],
-          ),
+          child: child,
         ),
         30.sizedBoxHeight,
       ],

@@ -13,7 +13,7 @@ import 'src/features/home/presentation/bloc/home_bloc.dart';
 import 'src/features/onboarding/cubit/onboarding_cubit.dart';
 import 'src/features/reminders/presentation/bloc/reminder_bloc.dart';
 import 'src/features/settings/presentation/bloc/settings_bloc.dart';
-import 'src/shared/controller/user_bloc/user_bloc.dart';
+import 'src/shared/user_bloc/user_bloc.dart';
 import 'src/shared/widgets/navigator_shell/navigator_shell.dart';
 
 class EllipsisCare extends StatelessWidget {

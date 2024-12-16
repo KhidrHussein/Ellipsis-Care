@@ -40,7 +40,7 @@ class Routine extends StatelessWidget {
                 ),
               ),
               Text(
-                "$timeAlloted pm",
+                timeAlloted,
                 style: context.textTheme.labelSmall?.copyWith(
                   fontSize: 10.sp,
                   color: AppColors.medicationCardSubTextColor,

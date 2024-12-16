@@ -28,35 +28,34 @@ class AuthenticationBloc
   final HiveStorageService _hiveStorage;
 
   void _signIn(SignInEvent event, Emitter<AuthenticationState> emit) async {
-    Map<String, dynamic> payload = {
+    emit(state.copyWith(apiState: ApiState.loading));
+
+    final Map<String, dynamic> payload = {
       "email": event.email,
       "password": event.password,
     };
 
-    emit(state.copyWith(apiState: ApiState.loading));
-    try {
-      final result = await _apiRepository.signIn(payload);
+    final result = await _apiRepository.signIn(payload);
 
-      result.fold(
-        (response) {
-          _updateSession(
-            email: response.email,
-            firstName: response.firstName,
-            lastName: response.lastName,
-          );
-          emit(state.copyWith(apiState: ApiState.success));
-        },
-        (exception) {
-          final errorMessage = AppExceptions.getErrorMessage(exception);
-          emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
-        },
-      );
-    } catch (e) {
-      emit(state.copyWith(apiState: ApiState.failed, error: "$e"));
-    }
+    result.fold(
+      (response) {
+        _updateSession(
+          email: response.email,
+          firstName: response.firstName,
+          lastName: response.lastName,
+        );
+        emit(state.copyWith(apiState: ApiState.success));
+      },
+      (exception) {
+        final errorMessage = AppExceptions.getErrorMessage(exception);
+        emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
+      },
+    );
   }
 
   void _signUp(SignUpEvent event, Emitter<AuthenticationState> emit) async {
+    emit(state.copyWith(apiState: ApiState.loading));
+
     Map<String, dynamic> payload = {
       "email": event.email,
       "password": event.password,
@@ -65,83 +64,95 @@ class AuthenticationBloc
       "last_name": event.lastName
     };
 
-    emit(state.copyWith(apiState: ApiState.loading));
-    try {
-      final result = await _apiRepository.signUp(payload);
+    final result = await _apiRepository.signUp(payload);
 
-      result.fold(
-        (success) {
-          _createUserAccount(success.data!.email, success.data!.username);
-          emit(state.copyWith(apiState: ApiState.success));
-        },
-        (exception) {
-          final errorMessage = AppExceptions.getErrorMessage(exception);
-          emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
-        },
-      );
-    } catch (e) {
-      emit(state.copyWith(apiState: ApiState.failed, error: "$e"));
-    }
+    result.fold(
+      (response) {
+        _updateSession(
+          email: response.email,
+          firstName: response.firstName,
+          lastName: response.lastName,
+        );
+        emit(state.copyWith(apiState: ApiState.success));
+      },
+      (exception) {
+        final errorMessage = AppExceptions.getErrorMessage(exception);
+        emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
+      },
+    );
   }
 
   void _verifyOTP(
       OTPVerificationEvent event, Emitter<AuthenticationState> emit) async {
-    Map<String, dynamic> payload = {
+    emit(state.copyWith(apiState: ApiState.loading));
+
+    final Map<String, dynamic> payload = {
       "email": event.email,
       "verification_code": event.verificationCode,
     };
 
-    emit(state.copyWith(apiState: ApiState.loading));
-    try {
-      final result = await _apiRepository.verifyEmail(payload);
-      result.fold(
-        (successfulResponse) {
-          emit(state.copyWith(apiState: ApiState.success));
-        },
-        (exception) {
-          final errorMessage = AppExceptions.getErrorMessage(exception);
-          emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
-        },
-      );
-    } catch (e) {
-      emit(state.copyWith(apiState: ApiState.failed, error: "$e"));
-    }
+    final result = await _apiRepository.verifyEmail(payload);
+
+    result.fold(
+      (response) {
+        emit(state.copyWith(apiState: ApiState.success));
+      },
+      (exception) {
+        final errorMessage = AppExceptions.getErrorMessage(exception);
+        emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
+      },
+    );
   }
 
   void _useGoogleOAuth(
       GoogleOAuthEvent event, Emitter<AuthenticationState> emit) async {
     emit(state.copyWith(apiState: ApiState.loading, isUsingOauth: true));
-    try {
-      final oauthResult = await _apiRepository.signInWithGoogle();
 
-      oauthResult.fold(
-        (googleCredentials) {
-          List<String>? names = googleCredentials?.displayName?.split(' ');
+    final oauthResult = await _apiRepository.signInWithGoogle();
 
-          if (event.isNewUser) {
-            final Map<String, dynamic> payload = {
-              "email": googleCredentials?.email,
-              "first_name": names?.first,
-              "last_name": names?.last,
-            };
-            _signUpNewUser(payload, emit);
-          } else {
-            Map<String, dynamic> payload = {"email": googleCredentials?.email};
-            _signInNewUser(payload, emit);
-          }
-        },
-        (exception) {
-          final errorMessage = AppExceptions.getErrorMessage(exception);
-          emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
-        },
-      );
-    } catch (e) {
-      emit(state.copyWith(apiState: ApiState.failed, error: "$e"));
-    }
+    oauthResult.fold(
+      (googleCredentials) {
+        List<String>? names = googleCredentials?.displayName?.split(' ');
+
+        if (event.isNewUser) {
+          final Map<String, dynamic> payload = {
+            "email": googleCredentials?.email,
+            "first_name": names?.first,
+            "last_name": names?.last,
+          };
+          _signUpNewUser(payload, emit);
+        } else {
+          Map<String, dynamic> payload = {"email": googleCredentials?.email};
+          _signInNewUser(payload, emit);
+        }
+      },
+      (exception) {
+        final errorMessage = AppExceptions.getErrorMessage(exception);
+        emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
+      },
+    );
   }
 
   void _forgotPassword(
-      ForgotPasswordEvent event, Emitter<AuthenticationState> emit) async {}
+      ForgotPasswordEvent event, Emitter<AuthenticationState> emit) async {
+    emit(state.copyWith(apiState: ApiState.loading));
+
+    final Map<String, dynamic> payload = {"email": event.email};
+
+    final result = await _apiRepository.forgotPassword(payload);
+
+    result.fold(
+      (response) {
+        emit(
+          state.copyWith(apiState: ApiState.success, data: response),
+        );
+      },
+      (exception) {
+        final errorMessage = AppExceptions.getErrorMessage(exception);
+        emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
+      },
+    );
+  }
 
   void _signInNewUser(
       Map<String, dynamic> payload, Emitter<AuthenticationState> emit) async {
@@ -149,7 +160,7 @@ class AuthenticationBloc
       final result = await _apiRepository.signIn(payload);
 
       result.fold(
-        (successfulResponse) {
+        (response) {
           emit(
             state.copyWith(apiState: ApiState.success),
           );
@@ -170,7 +181,7 @@ class AuthenticationBloc
       final result = await _apiRepository.signUp(payload);
 
       result.fold(
-        (successfulResponse) {
+        (response) {
           emit(
             state.copyWith(apiState: ApiState.success),
           );
@@ -185,17 +196,10 @@ class AuthenticationBloc
     }
   }
 
-  void _createUserAccount(String email, String username) async {
-    final user = await _hiveStorage.getUser();
-    user?.email = email;
-    user?.username = username;
-    await user?.save();
-  }
-
   void _updateSession({
-    required String email,
-    required String firstName,
-    required String lastName,
+    required String? email,
+    required String? firstName,
+    required String? lastName,
   }) async {
     await _hiveStorage.getUser().then((user) async {
       user?.email = email;

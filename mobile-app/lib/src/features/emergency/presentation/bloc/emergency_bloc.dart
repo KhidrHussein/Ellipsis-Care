@@ -1,9 +1,10 @@
+import 'package:ellipsis_care/core/services/location_service.dart';
+import 'package:ellipsis_care/core/services/sms_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:ellipsis_care/core/enums/api_state.dart';
-import 'package:url_launcher/url_launcher.dart';
-
+import 'package:intl/intl.dart';
 import '../../../../../core/services/contacts_service.dart';
 import '../../../../../core/services/hive_storage_service.dart';
 import '../../../../../core/utils/extensions.dart';
@@ -14,10 +15,7 @@ part 'emergency_events.dart';
 part 'emergency_state.dart';
 
 class EmergencyContactBloc extends Bloc<EmergencyEvents, EmergencyState> {
-  EmergencyContactBloc()
-      : _hiveStorage = injector<HiveStorageService>(),
-        _phoneService = injector<PhoneContactService>(),
-        super(const EmergencyState()) {
+  EmergencyContactBloc() : super(const EmergencyState()) {
     on<AddContactEvent>(_addContactToList);
     on<EditContactEvent>(_editContact);
     on<FetchContactsEvent>(_fetchContacts);
@@ -25,11 +23,14 @@ class EmergencyContactBloc extends Bloc<EmergencyEvents, EmergencyState> {
     on<DeleteContactEvent>(_deleteContact);
   }
 
-  final PhoneContactService _phoneService;
-  final HiveStorageService _hiveStorage;
+  final SmsService _smsService = injector<SmsService>();
+  final PhoneContactService _phoneService = injector<PhoneContactService>();
+  final HiveStorageService _hiveStorage = injector<HiveStorageService>();
+  final LocationService _locationService = injector<LocationService>();
 
   void _fetchContacts(
       FetchContactsEvent event, Emitter<EmergencyState> emit) async {
+    await _locationService.askForPermission();
     await _hiveStorage.getEmergencyContacts().then((value) {
       emit(state.copyWith(contacts: [...value]));
     });
@@ -50,12 +51,14 @@ class EmergencyContactBloc extends Bloc<EmergencyEvents, EmergencyState> {
       AlertContactsEvent event, Emitter<EmergencyState> emit) async {
     List<String> numbers =
         state.contacts.map((contact) => contact.phoneNumber!).toList();
+
     if (state.contacts.isEmpty) return;
 
     try {
-      for (var number in numbers) {
-        await launchUrl(Uri.parse("sms:$number"));
-      }
+      String sosMessage =
+          "I am having an emergency. Call me!. Sent via Ellipsis Care App.";
+
+      await _smsService.sendSms(numbers.first, sosMessage);
     } catch (e) {
       emit(
         state.copyWith(

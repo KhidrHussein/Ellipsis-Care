@@ -10,8 +10,7 @@ import '../../../../core/services/oauth_service.dart';
 import '../../../../core/utils/injector.dart';
 
 import '../../../../core/api/exceptions/exceptions.dart';
-import '../../../../core/api/response/response.dart';
-import '../models/user/user.dart';
+import '../models/signup_response/signup_response.dart';
 
 class AuthenticationRepository {
   AuthenticationRepository()
@@ -21,20 +20,14 @@ class AuthenticationRepository {
   final ApiService _service;
   final OAuthService _oAuthService;
 
-  Future<Either<SuccessfulApiResponse<UserResponse>, AppExceptions>> signUp(
+  Future<Either<SignupResponse, AppExceptions>> signUp(
       Map<String, dynamic> payload) async {
     try {
-      final response = await _service.post(ApiUrl.signUp, data: payload);
+      final apiResponse = await _service.post(ApiUrl.signUp, data: payload);
+      final signupResponse =
+          SignupResponse.fromJson(apiResponse.data["data"]["user"]);
 
-      final apiResult = SuccessfulApiResponse<UserResponse>.fromJson(
-        response.data,
-        (dataJson) {
-          final json = dataJson as Map<String, dynamic>;
-          return UserResponse.fromJson(json["user"]);
-        },
-      );
-
-      return left(apiResult);
+      return left(signupResponse);
     } catch (e) {
       "$runtimeType exception \n Exception Type: ${e.runtimeType} \n Exception Details: $e \n"
           .printLog();
@@ -62,17 +55,29 @@ class AuthenticationRepository {
     }
   }
 
-  Future<Either<SuccessfulApiResponse, AppExceptions>> verifyEmail(
+  Future<Either<dynamic, AppExceptions>> verifyEmail(
       Map<String, dynamic> payload) async {
     try {
-      final response = await _service.post(ApiUrl.verifyEmail, data: payload);
+      final apiResponse =
+          await _service.post(ApiUrl.verifyEmail, data: payload);
 
-      final apiResult = SuccessfulApiResponse.fromJson(
-        response.data,
-        (json) {},
-      );
+      return left(apiResponse.data);
+    } catch (e) {
+      "$runtimeType exception \n Exception Type: ${e.runtimeType} \n Exception Details: $e \n"
+          .printLog();
 
-      return left(apiResult);
+      final exception = AppExceptions.handleExceptions(e);
+      return right(exception);
+    }
+  }
+
+  Future<Either<String, AppExceptions>> forgotPassword(
+      Map<String, dynamic> payload) async {
+    try {
+      final apiResponse =
+          await _service.post(ApiUrl.forgotPassword, data: payload);
+
+      return left(apiResponse.data["message"]);
     } catch (e) {
       "$runtimeType exception \n Exception Type: ${e.runtimeType} \n Exception Details: $e \n"
           .printLog();

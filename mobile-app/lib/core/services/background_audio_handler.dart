@@ -12,8 +12,8 @@ class BackgroundAudioService {
     _handler = await AudioService.init<AudioPlayerServiceHandler>(
       builder: () => AudioPlayerServiceHandler(),
       config: const AudioServiceConfig(
-        androidNotificationChannelId: 'ellipsis_care_reminder',
-        androidNotificationChannelName: 'Ellipsis Care Reminder',
+        androidNotificationChannelId: 'reminders.channel.audio',
+        androidNotificationChannelName: 'reminders',
         androidNotificationOngoing: true,
       ),
     );

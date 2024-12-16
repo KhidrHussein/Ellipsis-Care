@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:ellipsis_care/core/services/hive_storage_service.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/core/utils/injector.dart';
 
 import '../../../../config/router/route_names.dart';
 import '../../../../core/services/contacts_service.dart';
 import '../../../../core/services/mic_service.dart';
 import '../../../../core/services/notification_service.dart';
+import '../../../../core/services/sms_service.dart';
 import '../../../../core/services/voice_command_service.dart';
 import '../../../../core/utils/helpers.dart';
 
@@ -47,7 +47,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
         break;
 
       case 3:
-        _setupEmergencyContacts();
+        _setupEmergencyServices();
         break;
 
       case 4:
@@ -69,47 +69,39 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
   void _initializeAudio() async {
     final mic = injector<MicrophoneService>();
-    await mic.checkForPermission().then((hasPermission) {
-      "${mic.runtimeType} has permission? $hasPermission".printLog();
-      _nextStory();
-    });
+    await mic.checkForPermission().then((hasPermission) => _nextStory());
   }
 
   void _initializeSpeechToTextService() async {
     final voiceCommandService = injector<VoiceCommandService>();
-    await voiceCommandService.init().then((hasInitialized) {
-      "${voiceCommandService.runtimeType} has permission? $hasInitialized"
-          .printLog();
-      _nextStory();
-    });
+    await voiceCommandService.init().then((value) => _nextStory());
   }
 
   void _initializeNotificationServiceChannel() async {
+    final hiveStorage = injector<HiveStorageService>();
     final notificationService = injector<NotificationService>();
 
-    await notificationService.checkForPermission().then((hasPermission) async {
-      "${notificationService.runtimeType} has permission? $hasPermission"
-          .printLog();
-
-      final settings = await injector<HiveStorageService>().getSettings();
-      settings?.isNotificationEnabled = hasPermission;
-      await settings?.save();
-
+    await notificationService.checkForPermission().then((permission) async {
+      await hiveStorage.getSettings().then((settings) async {
+        settings?.isNotificationEnabled = permission ?? false;
+        await settings?.save();
+      });
       _nextStory();
     });
   }
 
-  void _setupEmergencyContacts() async {
+  void _setupEmergencyServices() async {
     final phoneService = injector<PhoneContactService>();
+    final smsService = injector<SmsService>();
+    final hiveStorage = injector<HiveStorageService>();
 
-    await phoneService.checkForPermission().then((hasPermission) async {
-      "${phoneService.runtimeType} has permission? $hasPermission".printLog();
-
-      if (hasPermission) {
-        final contact = await phoneService.pickContact();
-        injector<HiveStorageService>().storeEmergencyContact(contact);
-      }
-
+    await phoneService.checkForPermission().then((permission) async {
+      await smsService.askForPermission().then((value) async {
+        if (permission == true) {
+          final contact = await phoneService.pickContact();
+          await hiveStorage.storeEmergencyContact(contact);
+        }
+      });
       _nextStory();
     });
   }

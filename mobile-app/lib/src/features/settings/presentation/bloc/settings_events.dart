@@ -4,6 +4,8 @@ sealed class SettingsEvent {}
 
 class LoadSettingsEvent implements SettingsEvent {}
 
+class UpdateProfilePictureEvent implements SettingsEvent {}
+
 class UpdateThemeEvent implements SettingsEvent {
   final bool enableDarkMode;
   const UpdateThemeEvent({required this.enableDarkMode});
@@ -22,9 +24,19 @@ class UpdateLocationPermissionEvent implements SettingsEvent {
 class UpdatePasswordEvent implements SettingsEvent {
   final String currentPassword;
   final String newPassword;
+  final String confirmPassword;
 
   const UpdatePasswordEvent({
     required this.currentPassword,
     required this.newPassword,
+    required this.confirmPassword,
   });
+}
+
+class UpdateProfileEvent implements SettingsEvent {
+  final String? firstName;
+  final String? lastName;
+  final String? email;
+
+  const UpdateProfileEvent({this.email, this.firstName, this.lastName});
 }

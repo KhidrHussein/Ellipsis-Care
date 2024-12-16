@@ -13,7 +13,16 @@ class MicrophoneService {
 
   final AudioRecorder _mic = AudioRecorder();
 
-  Future<bool> checkForPermission() => _mic.hasPermission();
+  Future<bool?> checkForPermission() async {
+    try {
+      bool hasPermission = await _mic.hasPermission();
+      "Microphone Permission: $hasPermission".printLog();
+      return hasPermission;
+    } catch (e) {
+      "$runtimeType Error: $e".printLog();
+    }
+    return null;
+  }
 
   Future<String?> stopRecording() => _mic.stop();
 

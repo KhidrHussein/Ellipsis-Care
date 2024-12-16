@@ -4,15 +4,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../../../core/utils/extensions.dart';
 
-class MealSectionCard extends StatelessWidget {
+class NutritionCard extends StatelessWidget {
   final String icon;
   final String title;
   final String recipe;
   final Color color;
   final int amountOfCalories;
   final bool stretchToFill;
+  final void Function(bool) onChanged;
 
-  MealSectionCard({
+  NutritionCard({
     super.key,
     required this.icon,
     required this.title,
@@ -20,6 +21,7 @@ class MealSectionCard extends StatelessWidget {
     required this.color,
     required this.amountOfCalories,
     this.stretchToFill = false,
+    required this.onChanged,
   });
 
   final ValueNotifier<bool> _checkBox = ValueNotifier(false);
@@ -44,7 +46,10 @@ class MealSectionCard extends StatelessWidget {
                 right: 0,
                 child: Checkbox(
                   value: value,
-                  onChanged: (value) => _checkBox.value = value ?? false,
+                  onChanged: (value) {
+                    _checkBox.value = value ?? false;
+                    onChanged(_checkBox.value);
+                  },
                 ),
               ),
               child!

@@ -1,5 +1,8 @@
 import 'package:ellipsis_care/core/services/background_audio_handler.dart';
+import 'package:ellipsis_care/core/services/location_service.dart';
 import 'package:ellipsis_care/core/services/secure_storage.dart';
+import 'package:ellipsis_care/core/services/sms_service.dart';
+import 'package:ellipsis_care/src/features/settings/data/settings_repository.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../config/app_config.dart';
@@ -33,6 +36,8 @@ void initService(AppConfig config) {
       .registerLazySingleton<VoiceCommandService>(() => VoiceCommandService());
   injector
       .registerLazySingleton<PhoneContactService>(() => PhoneContactService());
+  injector.registerLazySingleton<SmsService>(() => SmsService());
+  injector.registerLazySingleton<LocationService>(() => LocationService());
   injector
       .registerLazySingleton<AudioPlayerService>(() => AudioPlayerService());
   injector.registerLazySingleton<BackgroundAudioService>(
@@ -42,9 +47,9 @@ void initService(AppConfig config) {
 
   injector.registerLazySingleton<AuthenticationRepository>(
       () => AuthenticationRepository());
-
   injector.registerLazySingleton<HomeRepository>(() => HomeRepository());
-
   injector
       .registerLazySingleton<ReminderRepository>(() => ReminderRepository());
+  injector
+      .registerLazySingleton<SettingsRepository>(() => SettingsRepository());
 }

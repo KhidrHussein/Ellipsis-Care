@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:ellipsis_care/core/services/background_audio_handler.dart';
 import 'package:ellipsis_care/core/utils/injector.dart';
@@ -12,6 +11,7 @@ class NotificationService {
     _setListeners();
   }
 
+  final AwesomeNotifications _service = AwesomeNotifications();
   final List<NotificationChannel> _channels = [
     NotificationChannel(
       channelKey: "ellipsis_care_reminder",
@@ -20,7 +20,17 @@ class NotificationService {
     )
   ];
 
-  final AwesomeNotifications _service = AwesomeNotifications();
+  Future<bool?> checkForPermission() async {
+    try {
+      final hasPermission =
+          await _service.requestPermissionToSendNotifications();
+      "Notification Permission: $hasPermission".printLog();
+      return hasPermission;
+    } catch (e) {
+      "$runtimeType Error: $e".printLog();
+    }
+    return null;
+  }
 
   Future<void> init() async {
     try {
@@ -31,9 +41,6 @@ class NotificationService {
       "$runtimeType Error: $e".printLog();
     }
   }
-
-  Future<bool> checkForPermission() =>
-      _service.requestPermissionToSendNotifications();
 
   Future<void> createReminderNotification({
     required String title,
@@ -51,7 +58,7 @@ class NotificationService {
           channelKey: "ellipsis_care_reminder",
           title: title,
           body: desc,
-          customSound: "file:/$filePath",
+          payload: {"reminder_audio": filePath},
         ),
         schedule: NotificationCalendar.fromDate(
           date: scheduledDate,
@@ -81,17 +88,16 @@ class _NotificationController {
   @pragma("vm:entry-point")
   static Future<void> onNotificationDisplayedMethod(
       ReceivedNotification receivedNotification) async {
-    receivedNotification.printLog();
     try {
-      if (receivedNotification.customSound != null) {
-        final filePath = receivedNotification.customSound!;
-        if (await File(filePath).exists()) {
-          final audioService = injector<BackgroundAudioService>();
-          audioService.handler.path = filePath;
-          await audioService.handler.play();
-        } else {
-          "File does not exist: $filePath".printLog();
-        }
+      String? filePath = receivedNotification.payload?["reminder_audio"];
+      if (filePath != null && await File(filePath).exists()) {
+        final audioService = injector<BackgroundAudioService>();
+
+        audioService.handler.path = filePath;
+
+        await audioService.handler.play();
+      } else {
+        "File does not exist: $filePath".printLog();
       }
     } catch (e) {
       "Error playing custom sound: $e".printLog();

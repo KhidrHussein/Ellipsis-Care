@@ -30,15 +30,15 @@ class _SigninState extends State<Signin> {
     super.initState();
     if (kDebugMode) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Logman.instance.attachOverlay(
-          context: context,
-        );
+        Logman.instance.attachOverlay(context: context);
       });
     }
   }
 
   @override
   void dispose() {
+    _emailController.clear();
+    _passwordController.clear();
     _emailController.dispose();
     _passwordController.dispose();
     _formKey.currentState?.dispose();
@@ -124,6 +124,7 @@ class _SigninState extends State<Signin> {
                                 ),
                               );
                             }
+                            UtilHelpers.killKeyboard();
                           }
                       },
                       child: const Text("Continue"),

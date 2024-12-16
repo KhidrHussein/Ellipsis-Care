@@ -1,8 +1,10 @@
 import 'package:ellipsis_care/core/enums/api_state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:logman/logman.dart';
 
 import '../../../../../config/router/route_names.dart';
 import '../../../../../core/utils/extensions.dart';
@@ -32,7 +34,18 @@ class _SignupState extends State<Signup> {
       TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    if (kDebugMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Logman.instance.attachOverlay(context: context);
+      });
+    }
+  }
+
+  @override
   void dispose() {
+    _reset();
     _emailController.dispose();
     _firstnameController.dispose();
     _lastnameController.dispose();
@@ -102,9 +115,7 @@ class _SignupState extends State<Signup> {
           SizedBox(height: 48.h),
           FilledButton(
             onPressed: () {
-              if (_emailKey.currentState!.validate()) {
-                _canContinue.value = true;
-              }
+              if (_emailKey.currentState!.validate()) _canContinue.value = true;
             },
             child: const Text("Continue"),
           ),
@@ -134,7 +145,7 @@ class _SignupState extends State<Signup> {
   }
 
   Widget _second() {
-    final authenticationBloc = context.read<AuthenticationBloc>();
+    final bloc = context.read<AuthenticationBloc>();
 
     return Form(
       key: _formKey,
@@ -191,7 +202,6 @@ class _SignupState extends State<Signup> {
           ),
           SizedBox(height: 24.h),
           BlocConsumer<AuthenticationBloc, AuthenticationState>(
-            bloc: authenticationBloc,
             listener: (context, state) {
               switch (state.apiState) {
                 case ApiState.success:
@@ -210,7 +220,7 @@ class _SignupState extends State<Signup> {
                   ApiState.loading => null,
                   _ => () {
                       if (_formKey.currentState!.validate()) {
-                        authenticationBloc.add(
+                        bloc.add(
                           SignUpEvent(
                             email: _emailController.text,
                             firstName: _firstnameController.text,
@@ -220,11 +230,6 @@ class _SignupState extends State<Signup> {
                           ),
                         );
                       }
-
-                      // UtilHelpers.pushTo(
-                      //   RouteNames.verifyEmail,
-                      //   {"email": _emailController.text},
-                      // );
                     }
                 },
                 child: const Text("Continue"),
@@ -252,5 +257,14 @@ class _SignupState extends State<Signup> {
         ],
       ),
     );
+  }
+
+  void _reset() {
+    _emailController.clear();
+    _firstnameController.clear();
+    _lastnameController.clear();
+    _passwordController.clear();
+    _confirmPasswordController.clear();
+    UtilHelpers.killKeyboard();
   }
 }

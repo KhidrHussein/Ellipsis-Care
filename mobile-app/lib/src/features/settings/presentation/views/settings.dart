@@ -85,11 +85,13 @@ class Settings extends StatelessWidget {
                         svgIcon: AssetStrings.drugIcon,
                         title: "Medication",
                         initialSwitchValue: state.enabledNotifications,
+                        onChanged: (value) {},
                       ),
                       SettingCardOptionWithSwitch(
                         svgIcon: AssetStrings.foodIcon,
                         title: "Food",
                         initialSwitchValue: state.enabledNotifications,
+                        onChanged: (value) {},
                       ),
                       SettingCardOptionWithSwitch(
                         svgIcon: AssetStrings.emergencyNotificationIcon,

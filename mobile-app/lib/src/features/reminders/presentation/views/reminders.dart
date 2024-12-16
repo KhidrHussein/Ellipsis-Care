@@ -1,9 +1,8 @@
-import 'package:ellipsis_care/core/constants/voice_commands.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/reminder_bloc.dart';
-import '../widgets/reminder_bar.dart';
+
 import '../widgets/reminder_calendar.dart';
 import '../widgets/reminder_sheet.dart';
 
@@ -17,13 +16,13 @@ class Reminders extends StatelessWidget {
     return SafeArea(
       child: BlocListener<ReminderBloc, ReminderState>(
         listener: (context, state) async {
-          if (state.spokenCommand.contains(VoiceCommands.addReminder)) {
+          if (state.spokenCommand.contains("add reminder")) {
             _handleVoiceCommand(context, reminderBloc);
           }
         },
         child: const Column(
           children: [
-            ReminderBar(),
+            // ReminderBar(),
             Expanded(
               child: Stack(
                 children: [

@@ -76,14 +76,14 @@ class _VerifyEmailState extends State<VerifyEmail> {
                     onPressed: switch (state.apiState) {
                       ApiState.loading => null,
                       _ => () {
-                          authenticationBloc.add(
-                            OTPVerificationEvent(
-                              email: widget.email,
-                              verificationCode: _otpController.text,
-                            ),
-                          );
-
-                          // debugPrint(_otpController.text);
+                          if (_otpController.text.isNotEmpty) {
+                            authenticationBloc.add(
+                              OTPVerificationEvent(
+                                email: widget.email,
+                                verificationCode: _otpController.text,
+                              ),
+                            );
+                          }
                         }
                     },
                     child: const Text("Continue"),

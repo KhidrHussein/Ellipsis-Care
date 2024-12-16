@@ -1,5 +1,3 @@
-import '../../../config/router/route_names.dart';
-import '../../../core/utils/helpers.dart';
 import 'user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,10 +11,10 @@ class ProfileBar extends StatelessWidget {
       padding: REdgeInsets.only(left: 16, right: 16, top: 16),
       child: Row(
         children: [
-          IconButton(
-            onPressed: () => UtilHelpers.pushTo(RouteNames.responseHistory),
-            icon: const Icon(Icons.menu),
-          ),
+          // IconButton(
+          //   onPressed: () => UtilHelpers.pushTo(RouteNames.responseHistory),
+          //   icon: const Icon(Icons.menu),
+          // ),
           const Spacer(),
           const UserAvatar(radius: 20),
         ],

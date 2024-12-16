@@ -11,15 +11,15 @@ class SigninResponse {
     required this.lastName,
   });
 
-  final String email;
+  final String? email;
 
   final String token;
 
   @JsonKey(name: "first_name")
-  final String firstName;
+  final String? firstName;
 
   @JsonKey(name: "last_name")
-  final String lastName;
+  final String? lastName;
 
   factory SigninResponse.fromJson(Map<String, dynamic> json) =>
       _$SigninResponseFromJson(json);

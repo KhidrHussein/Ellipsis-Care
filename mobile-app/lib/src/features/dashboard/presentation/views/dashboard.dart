@@ -1,9 +1,11 @@
+import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/meal/meal_and_nutrition.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // import '../widgets/chart/chart_section.dart';
 import '../../../../../core/enums/reminder_options/reminder_options.dart';
 import '../widgets/dashboard_section.dart';
+import '../widgets/medication/medication.dart';
 // import '../widgets/overview.dart';
 
 class Dashboard extends StatelessWidget {
@@ -21,12 +23,12 @@ class Dashboard extends StatelessWidget {
             DashboardSection(
               name: "Meal & Nutrition",
               type: ReminderType.food,
-              progress: 40,
+              child: MealAndNutrition(),
             ),
             DashboardSection(
               name: "Medications",
               type: ReminderType.drug,
-              progress: 50,
+              child: Medication(),
             )
           ],
         ),

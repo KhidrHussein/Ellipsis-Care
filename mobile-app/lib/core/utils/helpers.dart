@@ -29,20 +29,15 @@ class UtilHelpers {
     router.pop(result);
   }
 
+  static void killKeyboard() {
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
   static String? nameValidator(String? name) {
     if (name!.isEmpty) {
       return 'Enter a name';
     } else if (!name.isValidName) {
       return 'Enter a valid name';
-    }
-    return null;
-  }
-
-  static String? otpValidator(String? otp) {
-    if (otp == null) {
-      return 'Enter OTP code';
-    } else if (otp.length != 6) {
-      return 'Enter a valid otp';
     }
     return null;
   }
@@ -83,19 +78,21 @@ class UtilHelpers {
   static String dateFormatter3(DateTime date) =>
       DateFormat("yyyy-MM-dd").format(date);
 
-  static String timeFormatter1(DateTime date) =>
-      DateFormat("h:mm a").format(date);
-
-  static TimeOfDay timeFormatter2(DateTime date) =>
-      TimeOfDay.fromDateTime(date);
-
   static String getDateFromIsoString(String isoString) {
     return isoString.split("T")[0];
   }
 
   static String getTimeFromIsoString(String isoString) {
     final dateTime = DateTime.parse(isoString);
-    return DateFormat.jm().format(dateTime);
+    return DateFormat.jm().format(dateTime).replaceAll(' ', '');
+  }
+
+  static String getHourMinutes(String isoString) {
+    final dateTime = DateTime.parse(isoString);
+    final formattedTime = DateFormat.jm().format(dateTime); // e.g., "2:51 PM"
+    return formattedTime
+        .replaceAll(':', '-')
+        .replaceAll(' ', '_'); // e.g., "2-51_PM"
   }
 
   static void showAlert({required String title, required String message}) {

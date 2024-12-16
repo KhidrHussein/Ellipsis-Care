@@ -31,30 +31,30 @@ class AuthenticationOptions extends StatelessWidget {
           ),
           icon: SvgPicture.asset(AssetStrings.google),
         ),
-        SizedBox(height: 16.h),
-        OutlinedButton.icon(
-          onPressed: () {},
-          label: Text(
-            "Continue with Facebook",
-            style: context.textTheme.bodyMedium?.copyWith(
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          icon: SvgPicture.asset(AssetStrings.facebook),
-        ),
-        SizedBox(height: 16.h),
-        OutlinedButton.icon(
-          onPressed: () {},
-          label: Text(
-            "Continue with Apple",
-            style: context.textTheme.bodyMedium?.copyWith(
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          icon: SvgPicture.asset(AssetStrings.apple),
-        )
+        // SizedBox(height: 16.h),
+        // OutlinedButton.icon(
+        //   onPressed: () {},
+        //   label: Text(
+        //     "Continue with Facebook",
+        //     style: context.textTheme.bodyMedium?.copyWith(
+        //       fontSize: 15.sp,
+        //       fontWeight: FontWeight.w600,
+        //     ),
+        //   ),
+        //   icon: SvgPicture.asset(AssetStrings.facebook),
+        // ),
+        // SizedBox(height: 16.h),
+        // OutlinedButton.icon(
+        //   onPressed: () {},
+        //   label: Text(
+        //     "Continue with Apple",
+        //     style: context.textTheme.bodyMedium?.copyWith(
+        //       fontSize: 15.sp,
+        //       fontWeight: FontWeight.w600,
+        //     ),
+        //   ),
+        //   icon: SvgPicture.asset(AssetStrings.apple),
+        // )
       ],
     );
   }

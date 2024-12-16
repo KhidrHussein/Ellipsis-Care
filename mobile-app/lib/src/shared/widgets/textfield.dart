@@ -58,6 +58,8 @@ class PasswordField extends StatefulWidget {
 }
 
 class _PasswordFieldState extends State<PasswordField> {
+  bool _obscureText = true;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -74,9 +76,17 @@ class _PasswordFieldState extends State<PasswordField> {
         TextFormField(
           controller: widget.controller,
           validator: widget.validator,
-          obscureText: true,
+          obscureText: _obscureText,
           decoration: InputDecoration(
             hintText: widget.hint,
+            suffixIcon: IconButton(
+              iconSize: 20,
+              onPressed: () => setState(() => _obscureText = !_obscureText),
+              icon: Icon(
+                !_obscureText ? Icons.visibility : Icons.visibility_off,
+                color: Colors.grey[600],
+              ),
+            ),
           ),
         ),
       ],

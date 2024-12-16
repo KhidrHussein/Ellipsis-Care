@@ -1,3 +1,5 @@
+import 'package:ellipsis_care/config/router/route_names.dart';
+import 'package:ellipsis_care/src/shared/widgets/navigator_shell/navigator_shell.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,23 +42,25 @@ class NotRecording extends StatelessWidget {
           ),
         ),
         40.sizedBoxHeight,
-        Padding(
-          padding: REdgeInsets.symmetric(horizontal: 16, vertical: 15),
-          child: Row(
-            children: _actions.entries.map((asset) {
-              return HomeActionChip(
-                icon: asset.key,
-                title: asset.value,
-                onTap: switch (asset.key) {
-                  AssetStrings.addReminderIcon => () {},
-                  AssetStrings.sosIcon => () {},
-                  AssetStrings.healthStatusIcon => () {},
-                  _ => null
-                },
-              );
-            }).toList(),
-          ),
-        )
+        // Padding(
+        //   padding: REdgeInsets.symmetric(horizontal: 16, vertical: 15),
+        //   child: Row(
+        //     children: _actions.entries.map((asset) {
+        //       return HomeActionChip(
+        //         icon: asset.key,
+        //         title: asset.value,
+        //         onTap: switch (asset.key) {
+        //           AssetStrings.addReminderIcon => () {
+        //             context.read<NavigationRowCubit>().goToRoute(RouteNames.reminders);
+        //           },
+        //           AssetStrings.sosIcon => () {},
+        //           AssetStrings.healthStatusIcon => () {},
+        //           _ => null
+        //         },
+        //       );
+        //     }).toList(),
+        //   ),
+        // )
       ],
     );
   }

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/emergency/presentation/bloc/emergency_bloc.dart';
 
 import '../../../../../core/constants/colors.dart';
 import '../../../../../core/utils/extensions.dart';
@@ -15,8 +13,6 @@ class EmergencyCall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<EmergencyContactBloc>().add(AlertContactsEvent());
-
     return Scaffold(
       backgroundColor: AppColors.emergencyCallBgColor,
       body: Padding(

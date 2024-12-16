@@ -1,8 +1,12 @@
-import '../../../../../../core/utils/extensions.dart';
-import '../../../../../../core/utils/helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:ellipsis_care/src/features/settings/presentation/bloc/settings_bloc.dart';
+
+import '../../../../../../core/enums/api_state.dart';
+import '../../../../../../core/utils/extensions.dart';
+import '../../../../../../core/utils/helpers.dart';
 import '../../../../../shared/widgets/textfield.dart';
 import '../../widgets/settings_appbar.dart';
 
@@ -28,6 +32,9 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   @override
   void dispose() {
+    _currentPasswordController.clear();
+    _newPasswordController.clear();
+    _confirmPasswordController.clear();
     _currentPasswordController.dispose();
     _newPasswordController.dispose();
     _confirmPasswordController.dispose();
@@ -36,6 +43,8 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<SettingsBloc>();
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -63,11 +72,49 @@ class _ChangePasswordState extends State<ChangePassword> {
                     password,
                     oldPassword: _newPasswordController.text),
               ),
-              .43.sh.sizedBoxHeight,
-              FilledButton(
-                onPressed: () {},
-                child: const Text("Save"),
-              )
+              .42.sh.sizedBoxHeight,
+              BlocConsumer<SettingsBloc, SettingsState>(
+                listener: (context, state) {
+                  switch (state.apiState) {
+                    case ApiState.success:
+                      UtilHelpers.showAlert(
+                          title: "Success", message: state.data);
+                      UtilHelpers.pop();
+                      break;
+                    case ApiState.failed:
+                      UtilHelpers.showAlert(
+                          title: "Error", message: state.error);
+                      break;
+                    default:
+                  }
+                },
+                builder: (context, state) {
+                  return FilledButton(
+                    onPressed: switch (state.apiState) {
+                      ApiState.loading => null,
+                      _ => () {
+                          bool conditions =
+                              (_currentPasswordController.text.isNotEmpty &&
+                                  _newPasswordController.text ==
+                                      _confirmPasswordController.text);
+                          if (conditions) {
+                            bloc.add(
+                              UpdatePasswordEvent(
+                                currentPassword:
+                                    _currentPasswordController.text,
+                                newPassword: _newPasswordController.text,
+                                confirmPassword:
+                                    _confirmPasswordController.text,
+                              ),
+                            );
+                          }
+                          UtilHelpers.killKeyboard();
+                        }
+                    },
+                    child: const Text("Save"),
+                  );
+                },
+              ),
             ],
           ),
         ),

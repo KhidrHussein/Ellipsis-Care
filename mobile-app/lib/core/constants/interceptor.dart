@@ -10,11 +10,13 @@ class AuthInterceptor extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    final String? token;
+    String? token;
 
     if (!options.path.contains("auth")) {
       token = await injector<SecureStorage>().getAccessToken();
-      options.headers.addAll({"Authorization": "Token $token"});
+      if (token != null) {
+        options.headers.addAll({"Authorization": "Token $token"});
+      }
       return handler.next(options);
     }
 
