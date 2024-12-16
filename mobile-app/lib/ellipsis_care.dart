@@ -7,7 +7,7 @@ import 'config/app_config.dart';
 import 'config/router/router.dart';
 import 'config/theme/theme.dart';
 import 'src/features/authentication/presentation/bloc/auth_bloc.dart';
-import 'src/features/dashboard/presentation/controller/cubit/medications_cubit.dart';
+import 'src/features/dashboard/presentation/controller/bloc/dashboard_bloc.dart';
 import 'src/features/emergency/presentation/bloc/emergency_bloc.dart';
 import 'src/features/home/presentation/bloc/home_bloc.dart';
 import 'src/features/onboarding/cubit/onboarding_cubit.dart';
@@ -55,6 +55,9 @@ class EllipsisCare extends StatelessWidget {
           create: (context) => HomeBloc(),
         ),
         BlocProvider(
+          create: (context) => DashboardBloc()..add(GetMedications()),
+        ),
+        BlocProvider(
           create: (context) => ReminderBloc()
             ..add(InitializeVoiceCommandEvent())
             ..add(GetAllReminders()),
@@ -63,9 +66,6 @@ class EllipsisCare extends StatelessWidget {
           create: (context) =>
               EmergencyContactBloc()..add(FetchContactsEvent()),
         ),
-        BlocProvider(
-          create: (context) => MedicationProgressCubit(),
-        )
       ],
       child: ScreenUtilInit(
         ensureScreenSize: true,

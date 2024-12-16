@@ -3,11 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/enums/reminder_options/reminder_options.dart';
 import '../../../../../core/utils/extensions.dart';
-import 'meal/meal_and_nutrition.dart';
-import 'medication/medication.dart';
-import '../../../../shared/widgets/progress_bar.dart';
 
-import '../../../../../core/constants/asset_strings.dart';
 
 class DashboardSection extends StatelessWidget {
   final String name;

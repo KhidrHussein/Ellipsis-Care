@@ -1,3 +1,5 @@
+import 'package:ellipsis_care/core/utils/helpers.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/controller/bloc/dashboard_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,33 +7,40 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../../../core/constants/asset_strings.dart';
 import '../../../../../../core/utils/extensions.dart';
-import '../../controller/cubit/medications_cubit.dart';
+import '../../../../reminders/models/reminder_model.dart/reminder_model.dart';
 import 'routine.dart';
 
 import '../../../../../../core/constants/colors.dart';
 
 class MedicationCard extends StatefulWidget {
-  final String name;
-  final String dosage;
+  final ReminderModel medication;
 
-  const MedicationCard({
-    super.key,
-    required this.name,
-    required this.dosage,
-  });
+  const MedicationCard({super.key, required this.medication});
 
   @override
   State<MedicationCard> createState() => _MedicationSectionCardState();
 }
 
 class _MedicationSectionCardState extends State<MedicationCard> {
-  final ValueNotifier<bool> _showRoutines = ValueNotifier(false);
+  late final ValueNotifier<bool> _showRoutines;
   final Tween<double> _indicatorValue = Tween<double>(begin: 0.0, end: 1.0);
 
   @override
-  Widget build(BuildContext context) {
-    final medicationsProgressCubit = context.watch<MedicationProgressCubit>();
+  void initState() {
+    super.initState();
+    _showRoutines = ValueNotifier(widget.medication.schedule.isNotEmpty);
+  }
 
+  String _getStatus(int length) {
+    return length == widget.medication.schedule.length
+        ? "Completed"
+        : "Not Completed";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.watch<DashboardBloc>();
+    
     return GestureDetector(
       onTap: () => _showRoutines.value = !_showRoutines.value,
       child: Container(
@@ -54,24 +63,17 @@ class _MedicationSectionCardState extends State<MedicationCard> {
                   Row(
                     children: [
                       .21.sw.horizontalSpace,
-                      const Expanded(
+                      Expanded(
                         child: Column(
                           children: [
-                            Routine(
-                              icon: AssetStrings.morningIcon,
-                              name: "Morning",
-                              timeAlloted: "5",
+                            ...widget.medication.schedule.map(
+                              (schedule) => RoutineCard(
+                                schedule: schedule,
+                                timeAlloted: UtilHelpers.getTimeFromIsoString(
+                                  widget.medication.startDate,
+                                ),
+                              ),
                             ),
-                            Routine(
-                              icon: AssetStrings.afternoonIcon,
-                              name: "Afternoon",
-                              timeAlloted: "5",
-                            ),
-                            Routine(
-                              icon: AssetStrings.nightIcon,
-                              name: "Night",
-                              timeAlloted: "5",
-                            )
                           ],
                         ),
                       ),
@@ -101,7 +103,7 @@ class _MedicationSectionCardState extends State<MedicationCard> {
                     Row(
                       children: [
                         Text(
-                          widget.name,
+                          widget.medication.name,
                           style: context.textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.w400,
                           ),
@@ -120,7 +122,7 @@ class _MedicationSectionCardState extends State<MedicationCard> {
                       ],
                     ),
                     Text(
-                      widget.dosage,
+                      widget.medication.dosage,
                       style: context.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w400,
                         color: AppColors.medicationCardSubTextColor,
@@ -131,21 +133,26 @@ class _MedicationSectionCardState extends State<MedicationCard> {
                       tween: _indicatorValue,
                       duration: Durations.short4,
                       builder: (context, value, _) {
-                        return LinearProgressIndicator(
-                          value:
-                              (medicationsProgressCubit.progress() / 3) * value,
-                          minHeight: 7.h,
-                          borderRadius: BorderRadius.circular(8.r),
-                          color: context
-                              .themeExtension.medicationProgressIndicatorColor,
-                          backgroundColor:
-                              context.themeExtension.medicationProgressBgColor,
+                        return BlocBuilder<DashboardBloc, DashboardState>(
+                          builder: (context, state) {
+                            return LinearProgressIndicator(
+                              value: (state.medicationProgress /
+                                      widget.medication.schedule.length) *
+                                  value,
+                              minHeight: 7.h,
+                              borderRadius: BorderRadius.circular(8.r),
+                              color: context.themeExtension
+                                  .medicationProgressIndicatorColor,
+                              backgroundColor: context
+                                  .themeExtension.medicationProgressBgColor,
+                            );
+                          },
                         );
                       },
                     ),
                     4.verticalSpace,
                     Text(
-                      "status",
+                      _getStatus(bloc.state.medicationProgress),
                       style: context.textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w400,
                         color: AppColors.medicationCardSubTextColor,

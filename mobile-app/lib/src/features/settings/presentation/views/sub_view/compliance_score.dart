@@ -24,7 +24,7 @@ class _ComplianceScoreState extends State<ComplianceScore> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.themeData.primaryColorDark,
+      backgroundColor: context.themeData.scaffoldBackgroundColor,
       body: SafeArea(
         child: Container(
           padding: REdgeInsets.all(10),

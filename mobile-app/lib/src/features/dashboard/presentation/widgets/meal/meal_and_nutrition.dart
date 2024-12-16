@@ -1,5 +1,7 @@
 import 'package:ellipsis_care/core/enums/reminder_options/reminder_options.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/controller/bloc/dashboard_bloc.dart';
 import 'package:ellipsis_care/src/shared/widgets/progress_bar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/utils/extensions.dart';
 import 'package:flutter/material.dart';
@@ -11,24 +13,34 @@ import 'nutrition_card.dart';
 class MealAndNutrition extends StatelessWidget {
   const MealAndNutrition({super.key});
 
+  void _updateProgress(BuildContext context, bool value) {
+    // if (value) {
+    //   context.read<DashboardBloc>().add(AddToMealProgress());
+    // } else {
+    //   context.read<DashboardBloc>().add(SubtractFromMealProgress());
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bloc = context.watch<DashboardBloc>();
+
     return Column(
       children: [
         ProgressBar(
           icon: AssetStrings.foodIcon,
           title: "Meal & Nutrition",
           type: ReminderType.food,
-          progress: 10,
+          progress: bloc.state.mealProgress * 25,
         ),
-        20.verticalSpace,
+        10.verticalSpace,
         NutritionCard(
           title: "Breakfast",
           recipe: "Oats with milk",
           amountOfCalories: 300,
           icon: AssetStrings.breakfastIcon,
           color: context.themeExtension.breakfastCardColor,
-          onChanged: (value) {},
+          onChanged: (value) => _updateProgress(context, value),
         ),
         5.verticalSpace,
         Row(
@@ -42,7 +54,7 @@ class MealAndNutrition extends StatelessWidget {
                     amountOfCalories: 300,
                     icon: AssetStrings.lunchIcon,
                     color: context.themeExtension.lunchCardColor,
-                    onChanged: (value) {},
+                    onChanged: (value) => _updateProgress(context, value),
                   ),
                   5.verticalSpace,
                   NutritionCard(
@@ -51,7 +63,7 @@ class MealAndNutrition extends StatelessWidget {
                     amountOfCalories: 300,
                     icon: AssetStrings.snacksIcon,
                     color: context.themeExtension.snacksCardColor,
-                    onChanged: (value) {},
+                    onChanged: (value) => _updateProgress(context, value),
                   ),
                 ],
               ),
@@ -67,7 +79,7 @@ class MealAndNutrition extends StatelessWidget {
                     stretchToFill: true,
                     icon: AssetStrings.dinnerIcon,
                     color: context.themeExtension.dinnerCardColor,
-                    onChanged: (value) {},
+                    onChanged: (value) => _updateProgress(context, value),
                   ),
                 ],
               ),
