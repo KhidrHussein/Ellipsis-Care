@@ -182,3 +182,9 @@ class ReminderSerializer(serializers.Serializer):
 
 class TotalUsersSerializer(serializers.Serializer):
     total_users = serializers.IntegerField()
+
+
+class AdherenceRateSerializer(serializers.Serializer):
+    average_adherence_rate = serializers.FloatField()
+    worst_sync_percentage = serializers.FloatField()
+    optimal_sync_percentage = serializers.FloatField()

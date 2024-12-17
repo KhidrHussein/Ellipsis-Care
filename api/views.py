@@ -3,10 +3,11 @@ from djoser.views import UserViewSet, TokenCreateView
 from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model, authenticate
-from .models import UserProfile, Medication, HealthCondition, MealPlan, Appointment, Audio, CustomUser
+from .models import UserProfile, Medication, HealthCondition, MealPlan, Appointment, Audio, CustomUser, HealthSyncScore
 from .serializers import (
     UserSerializer, UserProfileSerializer, MedicationSerializer, 
-    HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer, CustomTokenCreateSerializer, UpdateProfileSerializer, ChangePasswordSerializer, TotalUsersSerializer
+    HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer, 
+    CustomTokenCreateSerializer, UpdateProfileSerializer, ChangePasswordSerializer, TotalUsersSerializer, AdherenceRateSerializer
 )
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -25,6 +26,7 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
+from django.db.models import Sum
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -784,6 +786,57 @@ class TotalUsersView(APIView):
 
         except Exception as e:
             # Handle unexpected errors gracefully
+            return Response({
+                "status": "error",
+                "message": f"An unexpected error occurred: {str(e)}",
+                "data": None
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class PatientAdherenceRateView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensures only authenticated users can access
+
+    def get(self, request, *args, **kwargs):
+        try:
+            # Calculate the total number of users
+            total_users = HealthSyncScore.objects.values('user').distinct().count()
+
+            if total_users == 0:
+                return Response({
+                    "status": "error",
+                    "message": "No users found with sync score.",
+                    "data": None
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            # Calculate the overall adherence rate (average cumulative_monthly_score)
+            total_sync_score = HealthSyncScore.objects.aggregate(total_sync=Sum('cumulative_monthly_score'))
+            average_adherence_rate = total_sync_score['total_sync'] / total_users if total_users else 0
+
+            # Calculate the percentage of users in the worst, weak, and optimal sync ranges
+            worst_sync = HealthSyncScore.objects.filter(cumulative_monthly_score__lt=50).count()
+            optimal_sync = HealthSyncScore.objects.filter(cumulative_monthly_score__gte=90).count()
+
+            # Calculate percentages
+            worst_percentage = (worst_sync / total_users) * 100 if total_users > 0 else 0
+            optimal_percentage = (optimal_sync / total_users) * 100 if total_users > 0 else 0
+
+            # Prepare the data to be serialized
+            data = {
+                "average_adherence_rate": average_adherence_rate,
+                "worst_sync_percentage": worst_percentage,
+                "optimal_sync_percentage": optimal_percentage
+            }
+
+            # Serialize the response data
+            serializer = AdherenceRateSerializer(data)
+            
+            return Response({
+                "status": "success",
+                "message": "Adherence rate and sync categories retrieved successfully.",
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
             return Response({
                 "status": "error",
                 "message": f"An unexpected error occurred: {str(e)}",
