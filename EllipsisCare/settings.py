@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,10 +50,6 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
 
-    # scheduling apps
-    # 'django_celery_beat',
-    # 'django_q',
-    # 'django_apscheduler',
     'corsheaders',
 
     # authentication
@@ -72,19 +69,6 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'api.CustomUser'
 
 SITE_ID = 1
-
-# Djoser settings for email authentication
-# DJOSER = {
-#     'LOGIN_FIELD': 'email',
-#     'USER_CREATE_PASSWORD_RETYPE': True,
-#     'SEND_CONFIRMATION_EMAIL': False,
-#     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
-#     # 'ACTIVATION_URL': 'activate/{uid}/{token}',
-#     'SERIALIZERS': {
-#         'user_create': 'api.serializers.UserSerializer',
-#         'user': 'api.serializers.UserSerializer',
-#     },
-# }
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
@@ -118,20 +102,7 @@ REST_FRAMEWORK = {
 }
 
 # Email backend settings for sending authentication emails
-from decouple import config
-import logging
 
-# logging.basicConfig(level=logging.DEBUG)
-# EMAIL_HOST = config('EMAIL_HOST')
-# EMAIL_PORT = config('EMAIL_PORT', cast=int)
-# EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
-# EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool)
-# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-# DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
-
-
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('POSTMARK_SMTP_SERVER', 'smtp.postmarkapp.com')
 EMAIL_PORT = os.getenv('POSTMARK_SMTP_PORT', 587)
 EMAIL_USE_TLS = True
@@ -261,24 +232,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Celery settings configuration
-CELERY_BROKER_URL = 'redis://localhost:6379/0' 
-# CELERY_BROKER_URL = 'redis://172.18.71.255:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-
-# Define the schedule
-# CELERY_BEAT_SCHEDULE = {
-#     'run-my-task-every-60-seconds': {
-#         # 'task': 'api.tasks.send_medication_reminders',
-#         'task': 'api.tasks.test_task',
-#         'schedule': 60.0,  # Run every 60 seconds
-#         'args': ()
-#     },
-# }
 
 # Logging configuration
 
@@ -297,17 +250,6 @@ LOGGING = {
     },
 }
 
-# PythonQ configuration
-# Q_CLUSTER = {
-#     'name': 'DjangoQ',
-#     'workers': 4,
-#     'recycle': 500,
-#     'timeout': 60,
-#     'retry': 120,
-#     'queue_limit': 50,
-#     'bulk': 10,
-#     'orm': 'default',
-# }
 
 # media and audio directory configuration
 MEDIA_URL = '/media/'
