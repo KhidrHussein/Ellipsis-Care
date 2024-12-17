@@ -176,3 +176,9 @@ class ReminderSerializer(serializers.Serializer):
                 raise serializers.ValidationError("Both 'start' and 'end' dates must be provided in 'duration'.")
         
         return value
+
+
+# Serializers for the Web Dashboard
+
+class TotalUsersSerializer(serializers.Serializer):
+    total_users = serializers.IntegerField()

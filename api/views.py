@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model, authenticate
 from .models import UserProfile, Medication, HealthCondition, MealPlan, Appointment, Audio, CustomUser
 from .serializers import (
     UserSerializer, UserProfileSerializer, MedicationSerializer, 
-    HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer, CustomTokenCreateSerializer, UpdateProfileSerializer, ChangePasswordSerializer
+    HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer, CustomTokenCreateSerializer, UpdateProfileSerializer, ChangePasswordSerializer, TotalUsersSerializer
 )
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -760,4 +760,32 @@ class HealthSyncScoreView(APIView):
                 "status": "error",
                 "message": "An error occurred while processing the request",
                 "data": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# Endpoints for the Web Dashboard
+
+class TotalUsersView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensures only authenticated users can access
+
+    def get(self, request, *args, **kwargs):
+        try:
+            User = get_user_model()  # Dynamically get the user model
+            total_users = User.objects.count()  # Fetch the total number of users
+            
+            data = {"total_users": total_users}
+            serializer = TotalUsersSerializer(data)
+            
+            return Response({
+                "status": "success",
+                "message": "Total users retrieved successfully.",
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            # Handle unexpected errors gracefully
+            return Response({
+                "status": "error",
+                "message": f"An unexpected error occurred: {str(e)}",
+                "data": None
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
