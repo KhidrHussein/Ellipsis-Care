@@ -7,7 +7,8 @@ from .models import UserProfile, Medication, HealthCondition, MealPlan, Appointm
 from .serializers import (
     UserSerializer, UserProfileSerializer, MedicationSerializer, 
     HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer, 
-    CustomTokenCreateSerializer, UpdateProfileSerializer, ChangePasswordSerializer, TotalUsersSerializer, AdherenceRateSerializer
+    CustomTokenCreateSerializer, UpdateProfileSerializer, ChangePasswordSerializer, TotalUsersSerializer, AdherenceRateSerializer,
+    CriticalAlertSerializer
 )
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -833,6 +834,50 @@ class PatientAdherenceRateView(APIView):
             return Response({
                 "status": "success",
                 "message": "Adherence rate and sync categories retrieved successfully.",
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({
+                "status": "error",
+                "message": f"An unexpected error occurred: {str(e)}",
+                "data": None
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CriticalAlertsView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensures only authenticated users can access
+
+    def get(self, request, *args, **kwargs):
+        try:
+            # Define threshold for the worst sync score (you can adjust this threshold)
+            sync_threshold = 50  # Any user with a sync score below 30 is flagged as critical
+
+            # Fetch all users whose worst sync score is below the threshold
+            critical_users = HealthSyncScore.objects.filter(cumulative_monthly_score__lt=sync_threshold)
+
+            # If no critical users are found, return a message saying so
+            if not critical_users.exists():
+                return Response({
+                    "status": "success",
+                    "message": "No critical users found based on sync score.",
+                    "data": []
+                }, status=status.HTTP_200_OK)
+
+            # Extract user information and sync scores into a list of dictionaries
+            critical_user_data = [{
+                "name": (user.user.first_name or '') + " " + (user.user.last_name or ''),
+                "sync_score": user.cumulative_monthly_score,
+                "user_id": user.user.id
+            } for user in critical_users]
+
+            # Serialize the data
+            serializer = CriticalAlertSerializer(critical_user_data, many=True)
+
+            # Return the serialized data
+            return Response({
+                "status": "success",
+                "message": "Critical users based on sync score retrieved successfully.",
                 "data": serializer.data
             }, status=status.HTTP_200_OK)
 

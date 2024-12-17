@@ -3,7 +3,8 @@ from rest_framework.routers import DefaultRouter
 from .views import (UserProfileViewSet, MedicationViewSet, HealthConditionViewSet, MealPlanViewSet, 
                     AppointmentViewSet, AudioViewSet, UserCreateViewSet, VerifyEmailView, ReminderView, 
                     CustomTokenCreateView, PasswordResetRequestView, PasswordResetConfirmView, CustomUserViewSet, 
-                    HealthSyncScoreView, UpdateProfileView, ChangePasswordView, TotalUsersView, PatientAdherenceRateView)
+                    HealthSyncScoreView, UpdateProfileView, ChangePasswordView, TotalUsersView, PatientAdherenceRateView,
+                    CriticalAlertsView)
 
 router = DefaultRouter()
 router.register(r'userprofiles', UserProfileViewSet)
@@ -31,4 +32,5 @@ urlpatterns = [
     # Web Dashboard
     path('dashboard/total-users/', TotalUsersView.as_view(), name='total-users'),
     path('patient-adherence-rate/', PatientAdherenceRateView.as_view(), name='patient_adherence_rate'),
+    path('critical-alerts/', CriticalAlertsView.as_view(), name='critical_alerts'),
 ]

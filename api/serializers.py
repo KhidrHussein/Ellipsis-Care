@@ -188,3 +188,9 @@ class AdherenceRateSerializer(serializers.Serializer):
     average_adherence_rate = serializers.FloatField()
     worst_sync_percentage = serializers.FloatField()
     optimal_sync_percentage = serializers.FloatField()
+
+
+class CriticalAlertSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    sync_score = serializers.FloatField()
+    user_id = serializers.IntegerField()
