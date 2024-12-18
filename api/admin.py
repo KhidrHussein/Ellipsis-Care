@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
-from .models import UserProfile, HealthCondition, Medication, Meal, MealPlan, Appointment, Audio, CustomUser, HealthSyncScore
+from .models import (UserProfile, HealthCondition, Medication, Meal, MealPlan, Appointment, Audio, CustomUser, HealthSyncScore,
+                     UserHealthMetrics, HealthMetricThreshold, )
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django import forms
 
@@ -104,5 +105,18 @@ class AudioAdmin(admin.ModelAdmin):
 
 admin.site.register(HealthSyncScore)
 
-# admin.site.register(DjangoJob)
-# admin.site.register(DjangoJobExecution)
+
+# Web Dashboard
+
+class UserHealthMetricsAdmin(admin.ModelAdmin):
+    list_display = ('user', 'systolic_blood_pressure', 'diastolic_blood_pressure', 'sugar_level', 'weight', 'height', 'bmi', 'created_at')
+    search_fields = ('user__username',)
+
+admin.site.register(UserHealthMetrics, UserHealthMetricsAdmin)
+
+
+class HealthMetricThresholdAdmin(admin.ModelAdmin):
+    list_display = ('name', 'threshold_value', 'is_active')
+    search_fields = ('name',)
+
+admin.site.register(HealthMetricThreshold, HealthMetricThresholdAdmin)

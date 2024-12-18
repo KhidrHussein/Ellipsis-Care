@@ -4,7 +4,7 @@ from .views import (UserProfileViewSet, MedicationViewSet, HealthConditionViewSe
                     AppointmentViewSet, AudioViewSet, UserCreateViewSet, VerifyEmailView, ReminderView, 
                     CustomTokenCreateView, PasswordResetRequestView, PasswordResetConfirmView, CustomUserViewSet, 
                     HealthSyncScoreView, UpdateProfileView, ChangePasswordView, TotalUsersView, PatientAdherenceRateView,
-                    CriticalAlertsView)
+                    CriticalAlertsView, ConcerningHealthMetricsView)
 
 router = DefaultRouter()
 router.register(r'userprofiles', UserProfileViewSet)
@@ -33,4 +33,5 @@ urlpatterns = [
     path('dashboard/total-users/', TotalUsersView.as_view(), name='total-users'),
     path('patient-adherence-rate/', PatientAdherenceRateView.as_view(), name='patient_adherence_rate'),
     path('critical-alerts/', CriticalAlertsView.as_view(), name='critical_alerts'),
+    path('concerning-metrics/', ConcerningHealthMetricsView.as_view(), name='concerning-metrics'),
 ]

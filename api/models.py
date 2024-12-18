@@ -188,3 +188,61 @@ class HealthSyncScore(models.Model):
 
     def __str__(self):
         return f"Health Sync Score for {self.user} on {self.date}"
+
+
+class HealthMetricThreshold(models.Model):
+    name = models.CharField(max_length=255)  # e.g., 'systolic_blood_pressure'
+    threshold_value = models.FloatField()  # The threshold value (e.g., 140 for systolic BP)
+    is_active = models.BooleanField(default=True)  # Whether this threshold is active
+
+    def __str__(self):
+        return f"{self.name} - {self.threshold_value}"
+
+
+class UserHealthMetrics(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    systolic_blood_pressure = models.IntegerField(null=True, blank=True)
+    diastolic_blood_pressure = models.IntegerField(null=True, blank=True)
+    sugar_level = models.FloatField(null=True, blank=True)
+    weight = models.FloatField(null=True, blank=True)
+    height = models.FloatField(null=True, blank=True)
+    bmi = models.FloatField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Health Metrics for {self.user}"
+
+    def calculate_bmi(self):
+        """Calculate BMI based on weight and height"""
+        if self.weight and self.height:
+            self.bmi = self.weight / (self.height ** 2)
+        return self.bmi
+
+    def get_threshold(self, metric_name):
+        """Fetch threshold from DB or return default value."""
+        try:
+            threshold = HealthMetricThreshold.objects.get(name=metric_name, is_active=True)
+            return threshold.threshold_value
+        except HealthMetricThreshold.DoesNotExist:
+            default_thresholds = {
+                'systolic_blood_pressure': 140,
+                'diastolic_blood_pressure': 90,
+                'sugar_level': 120,
+                'bmi': 30,
+            }
+            return default_thresholds.get(metric_name, 0)
+
+    def is_concerning(self):
+        """Check if metrics exceed thresholds."""
+        concerning = False
+        if (self.systolic_blood_pressure and 
+            self.systolic_blood_pressure > self.get_threshold('systolic_blood_pressure')):
+            concerning = True
+        elif (self.diastolic_blood_pressure and 
+              self.diastolic_blood_pressure > self.get_threshold('diastolic_blood_pressure')):
+            concerning = True
+        if self.sugar_level and self.sugar_level > self.get_threshold('sugar_level'):
+            concerning = True
+        if self.bmi and self.bmi > self.get_threshold('bmi'):
+            concerning = True
+        return concerning

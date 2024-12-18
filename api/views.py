@@ -8,7 +8,7 @@ from .serializers import (
     UserSerializer, UserProfileSerializer, MedicationSerializer, 
     HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer, 
     CustomTokenCreateSerializer, UpdateProfileSerializer, ChangePasswordSerializer, TotalUsersSerializer, AdherenceRateSerializer,
-    CriticalAlertSerializer
+    CriticalAlertSerializer, UserHealthMetrics, ConcerningMetricSerializer, UserConcerningMetricsSerializer
 )
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -879,6 +879,78 @@ class CriticalAlertsView(APIView):
                 "status": "success",
                 "message": "Critical users based on sync score retrieved successfully.",
                 "data": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({
+                "status": "error",
+                "message": f"An unexpected error occurred: {str(e)}",
+                "data": None
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ConcerningHealthMetricsView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensures only authenticated users can access
+
+    def get(self, request, *args, **kwargs):
+        try:
+            # Fetch all user metrics
+            all_user_metrics = UserHealthMetrics.objects.select_related('user')
+
+            # Filter the metrics that are concerning
+            users_with_concerning_metrics = [
+                user_metrics for user_metrics in all_user_metrics if user_metrics.is_concerning()
+            ]
+
+            # Prepare the response data
+            data = []
+
+            for user_metrics in users_with_concerning_metrics:
+                concerning_metrics = []
+
+                # Check if systolic blood pressure is concerning
+                if user_metrics.systolic_blood_pressure and user_metrics.systolic_blood_pressure > user_metrics.get_threshold('systolic_blood_pressure'):
+                    concerning_metrics.append({
+                        'metric': 'systolic_blood_pressure',
+                        'value': user_metrics.systolic_blood_pressure,
+                        'threshold': user_metrics.get_threshold('systolic_blood_pressure')
+                    })
+
+                # Check if diastolic blood pressure is concerning
+                if user_metrics.diastolic_blood_pressure and user_metrics.diastolic_blood_pressure > user_metrics.get_threshold('diastolic_blood_pressure'):
+                    concerning_metrics.append({
+                        'metric': 'diastolic_blood_pressure',
+                        'value': user_metrics.diastolic_blood_pressure,
+                        'threshold': user_metrics.get_threshold('diastolic_blood_pressure')
+                    })
+
+                # Check if sugar level is concerning
+                if user_metrics.sugar_level and user_metrics.sugar_level > user_metrics.get_threshold('sugar_level'):
+                    concerning_metrics.append({
+                        'metric': 'sugar_level',
+                        'value': user_metrics.sugar_level,
+                        'threshold': user_metrics.get_threshold('sugar_level')
+                    })
+
+                # Check if BMI is concerning
+                if user_metrics.bmi and user_metrics.bmi > user_metrics.get_threshold('bmi'):
+                    concerning_metrics.append({
+                        'metric': 'bmi',
+                        'value': user_metrics.bmi,
+                        'threshold': user_metrics.get_threshold('bmi')
+                    })
+
+                # If there are any concerning metrics, include them in the response
+                if concerning_metrics:
+                    serialized_data = UserConcerningMetricsSerializer(user_metrics).data
+                    serialized_data['concerning_metrics'] = concerning_metrics  # Add concerning metrics dynamically
+                    data.append(serialized_data)
+
+            # Return the response
+            return Response({
+                "status": "success",
+                "message": "Users with concerning health metrics fetched successfully.",
+                "data": data
             }, status=status.HTTP_200_OK)
 
         except Exception as e:

@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
-from .models import UserProfile, Medication, HealthCondition, MealPlan, Meal, Appointment, Audio, CustomUser
+from .models import UserProfile, Medication, HealthCondition, MealPlan, Meal, Appointment, Audio, CustomUser, UserHealthMetrics
 
 from djoser.serializers import TokenCreateSerializer
 from rest_framework.authtoken.models import Token
@@ -194,3 +194,25 @@ class CriticalAlertSerializer(serializers.Serializer):
     name = serializers.CharField()
     sync_score = serializers.FloatField()
     user_id = serializers.IntegerField()
+
+
+class ConcerningMetricSerializer(serializers.Serializer):
+    metric = serializers.CharField()
+    value = serializers.FloatField()
+    threshold = serializers.FloatField()
+
+
+class UserConcerningMetricsSerializer(serializers.ModelSerializer):
+    # Remove concerning_metrics from here; it will be added dynamically in the view
+    class Meta:
+        model = UserHealthMetrics
+        fields = ['user', 'bmi', 'systolic_blood_pressure', 'diastolic_blood_pressure', 'sugar_level', 'weight', 'height']
+
+    def to_representation(self, instance):
+        """
+        Customize the output to include user details and dynamic data.
+        """
+        representation = super().to_representation(instance)
+        representation['user_id'] = instance.user.id
+        representation['name'] = f"{instance.user.last_name} {instance.user.first_name}"
+        return representation
