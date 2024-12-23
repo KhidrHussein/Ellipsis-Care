@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
-from .models import UserProfile, Medication, HealthCondition, MealPlan, Meal, Appointment, Audio, CustomUser, UserHealthMetrics
+from .models import (UserProfile, Medication, HealthCondition, MealPlan, Meal, Appointment, Audio, CustomUser, 
+                     UserHealthMetrics, Reminder, FoodReminder, DrugReminder, AppointmentReminder)
 
 from djoser.serializers import TokenCreateSerializer
 from rest_framework.authtoken.models import Token
@@ -78,7 +79,7 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['date_of_birth', 'gender', 'language_preference']
+        fields = ['date_of_birth', 'gender', 'language_preference', 'profile_picture']
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -158,24 +159,88 @@ class AudioSerializer(serializers.ModelSerializer):
         return Audio.objects.create(**validated_data)
 
 
-class ReminderSerializer(serializers.Serializer):
-    # user_id = serializers.CharField(required=True)
-    reminder = serializers.DictField(required=True)
+# class ReminderSerializer(serializers.Serializer):
+#     # user_id = serializers.CharField(required=True)
+#     reminder = serializers.DictField(required=True)
 
-    def validate_reminder(self, value):
-        required_fields = ['name', 'type', 'schedule', 'interval', 'dosage', 'duration', 'instruction', 'time']
+#     def validate_reminder(self, value):
+#         required_fields = ['name', 'type', 'schedule', 'interval', 'dosage', 'duration', 'instruction', 'time']
         
-        # Check if all required fields are present
-        for field in required_fields:
-            if field not in value:
-                raise serializers.ValidationError(f"'{field}' field is missing in the reminder details.")
+#         # Check if all required fields are present
+#         for field in required_fields:
+#             if field not in value:
+#                 raise serializers.ValidationError(f"'{field}' field is missing in the reminder details.")
         
-        # Validate the 'duration' field
-        if 'duration' in value:
-            if 'start' not in value['duration'] or 'end' not in value['duration']:
-                raise serializers.ValidationError("Both 'start' and 'end' dates must be provided in 'duration'.")
+#         # Validate the 'duration' field
+#         if 'duration' in value:
+#             if 'start' not in value['duration'] or 'end' not in value['duration']:
+#                 raise serializers.ValidationError("Both 'start' and 'end' dates must be provided in 'duration'.")
         
-        return value
+#         return value
+
+
+# Base Reminder Serializer
+
+class ReminderSerializer(serializers.ModelSerializer):
+    details = serializers.JSONField(required=False)  # Flexible field to accommodate varying reminder types
+    time = serializers.TimeField(required=True)  
+    start_date = serializers.DateField(required=True)
+    end_date = serializers.DateField(required=True)
+
+    class Meta:
+        model = Reminder
+        fields = ['id', 'type', 'description', 'time', 'start_date', 'end_date', 'details']
+
+    def create(self, validated_data):
+        """
+        Handle the creation of a Reminder along with its associated details.
+        """
+        details = validated_data.pop('details', None)  # Extract details from validated data
+        reminder = Reminder.objects.create(**validated_data)  # Create the base Reminder object
+
+        # Handle specific reminder types
+        reminder_type = validated_data['type']
+        if reminder_type == Reminder.ReminderType.FOOD and details:
+            FoodReminder.objects.filter(reminder=reminder).delete()  # Ensure no duplicate
+            FoodReminder.objects.create(reminder=reminder, **details)
+        elif reminder_type == Reminder.ReminderType.DRUG and details:
+            DrugReminder.objects.filter(reminder=reminder).delete()  # Ensure no duplicate
+            DrugReminder.objects.create(reminder=reminder, **details)
+        elif reminder_type == Reminder.ReminderType.APPOINTMENT and details:
+            AppointmentReminder.objects.filter(reminder=reminder).delete()  # Ensure no duplicate
+            AppointmentReminder.objects.create(reminder=reminder, **details)
+
+        return reminder
+
+
+class DrugReminderSerializer(serializers.ModelSerializer):
+    medication_name = serializers.CharField(required=False)
+    dosage = serializers.CharField(required=False)
+    frequency = serializers.CharField(required=False)
+
+    class Meta:
+        model = DrugReminder
+        fields = ['medication_name', 'dosage', 'frequency']
+
+
+class FoodReminderSerializer(serializers.ModelSerializer):
+    meal_type = serializers.CharField(required=False)
+    calories = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = FoodReminder
+        fields = ['meal_type', 'calories']
+
+
+class AppointmentReminderSerializer(serializers.ModelSerializer):
+    location = serializers.CharField(required=False)
+    doctor_name = serializers.CharField(required=False)
+    notes = serializers.CharField(required=False)
+
+    class Meta:
+        model = AppointmentReminder
+        fields = ['location', 'doctor_name', 'notes']
+
 
 
 # Serializers for the Web Dashboard

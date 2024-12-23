@@ -16,6 +16,11 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from .managers import CustomUserManager
 
+from django.utils.translation import gettext_lazy as _
+from django.core.validators import FileExtensionValidator
+
+
+
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
@@ -36,6 +41,42 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+
+# class UserProfile(models.Model):
+#     GENDER_CHOICES = [
+#         ('M', 'Male'),
+#         ('F', 'Female'),
+#         ('P', 'Prefer not to say'),
+#     ]
+#     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+#     date_of_birth = models.DateField(null=True, blank=True)
+
+#     # Ensure the date is valid
+#     def clean(self):
+#         if self.date_of_birth and self.date_of_birth > timezone.now().date():
+#             raise ValidationError("Date of birth cannot be in the future.")
+        
+#     # Calculate the age from the DOB
+#     @property
+#     def age(self):
+#         if self.date_of_birth:  # Check if date_of_birth is not None
+#             today = date.today()
+#             return today.year - self.date_of_birth.year - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
+#         return None  # Return None or an appropriate default if date_of_birth is not set
+    
+#     gender = models.CharField(
+#         max_length=1,
+#         choices=GENDER_CHOICES,
+#         default='P'
+#     )
+#     language_preference = models.CharField(max_length=20, 
+#                                            choices=[('en', 'English'), ('yo', 'Yoruba'), ('ha', 'Hausa'), ('ig', 'Igbo')], default='en')
+
+#     def __str__(self):
+#         return f"{self.user.username}"
+
+
+from django.core.validators import FileExtensionValidator
 
 class UserProfile(models.Model):
     GENDER_CHOICES = [
@@ -58,17 +99,35 @@ class UserProfile(models.Model):
             today = date.today()
             return today.year - self.date_of_birth.year - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
         return None  # Return None or an appropriate default if date_of_birth is not set
-    
+
     gender = models.CharField(
         max_length=1,
         choices=GENDER_CHOICES,
         default='P'
     )
-    language_preference = models.CharField(max_length=20, 
-                                           choices=[('en', 'English'), ('yo', 'Yoruba'), ('ha', 'Hausa'), ('ig', 'Igbo')], default='en')
+    language_preference = models.CharField(
+        max_length=20, 
+        choices=[
+            ('en', 'English'), 
+            ('yo', 'Yoruba'), 
+            ('ha', 'Hausa'), 
+            ('ig', 'Igbo')
+        ], 
+        default='en'
+    )
+
+    profile_picture = models.ImageField(
+        upload_to='profile_pictures/', 
+        null=True, 
+        blank=True,
+        validators=[
+            FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])
+        ],
+        help_text=_("Upload a JPG, JPEG, or PNG image.")
+    )
 
     def __str__(self):
-        return f"{self.user.username}"
+        return f"{self.user.username or self.user.email}"
 
 
 class HealthCondition(models.Model):
@@ -246,3 +305,43 @@ class UserHealthMetrics(models.Model):
         if self.bmi and self.bmi > self.get_threshold('bmi'):
             concerning = True
         return concerning
+
+
+class Reminder(models.Model):
+    class ReminderType(models.TextChoices):
+        FOOD = 'food', _('Food')
+        DRUG = 'drug', _('Drug')
+        APPOINTMENT = 'appointment', _('Appointment')
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reminders")
+    type = models.CharField(max_length=20, choices=ReminderType.choices)
+    name = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
+    time = models.TimeField()
+    start_date = models.DateField(blank=False)
+    end_date = models.DateField(blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.type.capitalize()} Reminder for {self.user.username}"
+
+
+class FoodReminder(models.Model):
+    reminder = models.OneToOneField(Reminder, on_delete=models.CASCADE, related_name="food_details")
+    meal_type = models.CharField(max_length=50, choices=[("breakfast", "Breakfast"), ("lunch", "Lunch"), ("dinner", "Dinner")])
+    calories = models.PositiveIntegerField(null=True, blank=True)
+
+
+class DrugReminder(models.Model):
+    reminder = models.OneToOneField(Reminder, on_delete=models.CASCADE, related_name="drug_details")
+    medication_name = models.CharField(max_length=255)
+    dosage = models.CharField(max_length=100)
+    frequency = models.CharField(max_length=100)
+
+
+class AppointmentReminder(models.Model):
+    reminder = models.OneToOneField(Reminder, on_delete=models.CASCADE, related_name="appointment_details")
+    location = models.CharField(max_length=255)
+    doctor_name = models.CharField(max_length=255)
+    notes = models.TextField(null=True, blank=True)

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from .models import (UserProfile, HealthCondition, Medication, Meal, MealPlan, Appointment, Audio, CustomUser, HealthSyncScore,
-                     UserHealthMetrics, HealthMetricThreshold, )
+                     UserHealthMetrics, HealthMetricThreshold, Reminder)
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django import forms
 
@@ -105,6 +105,7 @@ class AudioAdmin(admin.ModelAdmin):
 
 admin.site.register(HealthSyncScore)
 
+admin.site.register(Reminder)
 
 # Web Dashboard
 
