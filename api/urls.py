@@ -1,6 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import UserProfileViewSet, MedicationViewSet, HealthConditionViewSet, MealPlanViewSet, AppointmentViewSet, AudioViewSet, UserCreateViewSet, VerifyEmailView, ReminderView, CustomTokenCreateView, PasswordResetRequestView, PasswordResetConfirmView, CustomUserViewSet, HealthSyncScoreView, UpdateProfileView, ChangePasswordView
+from .views import (UserProfileViewSet, MedicationViewSet, HealthConditionViewSet, MealPlanViewSet, 
+                    AppointmentViewSet, AudioViewSet, UserCreateViewSet, VerifyEmailView, ReminderView, 
+                    CustomTokenCreateView, PasswordResetRequestView, PasswordResetConfirmView, CustomUserViewSet, 
+                    HealthSyncScoreView, UpdateProfileView, ChangePasswordView, TotalUsersView, PatientAdherenceRateView,
+                    CriticalAlertsView, ConcerningHealthMetricsView)
 
 router = DefaultRouter()
 router.register(r'userprofiles', UserProfileViewSet)
@@ -24,4 +28,10 @@ urlpatterns = [
     path('auth/verify-email/', VerifyEmailView.as_view(), name='verify-email'), 
     path('reminder/', ReminderView.as_view(), name='reminder'),
     path('health-sync-score/', HealthSyncScoreView.as_view(), name='health-sync-score'),
+
+    # Web Dashboard
+    path('dashboard/total-users/', TotalUsersView.as_view(), name='total-users'),
+    path('patient-adherence-rate/', PatientAdherenceRateView.as_view(), name='patient_adherence_rate'),
+    path('critical-alerts/', CriticalAlertsView.as_view(), name='critical_alerts'),
+    path('concerning-metrics/', ConcerningHealthMetricsView.as_view(), name='concerning-metrics'),
 ]

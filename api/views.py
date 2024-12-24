@@ -3,10 +3,14 @@ from djoser.views import UserViewSet, TokenCreateView
 from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model, authenticate
-from .models import UserProfile, Medication, HealthCondition, MealPlan, Appointment, Audio, CustomUser
+from .models import (UserProfile, Medication, HealthCondition, MealPlan, Appointment, Audio, CustomUser, 
+                     HealthSyncScore, Reminder, FoodReminder, DrugReminder, AppointmentReminder)
 from .serializers import (
     UserSerializer, UserProfileSerializer, MedicationSerializer, 
-    HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer, CustomTokenCreateSerializer, UpdateProfileSerializer, ChangePasswordSerializer
+    HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer, 
+    CustomTokenCreateSerializer, UpdateProfileSerializer, ChangePasswordSerializer, TotalUsersSerializer, AdherenceRateSerializer,
+    CriticalAlertSerializer, UserHealthMetrics, ConcerningMetricSerializer, UserConcerningMetricsSerializer, DrugReminderSerializer,
+    FoodReminderSerializer, AppointmentReminderSerializer
 )
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -25,6 +29,7 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
+from django.db.models import Sum
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -628,16 +633,146 @@ class AudioViewSet(viewsets.ModelViewSet):
 #                 os.remove(temp_audio_file.name)
 
 
+# class ReminderView(APIView):
+#     """
+#     API View to handle POST requests for personalized reminder notifications with audio.
+#     """
+
+#     def post(self, request, *args, **kwargs):
+#         # Deserialize incoming data
+#         serializer = ReminderSerializer(data=request.data)
+
+#         # Validate the request data
+#         if not serializer.is_valid():
+#             return Response({
+#                 "status": "error",
+#                 "message": "Validation failed",
+#                 "data": serializer.errors
+#             }, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             validated_data = serializer.validated_data
+#             reminder = validated_data['reminder']
+
+#             # Retrieve the current user from the request
+#             postgres_user = self.request.user
+
+#             # Get or create MongoDB user for this postgres_user
+#             mongo_user = get_or_create_mongo_user(postgres_user)
+
+#             # Generate personalized reminder content (title, subtitle, message)
+#             ai_response = reminder_message_full(mongo_user["_id"], reminder)
+
+#             if not ai_response:
+#                 return Response({
+#                     "status": "fail",
+#                     "message": "Could not generate reminder message."
+#                 }, status=status.HTTP_400_BAD_REQUEST)
+
+#             title = ai_response.get('title', 'Reminder')
+#             subtitle = ai_response.get('subtitle', 'You have a reminder.')
+#             main_message = ai_response.get('response', '')
+
+#             if not main_message:
+#                 return Response({
+#                     "status": "fail",
+#                     "message": "No message generated for the reminder."
+#                 }, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Synthesize speech based on AI-generated main message
+#             print("Starting speech synthesis...")
+#             audio_file_path = synthesize_speech(main_message)
+
+#             if audio_file_path is None:
+#                 print("Speech synthesis failed, returning error.")
+#                 return Response({
+#                     "status": "fail",
+#                     "message": "Speech synthesis failed."
+#                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+#             print("Returning audio response to frontend.")
+
+#             # Calculate file size for response headers
+#             file_size = os.path.getsize(audio_file_path)
+
+#             # Open the audio file for streaming
+#             audio_file = open(audio_file_path, 'rb')
+
+#             # Create StreamingHttpResponse to stream the audio file
+#             response = StreamingHttpResponse(
+#                 audio_file,
+#                 content_type="audio/wav"
+#             )
+#             response['Content-Disposition'] = 'inline; filename="reminder.wav"'
+#             response['Content-Length'] = str(file_size)
+
+#             # Add title and subtitle to custom headers
+#             response['X-Reminder-Title'] = title.replace("\n", " ")
+#             response['X-Reminder-Subtitle'] = subtitle.replace("\n", " ")
+
+#             return response
+
+#         except Exception as e:
+#             # Handle any unexpected errors gracefully
+#             return Response({
+#                 "status": "error",
+#                 "message": "An error occurred while processing the reminder",
+#                 "data": str(e)
+#             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+#         finally:
+#             # Ensure the temporary audio file is deleted after response is streamed
+#             if 'audio_file_path' in locals() and os.path.exists(audio_file_path):
+#                 try:
+#                     os.remove(audio_file_path)
+#                     print(f"Audio file deleted: {audio_file_path}")
+#                 except PermissionError as e:
+#                     print(f"Failed to delete audio file: {e}")
+
+
 class ReminderView(APIView):
     """
-    API View to handle POST requests for personalized reminder notifications with audio.
+    API View to handle GET and POST requests for reminders with audio functionality.
     """
 
-    def post(self, request, *args, **kwargs):
-        # Deserialize incoming data
-        serializer = ReminderSerializer(data=request.data)
+    def get(self, request, *args, **kwargs):
+        """
+        Fetch all reminders and their specific details.
+        """
+        reminders = Reminder.objects.select_related('user').all()
+        response_data = []
 
-        # Validate the request data
+        for reminder in reminders:
+            data = {
+                "type": reminder.type,
+                "title": reminder.name,
+                "description": reminder.description,
+                "reminder_time": reminder.time,
+                "start_date": reminder.start_date,
+                "end_date": reminder.end_date,
+                "user": {
+                    "id": reminder.user.id,
+                    "name": reminder.user.first_name + " " + reminder.user.last_name  
+                }
+            }
+
+            if reminder.type == Reminder.ReminderType.FOOD:
+                data["details"] = FoodReminderSerializer(reminder.food_details).data
+            elif reminder.type == Reminder.ReminderType.DRUG:
+                data["details"] = DrugReminderSerializer(reminder.drug_details).data
+            elif reminder.type == Reminder.ReminderType.APPOINTMENT:
+                data["details"] = AppointmentReminderSerializer(reminder.appointment_details).data
+
+            response_data.append(data)
+
+        return Response({"status": "success", "data": response_data}, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Create a new reminder, process its details, and handle audio generation.
+        """
+
+        serializer = ReminderSerializer(data=request.data)
         if not serializer.is_valid():
             return Response({
                 "status": "error",
@@ -646,17 +781,70 @@ class ReminderView(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            validated_data = serializer.validated_data
-            reminder = validated_data['reminder']
+            # Save the reminder
+            reminder = serializer.save(user=request.user)
 
-            # Retrieve the current user from the request
-            postgres_user = self.request.user
+            # Handle specific reminder details
+            details_data = request.data.get("details", {})
+            if not isinstance(details_data, dict):
+                return Response({
+                    "status": "error",
+                    "message": "Invalid format for 'details'. Expected a dictionary."
+                }, status=status.HTTP_400_BAD_REQUEST)
 
-            # Get or create MongoDB user for this postgres_user
-            mongo_user = get_or_create_mongo_user(postgres_user)
+            if reminder.type == Reminder.ReminderType.FOOD:
+                food_instance = getattr(reminder, 'food_details', None)
+                food_serializer = FoodReminderSerializer(
+                    food_instance, data=details_data
+                )  # Pass instance for update
+                if food_serializer.is_valid():
+                    food_serializer.save(reminder=reminder)
+                else:
+                    return Response({"status": "error", "message": food_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Generate personalized reminder content (title, subtitle, message)
-            ai_response = reminder_message_full(mongo_user["_id"], reminder)
+            elif reminder.type == Reminder.ReminderType.DRUG:
+                drug_instance = getattr(reminder, 'drug_details', None)
+                drug_serializer = DrugReminderSerializer(
+                    drug_instance, data=details_data
+                )  # Pass instance for update
+                if drug_serializer.is_valid():
+                    drug_serializer.save(reminder=reminder)
+                else:
+                    return Response({"status": "error", "message": drug_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+            elif reminder.type == Reminder.ReminderType.APPOINTMENT:
+                appointment_instance = getattr(reminder, 'appointment_details', None)
+                appointment_serializer = AppointmentReminderSerializer(
+                    appointment_instance, data=details_data
+                )  # Pass instance for update
+                if appointment_serializer.is_valid():
+                    appointment_serializer.save(reminder=reminder)
+                else:
+                    return Response({"status": "error", "message": appointment_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Generate personalized reminder content
+            mongo_user = get_or_create_mongo_user(request.user)
+            # print("Mongo user data:", mongo_user)
+
+            # Format reminder data
+            reminder_data = {
+                "type": reminder.type,
+                "title": reminder.name,
+                "description": reminder.description,
+                "reminder_time": reminder.time,
+                "start_date": reminder.start_date,
+                "end_date": reminder.end_date,
+            }
+            if reminder.type == Reminder.ReminderType.FOOD:
+                reminder_data.update(FoodReminderSerializer(reminder.food_details).data)
+            elif reminder.type == Reminder.ReminderType.DRUG:
+                reminder_data.update(DrugReminderSerializer(reminder.drug_details).data)
+            elif reminder.type == Reminder.ReminderType.APPOINTMENT:
+                reminder_data.update(AppointmentReminderSerializer(reminder.appointment_details).data)
+
+            # Pass properly formatted data to AI
+            ai_response = reminder_message_full(mongo_user["_id"], reminder_data)
+            print("AI response:", ai_response)
 
             if not ai_response:
                 return Response({
@@ -675,20 +863,18 @@ class ReminderView(APIView):
                 }, status=status.HTTP_400_BAD_REQUEST)
 
             # Synthesize speech based on AI-generated main message
-            print("Starting speech synthesis...")
             audio_file_path = synthesize_speech(main_message)
+            print("Audio file path:", audio_file_path)
 
             if audio_file_path is None:
-                print("Speech synthesis failed, returning error.")
                 return Response({
                     "status": "fail",
                     "message": "Speech synthesis failed."
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            print("Returning audio response to frontend.")
-
             # Calculate file size for response headers
             file_size = os.path.getsize(audio_file_path)
+            print("Audio file size:", file_size)
 
             # Open the audio file for streaming
             audio_file = open(audio_file_path, 'rb')
@@ -708,7 +894,7 @@ class ReminderView(APIView):
             return response
 
         except Exception as e:
-            # Handle any unexpected errors gracefully
+            print("Exception occurred:", str(e))
             return Response({
                 "status": "error",
                 "message": "An error occurred while processing the reminder",
@@ -716,11 +902,9 @@ class ReminderView(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         finally:
-            # Ensure the temporary audio file is deleted after response is streamed
             if 'audio_file_path' in locals() and os.path.exists(audio_file_path):
                 try:
                     os.remove(audio_file_path)
-                    print(f"Audio file deleted: {audio_file_path}")
                 except PermissionError as e:
                     print(f"Failed to delete audio file: {e}")
 
@@ -760,4 +944,199 @@ class HealthSyncScoreView(APIView):
                 "status": "error",
                 "message": "An error occurred while processing the request",
                 "data": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# Endpoints for the Web Dashboard
+
+class TotalUsersView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensures only authenticated users can access
+
+    def get(self, request, *args, **kwargs):
+        try:
+            User = get_user_model()  # Dynamically get the user model
+            total_users = User.objects.count()  # Fetch the total number of users
+            
+            data = {"total_users": total_users}
+            serializer = TotalUsersSerializer(data)
+            
+            return Response({
+                "status": "success",
+                "message": "Total users retrieved successfully.",
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            # Handle unexpected errors gracefully
+            return Response({
+                "status": "error",
+                "message": f"An unexpected error occurred: {str(e)}",
+                "data": None
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class PatientAdherenceRateView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensures only authenticated users can access
+
+    def get(self, request, *args, **kwargs):
+        try:
+            # Calculate the total number of users
+            total_users = HealthSyncScore.objects.values('user').distinct().count()
+
+            if total_users == 0:
+                return Response({
+                    "status": "error",
+                    "message": "No users found with sync score.",
+                    "data": None
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            # Calculate the overall adherence rate (average cumulative_monthly_score)
+            total_sync_score = HealthSyncScore.objects.aggregate(total_sync=Sum('cumulative_monthly_score'))
+            average_adherence_rate = total_sync_score['total_sync'] / total_users if total_users else 0
+
+            # Calculate the percentage of users in the worst, weak, and optimal sync ranges
+            worst_sync = HealthSyncScore.objects.filter(cumulative_monthly_score__lt=50).count()
+            optimal_sync = HealthSyncScore.objects.filter(cumulative_monthly_score__gte=90).count()
+
+            # Calculate percentages
+            worst_percentage = (worst_sync / total_users) * 100 if total_users > 0 else 0
+            optimal_percentage = (optimal_sync / total_users) * 100 if total_users > 0 else 0
+
+            # Prepare the data to be serialized
+            data = {
+                "average_adherence_rate": average_adherence_rate,
+                "worst_sync_percentage": worst_percentage,
+                "optimal_sync_percentage": optimal_percentage
+            }
+
+            # Serialize the response data
+            serializer = AdherenceRateSerializer(data)
+            
+            return Response({
+                "status": "success",
+                "message": "Adherence rate and sync categories retrieved successfully.",
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({
+                "status": "error",
+                "message": f"An unexpected error occurred: {str(e)}",
+                "data": None
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CriticalAlertsView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensures only authenticated users can access
+
+    def get(self, request, *args, **kwargs):
+        try:
+            # Define threshold for the worst sync score (you can adjust this threshold)
+            sync_threshold = 50  # Any user with a sync score below 30 is flagged as critical
+
+            # Fetch all users whose worst sync score is below the threshold
+            critical_users = HealthSyncScore.objects.filter(cumulative_monthly_score__lt=sync_threshold)
+
+            # If no critical users are found, return a message saying so
+            if not critical_users.exists():
+                return Response({
+                    "status": "success",
+                    "message": "No critical users found based on sync score.",
+                    "data": []
+                }, status=status.HTTP_200_OK)
+
+            # Extract user information and sync scores into a list of dictionaries
+            critical_user_data = [{
+                "name": (user.user.first_name or '') + " " + (user.user.last_name or ''),
+                "sync_score": user.cumulative_monthly_score,
+                "user_id": user.user.id
+            } for user in critical_users]
+
+            # Serialize the data
+            serializer = CriticalAlertSerializer(critical_user_data, many=True)
+
+            # Return the serialized data
+            return Response({
+                "status": "success",
+                "message": "Critical users based on sync score retrieved successfully.",
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({
+                "status": "error",
+                "message": f"An unexpected error occurred: {str(e)}",
+                "data": None
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ConcerningHealthMetricsView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensures only authenticated users can access
+
+    def get(self, request, *args, **kwargs):
+        try:
+            # Fetch all user metrics
+            all_user_metrics = UserHealthMetrics.objects.select_related('user')
+
+            # Filter the metrics that are concerning
+            users_with_concerning_metrics = [
+                user_metrics for user_metrics in all_user_metrics if user_metrics.is_concerning()
+            ]
+
+            # Prepare the response data
+            data = []
+
+            for user_metrics in users_with_concerning_metrics:
+                concerning_metrics = []
+
+                # Check if systolic blood pressure is concerning
+                if user_metrics.systolic_blood_pressure and user_metrics.systolic_blood_pressure > user_metrics.get_threshold('systolic_blood_pressure'):
+                    concerning_metrics.append({
+                        'metric': 'systolic_blood_pressure',
+                        'value': user_metrics.systolic_blood_pressure,
+                        'threshold': user_metrics.get_threshold('systolic_blood_pressure')
+                    })
+
+                # Check if diastolic blood pressure is concerning
+                if user_metrics.diastolic_blood_pressure and user_metrics.diastolic_blood_pressure > user_metrics.get_threshold('diastolic_blood_pressure'):
+                    concerning_metrics.append({
+                        'metric': 'diastolic_blood_pressure',
+                        'value': user_metrics.diastolic_blood_pressure,
+                        'threshold': user_metrics.get_threshold('diastolic_blood_pressure')
+                    })
+
+                # Check if sugar level is concerning
+                if user_metrics.sugar_level and user_metrics.sugar_level > user_metrics.get_threshold('sugar_level'):
+                    concerning_metrics.append({
+                        'metric': 'sugar_level',
+                        'value': user_metrics.sugar_level,
+                        'threshold': user_metrics.get_threshold('sugar_level')
+                    })
+
+                # Check if BMI is concerning
+                if user_metrics.bmi and user_metrics.bmi > user_metrics.get_threshold('bmi'):
+                    concerning_metrics.append({
+                        'metric': 'bmi',
+                        'value': user_metrics.bmi,
+                        'threshold': user_metrics.get_threshold('bmi')
+                    })
+
+                # If there are any concerning metrics, include them in the response
+                if concerning_metrics:
+                    serialized_data = UserConcerningMetricsSerializer(user_metrics).data
+                    serialized_data['concerning_metrics'] = concerning_metrics  # Add concerning metrics dynamically
+                    data.append(serialized_data)
+
+            # Return the response
+            return Response({
+                "status": "success",
+                "message": "Users with concerning health metrics fetched successfully.",
+                "data": data
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({
+                "status": "error",
+                "message": f"An unexpected error occurred: {str(e)}",
+                "data": None
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

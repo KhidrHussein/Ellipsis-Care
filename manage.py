@@ -6,10 +6,10 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    # settings_module = 'EllipsisCare.deployment' if 'WEBSITE_HOSTNAME' in os.environ else 'EllipsisCare.settings'
-    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
+    settings_module = 'EllipsisCare.deployment' if 'WEBSITE_HOSTNAME' in os.environ else 'EllipsisCare.settings'
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
 
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'EllipsisCare.settings')
+    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'EllipsisCare.settings')
 
     try:
         from django.core.management import execute_from_command_line
