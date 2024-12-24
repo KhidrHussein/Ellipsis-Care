@@ -117,15 +117,15 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 #Social authentication settings (example for Google)
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': config('GOOGLE_CLIENT_ID'),
-            'secret': '',
-            'key': ''
-        }
-    }
-}
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'APP': {
+#             'client_id': config('GOOGLE_CLIENT_ID'),
+#             'secret': '',
+#             'key': ''
+#         }
+#     }
+# }
 
 
 MIDDLEWARE = [
