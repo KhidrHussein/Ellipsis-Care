@@ -4,7 +4,7 @@ from .models import UserProfile, HealthCondition, Medication, Meal, MealPlan, Ap
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django import forms
 
-from django_apscheduler.models import DjangoJob, DjangoJobExecution
+# from django_apscheduler.models import DjangoJob, DjangoJobExecution
 
 # Define a custom form for user creation and change
 class UserCreationForm(forms.ModelForm):
@@ -48,7 +48,7 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'age', 'gender', 'language_preference', 'emergency_contact')
+    list_display = ('user', 'age', 'gender', 'language_preference')
     search_fields = ('user__username', 'gender', 'language_preference')
     list_filter = ('gender', 'language_preference')
 

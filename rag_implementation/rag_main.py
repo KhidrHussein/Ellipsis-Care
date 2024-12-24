@@ -116,7 +116,7 @@ def rag_response(user_id: str, query: str, knowledge_base: str):
     result = dict()
     result['response'] = response
     result['references'] = sources
-    print("Time taken:", time.time()-start)
+    print("Time taken for RAG Response:", time.time()-start)
     return result
 
 def reminder_message_full(user_id: str, reminder):

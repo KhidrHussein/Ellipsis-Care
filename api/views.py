@@ -1,12 +1,12 @@
 from django.shortcuts import render
-from djoser.views import UserViewSet
-from rest_framework import viewsets, status
+from djoser.views import UserViewSet, TokenCreateView
+from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from .models import UserProfile, Medication, HealthCondition, MealPlan, Appointment, Audio, CustomUser
 from .serializers import (
     UserSerializer, UserProfileSerializer, MedicationSerializer, 
-    HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer, CustomTokenCreateSerializer
+    HealthConditionSerializer, MealPlanSerializer, AppointmentSerializer, AudioSerializer, ReminderSerializer, CustomTokenCreateSerializer, UpdateProfileSerializer, ChangePasswordSerializer
 )
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -16,7 +16,7 @@ from djoser.signals import user_registered
 from rag_implementation.rag_main import rag_response, reminder_message_full
 from rag_implementation.speech_io import transcribe_audio ,synthesize_speech
 from rag_implementation.config.database import collection
-from django.http import HttpResponse, StreamingHttpResponse, FileResponse
+from django.http import HttpResponse, StreamingHttpResponse, FileResponse, JsonResponse
 import random, tempfile, os
 from asgiref.sync import async_to_sync
 from .utils import get_or_create_mongo_user, HealthSyncScoreCalculator
@@ -24,6 +24,7 @@ from .utils import get_or_create_mongo_user, HealthSyncScoreCalculator
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -33,9 +34,10 @@ import random
 import logging
 from django.core.cache import cache
 from pydub import AudioSegment
-
+from wsgiref.util import FileWrapper
 
 logger = logging.getLogger(__name__)
+
 
 class UserCreateViewSet(viewsets.ModelViewSet):
     """
@@ -78,6 +80,8 @@ class UserCreateViewSet(viewsets.ModelViewSet):
                         "email": user.email,
                         "username": user.first_name,
                         "otp": user.verification_code,
+                        "first_name": user.first_name,
+                        "last_name": user.last_name
                     }
                 }
             }
@@ -165,10 +169,6 @@ class VerifyEmailView(APIView):
             return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
-from djoser.views import TokenCreateView
-from rest_framework.response import Response
-from rest_framework import status
-
 class CustomTokenCreateView(TokenCreateView):
     serializer_class = CustomTokenCreateSerializer
 
@@ -194,6 +194,9 @@ class CustomTokenCreateView(TokenCreateView):
         serializer = self.get_serializer(data=request.data)
 
         try:
+            # Attempt to retrieve user by email 
+            user = CustomUser.objects.get(email=email)
+
             # Validate and create the token using the custom serializer
             serializer.is_valid(raise_exception=True)
             token = serializer.validated_data['auth_token']
@@ -202,6 +205,9 @@ class CustomTokenCreateView(TokenCreateView):
                 "message": "Login successful.",
                 "data": {
                     "token": token,
+                    "email": email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
@@ -228,6 +234,7 @@ class CustomTokenCreateView(TokenCreateView):
                     "error": "Internal server error. Please try again later."
                 }
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class PasswordResetRequestView(APIView):
     """
@@ -359,6 +366,59 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
 
 
+class UpdateProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        profile = user.userprofile  # Assuming a OneToOne relationship
+
+        # Update user fields
+        user_serializer = UpdateProfileSerializer(user, data=request.data, partial=True)
+        profile_serializer = UserProfileSerializer(profile, data=request.data, partial=True)
+
+        if user_serializer.is_valid() and profile_serializer.is_valid():
+            user_serializer.save()
+            profile_serializer.save()
+            return Response({
+                "status": "success",
+                "message": "Profile updated successfully.",
+                "data": {
+                    "user": user_serializer.data,
+                    "profile": profile_serializer.data
+                }
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "status": "fail",
+            "message": "Profile update failed.",
+            "errors": {
+                "user": user_serializer.errors,
+                "profile": profile_serializer.errors
+            }
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ChangePasswordView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "status": "success",
+                "message": "Password updated successfully."
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "status": "fail",
+            "message": "Password update failed.",
+            "errors": serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
 class MedicationViewSet(viewsets.ModelViewSet):
     queryset = Medication.objects.all()
     serializer_class = MedicationSerializer
@@ -394,8 +454,14 @@ class AudioViewSet(viewsets.ModelViewSet):
         postgres_user = self.request.user
         mongo_user = get_or_create_mongo_user(postgres_user)
 
-        # Process audio and return the response directly
         return self.process_audio(instance, mongo_user)
+
+    def sanitize_header_value(self, value, max_length=200):
+        """
+        Sanitize header values by removing newlines and truncating the length.
+        """
+        sanitized_value = value.replace("\n", " ").replace("\r", " ")
+        return sanitized_value[:max_length]
 
     def process_audio(self, instance, mongo_user):
         print("Processing audio...")
@@ -403,53 +469,27 @@ class AudioViewSet(viewsets.ModelViewSet):
 
         if not audio_file or audio_file.size == 0:
             print("Audio file missing or empty.")
-            response_data = {
-                "status": "fail",
-                "message": "Audio file is required and cannot be empty."
-            }
-            return Response(response_data, status=400)
+            return Response({"status": "fail", "message": "Audio file is required and cannot be empty."}, status=400)
 
         allowed_formats = {
             'audio/opus': '.opus',
             'audio/wav': '.wav',
-            'audio/mpeg': '.mp3',  # Add more formats as needed
+            'audio/mpeg': '.mp3',
             'audio/x-wav': '.wav',
             'audio/m4a': '.m4a',
             'audio/mp4': '.m4a',
             'audio/ogg': '.opus'
         }
 
-        # def convert_to_wav(input_file_path, output_file_path):
-        #     audio = AudioSegment.from_file(input_file_path)
-        #     audio.export(output_file_path, format="wav")
-
-        # content_type = audio_file.content_type
-        # print(f"Detected content type: {content_type}")
-
-        # if content_type not in ['audio/wav', 'audio/x-wav']:
-        #     converted_path = temp_audio_file.name.replace(suffix, '.wav')
-        #     convert_to_wav(temp_audio_file.name, converted_path)
-        #     temp_audio_file_name = converted_path
-        # else:
-        #     temp_audio_file_name = temp_audio_file.name
-
         try:
-            # Get the content type of the audio file
             content_type = audio_file.content_type
             print(f"Detected content type: {content_type}")
 
-            # Check if the content type is allowed
             if content_type not in allowed_formats:
                 print("Unsupported audio format.")
-                response_data = {
-                    "status": "fail",
-                    "message": "Unsupported audio format."
-                }
-                return Response(response_data, status=400)
+                return Response({"status": "fail", "message": "Unsupported audio format."}, status=400)
 
-            # Get the appropriate file extension based on content type
             suffix = allowed_formats[content_type]
-
             print("Saving temporary audio file for transcription...")
             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_audio_file:
                 audio_file.seek(0)
@@ -457,83 +497,50 @@ class AudioViewSet(viewsets.ModelViewSet):
                 temp_audio_file.flush()
 
             print(f"Temp audio file saved at {temp_audio_file.name}.")
-
-            # Transcribe the audio file
             transcription = transcribe_audio(temp_audio_file.name)
+
             if not transcription or 'Error' in transcription:
                 print(f"Transcription failed: {transcription}")
-                response_data = {
-                    "status": "fail",
-                    "message": "Transcription failed. Reason: " + transcription
-                }
-                return Response(response_data, status=400)
+                return Response({"status": "fail", "message": f"Transcription failed: {transcription}"}, status=400)
 
             print(f"Transcription result: {transcription}")
             instance.transcription = transcription
             instance.save()
-            print("Transcription saved to the database.")
 
-            # Call RAG model to generate AI response
             print("Calling RAG model to generate AI response...")
-            ai_result = rag_response(
-                user_id=mongo_user['_id'],
-                query=transcription,
-                knowledge_base="some_knowledge_base"
-            )
+            ai_result = rag_response(user_id=mongo_user['_id'], query=transcription, knowledge_base="some_knowledge_base")
 
-            # Check if the AI response is valid
             if not ai_result or 'response' not in ai_result:
-                print("AI response retrieval failed or 'response' key missing.")
-                response_data = {
-                    "status": "fail",
-                    "message": "AI response generation failed."
-                }
-                return Response(response_data, status=500)
+                print("AI response retrieval failed.")
+                return Response({"status": "fail", "message": "AI response generation failed."}, status=500)
 
             instance.ai_response = ai_result['response']
             instance.save()
-            print("AI response saved to the database.")
 
-            # Synthesize speech based on AI response
             print("Starting speech synthesis...")
             audio_file_path = synthesize_speech(ai_result['response'])
 
             if audio_file_path is None:
-                print("Speech synthesis failed, returning error.")
-                response_data = {
-                    "status": "fail",
-                    "message": "Speech synthesis failed."
-                }
-                return Response(response_data, status=500)
+                print("Speech synthesis failed.")
+                return Response({"status": "fail", "message": "Speech synthesis failed."}, status=500)
 
             print("Returning audio response to frontend.")
-
-
-            # Open the file without closing it immediately
+            file_size = os.path.getsize(audio_file_path)
             audio_file = open(audio_file_path, 'rb')
 
-            # Use StreamingHttpResponse
-            response = StreamingHttpResponse(
-                audio_file,  # Pass the open file handle
-                content_type="audio/wav"
-            )
+            response = StreamingHttpResponse(audio_file, content_type="audio/wav")
             response['Content-Disposition'] = 'inline; filename="response.wav"'
-            response['Content-Length'] = str(len(audio_file))
+            response['Content-Length'] = str(file_size)
 
-            # Add transcription and AI response as custom headers
-            response['X-Transcription'] = instance.transcription  # User transcription
-            response['X-AI-Response'] = instance.ai_response      # AI response
+            # Add sanitized headers
+            response['X-Transcription'] = self.sanitize_header_value(instance.transcription)
+            response['X-AI-Response'] = self.sanitize_header_value(instance.ai_response)
 
             return response
 
-
         except Exception as e:
             print(f"Error during audio processing: {e}")
-            response_data = {
-                "status": "fail",
-                "message": "Audio processing failed. " + str(e)
-            }
-            return Response(response_data, status=500)
+            return Response({"status": "fail", "message": f"Audio processing failed: {e}"}, status=500)
 
         finally:
             if 'temp_audio_file' in locals() and os.path.exists(temp_audio_file.name):
@@ -541,16 +548,96 @@ class AudioViewSet(viewsets.ModelViewSet):
                 os.remove(temp_audio_file.name)
 
 
+# The version of the audio endpoint that send a video url instead of streaming it directly.
+
+# class AudioViewSet(viewsets.ModelViewSet):
+#     queryset = Audio.objects.all()
+#     serializer_class = AudioSerializer
+#     parser_classes = [MultiPartParser, FormParser]
+
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         instance = serializer.save(user=self.request.user)
+#         postgres_user = self.request.user
+#         mongo_user = get_or_create_mongo_user(postgres_user)
+
+#         return self.process_audio(instance, mongo_user)
+
+#     def process_audio(self, instance, mongo_user):
+#         audio_file = self.request.FILES.get('audio_file')
+
+#         if not audio_file or audio_file.size == 0:
+#             return Response({"status": "fail", "message": "Audio file is required and cannot be empty."}, status=400)
+
+#         allowed_formats = {
+#             'audio/opus': '.opus',
+#             'audio/wav': '.wav',
+#             'audio/mpeg': '.mp3',
+#             'audio/x-wav': '.wav',
+#             'audio/m4a': '.m4a',
+#             'audio/mp4': '.m4a',
+#             'audio/ogg': '.opus'
+#         }
+
+#         try:
+#             content_type = audio_file.content_type
+#             if content_type not in allowed_formats:
+#                 return Response({"status": "fail", "message": "Unsupported audio format."}, status=400)
+
+#             suffix = allowed_formats[content_type]
+#             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_audio_file:
+#                 audio_file.seek(0)
+#                 temp_audio_file.write(audio_file.read())
+#                 temp_audio_file.flush()
+
+#             transcription = transcribe_audio(temp_audio_file.name)
+#             if not transcription or 'Error' in transcription:
+#                 return Response({"status": "fail", "message": f"Transcription failed: {transcription}"}, status=400)
+
+#             instance.transcription = transcription
+#             instance.save()
+
+#             ai_result = rag_response(user_id=mongo_user['_id'], query=transcription, knowledge_base="some_knowledge_base")
+#             if not ai_result or 'response' not in ai_result:
+#                 return Response({"status": "fail", "message": "AI response generation failed."}, status=500)
+
+#             instance.ai_response = ai_result['response']
+#             instance.save()
+
+#             audio_file_path = synthesize_speech(ai_result['response'])
+#             if not audio_file_path:
+#                 return Response({"status": "fail", "message": "Speech synthesis failed."}, status=500)
+
+#             # Store audio file temporarily or upload to a storage service (optional improvement)
+#             audio_download_url = f"/media/{os.path.basename(audio_file_path)}"  # Replace with actual storage logic
+
+#             # JSON response with metadata and download URL
+#             return Response({
+#                 "status": "success",
+#                 "transcription": instance.transcription,
+#                 "ai_response": instance.ai_response,
+#                 "audio_url": audio_download_url
+#             }, status=200)
+
+#         except Exception as e:
+#             return Response({"status": "fail", "message": f"Audio processing failed: {str(e)}"}, status=500)
+
+#         finally:
+#             if 'temp_audio_file' in locals() and os.path.exists(temp_audio_file.name):
+#                 os.remove(temp_audio_file.name)
+
 
 class ReminderView(APIView):
     """
-    API View to handle POST requests for personalized reminder notifications.
+    API View to handle POST requests for personalized reminder notifications with audio.
     """
 
     def post(self, request, *args, **kwargs):
+        # Deserialize incoming data
         serializer = ReminderSerializer(data=request.data)
 
-        # Validate the incoming request data
+        # Validate the request data
         if not serializer.is_valid():
             return Response({
                 "status": "error",
@@ -562,33 +649,82 @@ class ReminderView(APIView):
             validated_data = serializer.validated_data
             reminder = validated_data['reminder']
 
-            # Retrieve the current user
+            # Retrieve the current user from the request
             postgres_user = self.request.user
-            
-            # Get or create MongoDB user
+
+            # Get or create MongoDB user for this postgres_user
             mongo_user = get_or_create_mongo_user(postgres_user)
 
-            # Generate the personalized reminder content
-            personalized_message = reminder_message_full(mongo_user["_id"], reminder)
+            # Generate personalized reminder content (title, subtitle, message)
+            ai_response = reminder_message_full(mongo_user["_id"], reminder)
 
-            # Return success response
-            return Response({
-                "status": "success",
-                "message": "Reminder created successfully",
-                "data": {
-                    "reminder_message": personalized_message
-                }
-            }, status=status.HTTP_200_OK)
+            if not ai_response:
+                return Response({
+                    "status": "fail",
+                    "message": "Could not generate reminder message."
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            title = ai_response.get('title', 'Reminder')
+            subtitle = ai_response.get('subtitle', 'You have a reminder.')
+            main_message = ai_response.get('response', '')
+
+            if not main_message:
+                return Response({
+                    "status": "fail",
+                    "message": "No message generated for the reminder."
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            # Synthesize speech based on AI-generated main message
+            print("Starting speech synthesis...")
+            audio_file_path = synthesize_speech(main_message)
+
+            if audio_file_path is None:
+                print("Speech synthesis failed, returning error.")
+                return Response({
+                    "status": "fail",
+                    "message": "Speech synthesis failed."
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            print("Returning audio response to frontend.")
+
+            # Calculate file size for response headers
+            file_size = os.path.getsize(audio_file_path)
+
+            # Open the audio file for streaming
+            audio_file = open(audio_file_path, 'rb')
+
+            # Create StreamingHttpResponse to stream the audio file
+            response = StreamingHttpResponse(
+                audio_file,
+                content_type="audio/wav"
+            )
+            response['Content-Disposition'] = 'inline; filename="reminder.wav"'
+            response['Content-Length'] = str(file_size)
+
+            # Add title and subtitle to custom headers
+            response['X-Reminder-Title'] = title.replace("\n", " ")
+            response['X-Reminder-Subtitle'] = subtitle.replace("\n", " ")
+
+            return response
 
         except Exception as e:
-            # Handle any unexpected errors
+            # Handle any unexpected errors gracefully
             return Response({
                 "status": "error",
-                "message": "An error occurred while processing the request",
+                "message": "An error occurred while processing the reminder",
                 "data": str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    
+        finally:
+            # Ensure the temporary audio file is deleted after response is streamed
+            if 'audio_file_path' in locals() and os.path.exists(audio_file_path):
+                try:
+                    os.remove(audio_file_path)
+                    print(f"Audio file deleted: {audio_file_path}")
+                except PermissionError as e:
+                    print(f"Failed to delete audio file: {e}")
+
+
 class HealthSyncScoreView(APIView):
     permission_classes = [IsAuthenticated]
 

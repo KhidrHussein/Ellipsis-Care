@@ -26,12 +26,13 @@ SECRET_KEY = 'django-insecure-twmmpoch5h^9e#b_cox3ihpmnpn_ep0pf-nvir7ljqce%ipp2&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'hyena-tops-rooster.ngrok-free.app',]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'hyena-tops-rooster.ngrok-free.app', 'ellipsiscare.org', 'ellipsiscare.azurewebsites.net', '.azurewebsites']
 
 # Allow specific origin
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5175",
+    "https://ellipsiscare.org",
 ]
 
 # Application definition
@@ -51,7 +52,7 @@ INSTALLED_APPS = [
     # scheduling apps
     # 'django_celery_beat',
     # 'django_q',
-    'django_apscheduler',
+    # 'django_apscheduler',
     'corsheaders',
 
     # authentication
@@ -61,7 +62,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',  # or any other provider
+    'allauth.socialaccount.providers.google',
     'dj_rest_auth',
     'dj_rest_auth.registration',
     'django_extensions',
@@ -204,11 +205,18 @@ WSGI_APPLICATION = 'EllipsisCare.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'EllipsisCareDB',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        # 'NAME': 'EllipsisCareDB',
+        'NAME': os.getenv('POSTGRESQL_DATABASE_NAME'),
+        # 'USER': 'postgres',
+        'USER': os.getenv('POSTGRESQL_USERNAME'),
+        # 'PASSWORD': 'postgres',
+        'PASSWORD': os.getenv('POSTGRESQL_PASSWORD'),
+        # 'HOST': 'localhost',
+        'HOST': os.getenv('POSTGRESQL_SERVER_NAME'),
+        'PORT': os.getenv('PORT'),
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
 
