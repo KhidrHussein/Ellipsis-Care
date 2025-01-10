@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
+import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:flutter/foundation.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:talker_dio_logger/talker_dio_logger.dart';
 
 import '../constants/interceptor.dart';
 
@@ -18,8 +19,14 @@ class ApiService with DioMixin implements Dio {
     if (kDebugMode) {
       interceptors.addAll([
         LogmanDioInterceptor(),
-        PrettyDioLogger(
-            requestBody: true, requestHeader: true, responseHeader: true),
+        TalkerDioLogger(
+          talker: UtilHelpers.logger,
+          settings: const TalkerDioLoggerSettings(
+            printRequestHeaders: true,
+            printResponseHeaders: true,
+            printResponseMessage: true,
+          ),
+        ),
       ]);
     }
 

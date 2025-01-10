@@ -36,11 +36,13 @@ class _SignupState extends State<Signup> {
   @override
   void initState() {
     super.initState();
-    if (kDebugMode) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Logman.instance.attachOverlay(context: context);
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Logman.instance.attachOverlay(
+        context: context,
+        printLogs: false,
+        showOverlay: kDebugMode,
+      );
+    });
   }
 
   @override
@@ -210,7 +212,7 @@ class _SignupState extends State<Signup> {
                     {"email": _emailController.text},
                   );
                 case ApiState.failed:
-                  UtilHelpers.showAlert(title: "Error", message: state.error);
+                  UtilHelpers.showError(state.error);
                 default:
               }
             },

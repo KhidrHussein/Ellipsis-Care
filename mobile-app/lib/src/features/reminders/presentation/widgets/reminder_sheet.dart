@@ -54,7 +54,17 @@ class ReminderSheet extends StatelessWidget {
                   ],
                 ),
               ),
-              BlocBuilder<ReminderBloc, ReminderState>(
+              BlocConsumer<ReminderBloc, ReminderState>(
+                listener: (context, state) {
+                  switch (state.apiState) {
+                    case ApiState.failed:
+                           UtilHelpers.showError(state.error);
+                      break;
+
+                    default:
+                      break;
+                  }
+                },
                 builder: (context, state) {
                   final eventList = state.reminders.where((event) {
                     final createdAt = DateTime.parse(event.startDate);
@@ -84,7 +94,11 @@ class ReminderSheet extends StatelessWidget {
               ),
               SliverToBoxAdapter(
                 child: GestureDetector(
-                  onTap: () => UtilHelpers.showReminderDialog(context: context),
+                  onTap: () {
+                    UtilHelpers.showReminderDialog(context: context);
+                    // UtilHelpers.showSnackBar(
+                    // context: context, message: "I'm working");
+                  },
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Container(

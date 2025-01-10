@@ -1,15 +1,25 @@
-import 'dart:developer';
-
+import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:flutter/foundation.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../config/theme/theme_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 extension LogExtension on Object? {
-  void printLog([String? message]) {
+  void printLog({
+    dynamic message,
+    LogLevel level = LogLevel.debug,
+    Object? e,
+    StackTrace? st,
+  }) {
     if (kDebugMode) {
-      log(message ?? toString(), level: 1000);
+      UtilHelpers.logger.log(
+        message ?? toString(),
+        logLevel: level,
+        exception: e,
+        stackTrace: st,
+      );
     }
   }
 }

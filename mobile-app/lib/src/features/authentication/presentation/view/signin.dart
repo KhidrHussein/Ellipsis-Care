@@ -104,8 +104,7 @@ class _SigninState extends State<Signin> {
                         UtilHelpers.pushTo(RouteNames.home);
                         break;
                       case ApiState.failed:
-                        UtilHelpers.showAlert(
-                            title: "Error", message: state.error);
+                        UtilHelpers.showError(state.error);
                         break;
                       default:
                         break;

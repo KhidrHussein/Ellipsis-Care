@@ -5,7 +5,7 @@ import 'package:ellipsis_care/core/services/sms_service.dart';
 import 'package:ellipsis_care/src/features/settings/data/settings_repository.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../config/app_config.dart';
+import '../../config/env.dart';
 import '../../src/features/authentication/data/auth_repository.dart';
 import '../../src/features/home/data/home_repository.dart';
 import '../../src/features/reminders/data/reminders_repository.dart';
@@ -21,12 +21,12 @@ import '../services/voice_command_service.dart';
 
 final injector = GetIt.instance;
 
-void initService(AppConfig config) {
+void initService() {
   injector.registerLazySingleton<SecureStorage>(() => SecureStorage());
   injector
       .registerLazySingleton<FileStorageService>(() => FileStorageService());
   injector.registerLazySingleton<ApiService>(
-    () => ApiService(baseUrl: config.baseUrl),
+    () => ApiService(baseUrl: Env.baseUrl),
   );
   injector.registerLazySingleton<OAuthService>(() => OAuthService());
   injector

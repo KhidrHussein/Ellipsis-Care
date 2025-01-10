@@ -38,7 +38,6 @@ dependencies:
 
   get_it: ^8.0.2
   go_router: ^14.2.7
-  flutter_dotenv: ^5.1.0
   flutter_screenutil: ^5.9.3
 
   uuid: ^4.5.1
@@ -49,7 +48,6 @@ dependencies:
   path_provider: ^2.1.4
 
   dio: ^5.7.0
-  pretty_dio_logger: ^1.4.0
   freezed: ^2.5.7
   freezed_annotation: ^2.4.4
   json_serializable: ^6.8.0
@@ -62,7 +60,6 @@ dependencies:
   awesome_notifications: ^0.10.0
   flutter_contacts: ^1.1.9+2
   speech_to_text: ^7.0.0
-  oktoast: ^3.4.0
   table_calendar: ^3.1.2
   dotted_border: ^2.1.0
   pulsator: ^1.0.0+2
@@ -79,6 +76,13 @@ dependencies:
   geolocator: ^13.0.2
   geocoding: ^3.0.0
   pin_code_text_field: ^1.8.0
+  talker_flutter: ^4.5.5
+  talker_dio_logger: ^4.5.5
+  talker_bloc_logger: ^4.5.5
+  toastification: ^2.3.0
+  sentry_flutter: ^8.12.0
+  permission_handler: ^11.3.1
+
 
 dev_dependencies:
   flutter_test:
@@ -92,19 +96,26 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   build_runner: ^2.4.12
   hive_generator: ^2.0.1
+  flutter_flavorizr: ^2.2.3
+  flutter_gen_runner: ^5.8.0
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
 
-# The following section is specific to Flutter packages.
+flutter_gen:
+  output: lib/config/gen/
+
+  assets:
+    outputs:
+      class_name: AppAssets
+      package_parameter_enabled: false
+      directory_path_enabled: true
+
+  integrations:
+    flutter_svg: true
+
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
+  generate: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/icons/authentication/
     - assets/icons/home/nav_bar/
@@ -117,17 +128,6 @@ flutter:
     - .env.dev
     - .env.prod
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
   fonts:
     - family: Manrope
       fonts:
@@ -150,10 +150,32 @@ flutter:
     - family: Krona One
       fonts:
         - asset: assets/fonts/krona_one/KronaOne-Regular.ttf
-
-    
-  
       
+flavorizr:
+  ide: "vscode"
 
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
+  app:
+    android:
+      flavorDimensions: "flavor-type"
+
+  flavors:
+    dev:
+      app:
+        name: "Ellipsis Care Dev"
+      android:
+        applicationId: "com.ellipsis.ellipsis_care.dev"
+        icon: "assets/dev/app-logo-dev.png"
+      ios:
+        bundleId: "com.ellipsis.ellipsisCare.dev"
+        icon: "assets/dev/app-logo-dev.png"
+            
+    prod:
+      app:
+        name: "Ellipsis Care"
+      android:
+        applicationId: "com.ellipsis.ellipsis_care"
+        icon: "assets/prod/app-logo.png"
+      ios:
+        bundleId: "com.ellipsis.ellipsisCare"
+        icon: "assets/prod/app-logo.png"
+  

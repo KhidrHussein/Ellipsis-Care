@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:talker_flutter/talker_flutter.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../config/router/router.dart' show router;
 import '../../src/features/reminders/presentation/views/add_reminder.dart';
-import '../../src/shared/widgets/in_app_alert.dart';
 import 'extensions.dart';
 
 class UtilHelpers {
@@ -95,12 +95,29 @@ class UtilHelpers {
         .replaceAll(' ', '_'); // e.g., "2-51_PM"
   }
 
-  static void showAlert({required String title, required String message}) {
-    const Duration duration = Duration(milliseconds: 2500);
-    showToastWidget(
-      InAppAlert(title: title, message: message, duration: duration),
-      position: ToastPosition.top,
-      duration: duration,
+  static void showError(String message) {
+    toastification.show(
+      type: ToastificationType.error,
+      style: ToastificationStyle.flatColored,
+      title: Text("Error"),
+      description: Text(message),
+      alignment: Alignment.topLeft,
+      showProgressBar: false,
+      autoCloseDuration: const Duration(seconds: 3),
+      borderRadius: BorderRadius.circular(12.0),
+    );
+  }
+
+  static void showSuccess(String message) {
+    toastification.show(
+      type: ToastificationType.success,
+      style: ToastificationStyle.flatColored,
+      title: Text("Successful"),
+      description: Text(message),
+      showProgressBar: false,
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 3),
+      borderRadius: BorderRadius.circular(12.0),
     );
   }
 
@@ -111,4 +128,30 @@ class UtilHelpers {
       builder: (context) => const AddReminder(),
     );
   }
+
+  static Talker logger = TalkerFlutter.init(
+    settings: TalkerSettings(
+      colors: {
+        TalkerLogType.route.key: AnsiPen()..cyan(),
+        TalkerLogType.error.key: AnsiPen()..magenta(),
+        TalkerLogType.debug.key: AnsiPen()..white(),
+        TalkerLogType.info.key: AnsiPen()
+          ..rgb(r: 100 / 255, g: 181 / 255, b: 246 / 255),
+        TalkerLogType.blocCreate.key: AnsiPen()
+          ..rgb(r: 129 / 255, g: 212 / 255, b: 250 / 255),
+        TalkerLogType.blocEvent.key: AnsiPen()
+          ..rgb(r: 255 / 255, g: 214 / 255, b: 165 / 255),
+        TalkerLogType.blocTransition.key: AnsiPen()
+          ..rgb(r: 171 / 255, g: 235 / 255, b: 198 / 255),
+        TalkerLogType.blocClose.key: AnsiPen()
+          ..rgb(r: 255 / 255, g: 171 / 255, b: 145 / 255),
+        TalkerLogType.httpRequest.key: AnsiPen()
+          ..rgb(r: 255 / 255, g: 235 / 255, b: 59 / 255),
+        TalkerLogType.httpResponse.key: AnsiPen()
+          ..rgb(r: 0 / 255, g: 188 / 255, b: 212 / 255),
+        TalkerLogType.httpError.key: AnsiPen()
+          ..rgb(r: 239 / 255, g: 83 / 255, b: 80 / 255)
+      },
+    ),
+  );
 }

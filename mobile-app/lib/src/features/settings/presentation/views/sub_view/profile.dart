@@ -59,7 +59,6 @@ class _ProfileState extends State<Profile> {
           child: Column(
             children: [
               const SettingsAppbar(title: "Profile"),
-             
               const UserAvatar(radius: 40),
               8.sizedBoxHeight,
               GestureDetector(
@@ -95,13 +94,11 @@ class _ProfileState extends State<Profile> {
                 listener: (context, state) {
                   switch (state.apiState) {
                     case ApiState.success:
-                      UtilHelpers.showAlert(
-                          title: "Success", message: "Profile updated");
+                      UtilHelpers.showSuccess("Profile Updated!");
                       UtilHelpers.pop();
                       break;
                     case ApiState.failed:
-                      UtilHelpers.showAlert(
-                          title: "Error", message: state.error);
+                      UtilHelpers.showError(state.error);
                       break;
                     default:
                   }

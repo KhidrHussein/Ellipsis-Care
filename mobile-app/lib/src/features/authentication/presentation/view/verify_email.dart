@@ -61,11 +61,10 @@ class _VerifyEmailState extends State<VerifyEmail> {
                 listener: (context, state) {
                   switch (state.apiState) {
                     case ApiState.success:
-                      UtilHelpers.goTo(RouteNames.home);
+                      UtilHelpers.goTo(RouteNames.signIn);
                       break;
                     case ApiState.failed:
-                      UtilHelpers.showAlert(
-                          title: "Error", message: state.error);
+                      UtilHelpers.showError(state.error);
                       break;
                     default:
                       break;

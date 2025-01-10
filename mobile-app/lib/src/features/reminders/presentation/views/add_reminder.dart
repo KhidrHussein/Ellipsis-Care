@@ -85,7 +85,7 @@ class _AddReminderState extends State<AddReminder> {
   Widget build(BuildContext context) {
     return Container(
       padding: REdgeInsets.symmetric(horizontal: 12, vertical: 20),
-      margin: REdgeInsets.symmetric(horizontal: 16, vertical: .1.sh),
+      margin: REdgeInsets.symmetric(horizontal: 16, vertical: .08.sh),
       decoration: BoxDecoration(
         color: context.themeExtension.reminderColor,
         borderRadius: BorderRadius.circular(5.r),

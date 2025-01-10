@@ -42,8 +42,7 @@ class MicrophoneService {
     try {
       await _mic.start(
         RecordConfig(encoder: AudioEncoder.wav),
-        path:
-            "${dir.path}/${FileStorageType.recording.name} $date at $time.wav",
+        path: "${dir.path}/${FileStorageType.recording.name}_${date}_$time.wav",
       );
     } catch (e) {
       "$runtimeType Error: $e".printLog();
@@ -53,10 +52,10 @@ class MicrophoneService {
   void _getRecordState() {
     _mic.onStateChanged().listen(
       (RecordState recordState) {
-        printLog("$runtimeType state: $recordState");
+        printLog(message: "$runtimeType state: $recordState");
       },
       onError: (error, stacktrace) {
-        printLog("$runtimeType error: $error");
+        printLog(message: "$runtimeType error: $error");
       },
     );
   }

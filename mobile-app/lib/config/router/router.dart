@@ -1,7 +1,10 @@
 import 'package:ellipsis_care/core/services/hive_storage_service.dart';
+import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logman/logman.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../core/utils/injector.dart';
 import '../../src/features/authentication/presentation/view/forgot_password.dart';
@@ -34,9 +37,12 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
   initialLocation: "/",
-  debugLogDiagnostics: true,
   navigatorKey: _mainRouterKey,
-  observers: [LogmanNavigatorObserver()],
+  observers: [
+    SentryNavigatorObserver(),
+    LogmanNavigatorObserver(),
+    TalkerRouteObserver(UtilHelpers.logger),
+  ],
   redirect: (context, state) async {
     final user = await injector<HiveStorageService>().getUser();
     final appSession = await injector<HiveStorageService>().getAppSession();

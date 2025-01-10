@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:ellipsis_care/core/constants/asset_strings.dart';
 import 'package:ellipsis_care/core/enums/reminder_options/reminder_options.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/controller/bloc/dashboard_bloc.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/controller/dashboard_bloc.dart';
 
 import '../../../../../../core/utils/extensions.dart';
 //import '../../../../../../core/constants/colors.dart';

@@ -61,14 +61,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 listener: (context, state) {
                   switch (state.apiState) {
                     case ApiState.success:
-                      UtilHelpers.showAlert(
-                          title: "Success", message: state.data);
+                      UtilHelpers.showSuccess(state.data);
                       UtilHelpers.pop();
                       break;
 
                     case ApiState.failed:
-                      UtilHelpers.showAlert(
-                          title: "Error", message: state.error);
+                      UtilHelpers.showError(state.error);
                       break;
 
                     default:

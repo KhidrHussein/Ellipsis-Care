@@ -24,7 +24,7 @@ class NotificationService {
     try {
       final hasPermission =
           await _service.requestPermissionToSendNotifications();
-      "Notification Permission: $hasPermission".printLog();
+
       return hasPermission;
     } catch (e) {
       "$runtimeType Error: $e".printLog();

@@ -44,6 +44,7 @@ class AuthenticationBloc
           firstName: response.firstName,
           lastName: response.lastName,
         );
+        _loginUser();
         emit(state.copyWith(apiState: ApiState.success));
       },
       (exception) {
@@ -207,6 +208,9 @@ class AuthenticationBloc
       user?.lastname = lastName;
       await user?.save();
     });
+  }
+
+  void _loginUser() async {
     await _hiveStorage.getAppSession().then((session) async {
       session?.isLoggedIn = true;
       await session?.save();

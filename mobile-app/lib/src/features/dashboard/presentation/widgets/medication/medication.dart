@@ -1,6 +1,6 @@
 import 'package:ellipsis_care/core/constants/asset_strings.dart';
 import 'package:ellipsis_care/core/enums/reminder_options/reminder_options.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/controller/bloc/dashboard_bloc.dart';
+import 'package:ellipsis_care/src/features/dashboard/presentation/controller/dashboard_bloc.dart';
 import 'package:ellipsis_care/src/shared/widgets/progress_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

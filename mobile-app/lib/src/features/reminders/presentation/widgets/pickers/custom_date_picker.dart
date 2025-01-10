@@ -66,7 +66,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                     bottom: 75,
                     child: ConstrainedBox(
                       constraints:
-                          BoxConstraints(maxWidth: 1.sw, maxHeight: .55.sh),
+                          BoxConstraints(maxWidth: 1.sw, minHeight: .55.sh),
                       child: Dialog(
                         backgroundColor: context.themeExtension.reminderColor,
                         shadowColor:
