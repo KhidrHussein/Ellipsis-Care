@@ -10,9 +10,10 @@ SignupResponse _$SignupResponseFromJson(Map<String, dynamic> json) =>
     SignupResponse(
       email: json['email'] as String,
       username: json['username'] as String?,
-      otp: json['otp'] as String,
+      otp: json['otp'] as String?,
       firstName: json['first_name'] as String?,
       lastName: json['last_name'] as String?,
+      organizationName: json['linked_organization'] as String?,
     );
 
 Map<String, dynamic> _$SignupResponseToJson(SignupResponse instance) =>
@@ -22,4 +23,5 @@ Map<String, dynamic> _$SignupResponseToJson(SignupResponse instance) =>
       'username': instance.username,
       'first_name': instance.firstName,
       'last_name': instance.lastName,
+      'linked_organization': instance.organizationName,
     };

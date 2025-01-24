@@ -98,21 +98,21 @@ class _SigninState extends State<Signin> {
                 SizedBox(height: 24.h),
                 BlocConsumer<AuthenticationBloc, AuthenticationState>(
                   bloc: authenticationBloc,
-                  listener: (context, state) {
-                    switch (state.apiState) {
+                  listener: (context, blocState) {
+                    switch (blocState.state) {
                       case ApiState.success:
                         UtilHelpers.pushTo(RouteNames.home);
                         break;
                       case ApiState.failed:
-                        UtilHelpers.showError(state.error);
+                        UtilHelpers.showError(blocState.error);
                         break;
                       default:
                         break;
                     }
                   },
-                  builder: (context, state) {
+                  builder: (context, blocState) {
                     return FilledButton(
-                      onPressed: switch (state.apiState) {
+                      onPressed: switch (blocState.state) {
                         ApiState.loading => null,
                         _ => () {
                             if (_formKey.currentState!.validate()) {

@@ -49,4 +49,7 @@ class SettingsState extends Equatable {
         error,
         apiState,
       ];
+
+  @override
+  bool get stringify => true;
 }

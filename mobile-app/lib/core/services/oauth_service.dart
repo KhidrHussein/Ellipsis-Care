@@ -2,53 +2,33 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../utils/extensions.dart';
 
-typedef OAuthCredentials = ({
-  String? displayName,
-  String? email,
-  String? photoUrl,
-});
-
 class OAuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  Future<OAuthCredentials?> signInWithGoogle() async {
+  Future<GoogleSignInAccount?> signInWithGoogle() async {
     try {
-      final account = await _googleSignIn.signIn();
-      "Signed in: $account".printLog();
-
-      return (
-        displayName: account?.displayName,
-        email: account?.email,
-        photoUrl: account?.photoUrl
-      );
-    } catch (e) {
-      "$runtimeType Error: $e".printLog();
-      return null;
+      return await _googleSignIn.signIn();
+    } catch (e, s) {
+      printLog(e: e, st: s);
+      rethrow;
     }
   }
 
-  Future<bool?> checkIfSignedInWithGoogle() async {
+  Future<bool> checkIfSignedInWithGoogle() async {
     try {
       return await _googleSignIn.isSignedIn();
-    } catch (e) {
-      "$runtimeType Error: $e".printLog();
-      return null;
+    } catch (e, s) {
+      printLog(e: e, st: s);
+      rethrow;
     }
   }
 
-  Future<OAuthCredentials?> signOutFromGoogle() async {
+  Future<void> signOutFromGoogle() async {
     try {
-      final account = await _googleSignIn.signOut();
-      "Signed out: $account".printLog();
-
-      return (
-        displayName: account?.displayName,
-        email: account?.email,
-        photoUrl: account?.photoUrl
-      );
-    } catch (e) {
-      "$runtimeType Error: $e".printLog();
-      return null;
+      await _googleSignIn.signOut();
+    } catch (e, s) {
+      printLog(e: e, st: s);
+      rethrow;
     }
   }
 }

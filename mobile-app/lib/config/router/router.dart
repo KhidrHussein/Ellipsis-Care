@@ -1,15 +1,19 @@
-import 'package:ellipsis_care/core/services/hive_storage_service.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logman/logman.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
+import 'package:ellipsis_care/core/services/hive_storage_service.dart';
+import 'package:ellipsis_care/core/utils/extensions.dart';
+import 'package:ellipsis_care/core/utils/helpers.dart';
+import 'package:ellipsis_care/src/features/authentication/presentation/view/create_password.dart';
+import 'package:ellipsis_care/src/features/authentication/presentation/view/signup.dart';
+
 import '../../core/utils/injector.dart';
 import '../../src/features/authentication/presentation/view/forgot_password.dart';
+import '../../src/features/authentication/presentation/view/setup_account.dart';
 import '../../src/features/authentication/presentation/view/signin.dart';
-import '../../src/features/authentication/presentation/view/signup.dart';
 import '../../src/features/authentication/presentation/view/verify_email.dart';
 import '../../src/features/dashboard/presentation/views/add_data.dart';
 import '../../src/features/dashboard/presentation/views/chart_details.dart';
@@ -34,6 +38,12 @@ import 'route_names.dart';
 
 final GlobalKey<NavigatorState> _mainRouterKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
+// final List<String> _unprotectedRoutes = [
+//   "/setup-account",
+//   "/sign-up"
+//       "/sign-in",
+//   "/forgot-password",
+// ];
 
 final GoRouter router = GoRouter(
   initialLocation: "/",
@@ -46,11 +56,13 @@ final GoRouter router = GoRouter(
   redirect: (context, state) async {
     final user = await injector<HiveStorageService>().getUser();
     final appSession = await injector<HiveStorageService>().getAppSession();
+    appSession.printLog();
 
     final isNavigatingToPeerRoutes =
-        state.matchedLocation.startsWith('/sign-up') ||
+        state.matchedLocation.startsWith('/setup-account') ||
             state.matchedLocation.startsWith('/sign-in') ||
-            state.matchedLocation.startsWith('/forgot-password');
+            state.matchedLocation.startsWith('/forgot-password') ||
+            state.matchedLocation.startsWith('/sign-up');
 
     final isNavigatingToShellRoute =
         state.matchedLocation.startsWith('/home') ||
@@ -61,8 +73,10 @@ final GoRouter router = GoRouter(
 
     // Determine redirection conditions
     final bool redirectToOnboarding = appSession?.hasUserOnboard != true;
+
     final bool redirectToSignUp = appSession?.hasUserOnboard == true &&
         (user?.email == null || user?.email?.isEmpty == true);
+
     final bool redirectToHome = appSession?.hasUserOnboard == true &&
         appSession?.isLoggedIn == true &&
         user?.email?.isNotEmpty == true;
@@ -73,7 +87,7 @@ final GoRouter router = GoRouter(
     } else if (redirectToSignUp &&
         !isNavigatingToShellRoute &&
         !isNavigatingToPeerRoutes) {
-      return '/sign-up';
+      return '/setup-account';
     } else if (redirectToHome && !isNavigatingToShellRoute) {
       return '/home';
     }
@@ -93,8 +107,15 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/sign-up',
       name: RouteNames.signup,
-      pageBuilder: (context, state) => const MaterialPage<Signup>(
-        child: Signup(),
+      pageBuilder: (context, state) => const MaterialPage<SignUp>(
+        child: SignUp(),
+      ),
+    ),
+    GoRoute(
+      path: '/setup-account',
+      name: RouteNames.setupAccount,
+      pageBuilder: (context, state) => const MaterialPage<SetupAccount>(
+        child: SetupAccount(),
       ),
     ),
     GoRoute(
@@ -113,11 +134,27 @@ final GoRouter router = GoRouter(
         ),
       ),
     ),
+    // GoRoute(
+    //   path: '/verify-account/:email',
+    //   name: RouteNames.verifyAccount,
+    //   pageBuilder: (context, state) => MaterialPage<VerifyEmail>(
+    //     child: VerifyAccount(
+    //       email: Uri.decodeComponent(state.pathParameters["email"] ?? ""),
+    //     ),
+    //   ),
+    // ),
     GoRoute(
       path: '/forgot-password',
       name: RouteNames.forgotPassword,
       pageBuilder: (context, state) => const MaterialPage<ForgotPassword>(
         child: ForgotPassword(),
+      ),
+    ),
+    GoRoute(
+      path: '/create-password',
+      name: RouteNames.createPassword,
+      pageBuilder: (context, state) => const MaterialPage<ForgotPassword>(
+        child: CreatePassword(),
       ),
     ),
     ShellRoute(

@@ -1,10 +1,8 @@
 import 'package:ellipsis_care/core/services/location_service.dart';
-import 'package:ellipsis_care/core/services/sms_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:ellipsis_care/core/enums/api_state.dart';
-import 'package:intl/intl.dart';
 import '../../../../../core/services/contacts_service.dart';
 import '../../../../../core/services/hive_storage_service.dart';
 import '../../../../../core/utils/extensions.dart';
@@ -23,7 +21,6 @@ class EmergencyContactBloc extends Bloc<EmergencyEvents, EmergencyState> {
     on<DeleteContactEvent>(_deleteContact);
   }
 
-  final SmsService _smsService = injector<SmsService>();
   final PhoneContactService _phoneService = injector<PhoneContactService>();
   final HiveStorageService _hiveStorage = injector<HiveStorageService>();
   final LocationService _locationService = injector<LocationService>();
@@ -58,7 +55,7 @@ class EmergencyContactBloc extends Bloc<EmergencyEvents, EmergencyState> {
       String sosMessage =
           "I am having an emergency. Call me!. Sent via Ellipsis Care App.";
 
-      await _smsService.sendSms(numbers.first, sosMessage);
+      // await _smsService.sendSms(numbers.first, sosMessage);
     } catch (e) {
       emit(
         state.copyWith(

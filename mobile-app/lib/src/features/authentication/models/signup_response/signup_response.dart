@@ -7,15 +7,16 @@ part 'signup_response.g.dart';
 class SignupResponse {
   const SignupResponse({
     required this.email,
-    required this.username,
-    required this.otp,
-    required this.firstName,
-    required this.lastName,
+    this.username,
+    this.otp,
+    this.firstName,
+    this.lastName,
+    this.organizationName,
   });
 
   final String email;
 
-  final String otp;
+  final String? otp;
 
   final String? username;
 
@@ -24,6 +25,9 @@ class SignupResponse {
 
   @JsonKey(name: "last_name")
   final String? lastName;
+
+  @JsonKey(name: "linked_organization")
+  final String? organizationName;
 
   factory SignupResponse.fromJson(Map<String, dynamic> json) =>
       _$SignupResponseFromJson(json);

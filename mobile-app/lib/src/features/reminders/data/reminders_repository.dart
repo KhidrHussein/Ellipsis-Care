@@ -6,7 +6,7 @@ import 'package:ellipsis_care/src/features/reminders/models/reminder_response.da
 
 import '../../../../core/api/exceptions/exceptions.dart';
 import '../../../../core/constants/api_endpoints.dart';
-import '../../../../core/services/api_service.dart';
+import '../../../../core/api/dio.dart';
 import '../../../../core/utils/injector.dart';
 
 class ReminderRepository {

@@ -4,7 +4,7 @@ import 'package:ellipsis_care/src/features/settings/model/update_profile_respons
 
 import '../../../../core/api/exceptions/exceptions.dart';
 import '../../../../core/constants/api_endpoints.dart';
-import '../../../../core/services/api_service.dart';
+import '../../../../core/api/dio.dart';
 import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/injector.dart';
 

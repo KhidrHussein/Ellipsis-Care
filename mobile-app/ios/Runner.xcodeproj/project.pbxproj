@@ -241,7 +241,7 @@
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				77C51FAE962EA233BC513420 /* [CP] Embed Pods Frameworks */,
 				AF073101EB53DB08EA5C1C9C /* [CP] Copy Pods Resources */,
-				0DEBA07350940DC917A26DC1 /* FlutterFire: "flutterfire bundle-service-file" */,
+				ABA2BAF1E21BDF087032FCB6 /* FlutterFire: "flutterfire bundle-service-file" */,
 			);
 			buildRules = (
 			);
@@ -319,24 +319,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0DEBA07350940DC917A26DC1 /* FlutterFire: "flutterfire bundle-service-file" */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "FlutterFire: \"flutterfire bundle-service-file\"";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\n#!/bin/bash\nPATH=${PATH}:$FLUTTER_ROOT/bin:$HOME/.pub-cache/bin\nflutterfire bundle-service-file --plist-destination=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app --build-configuration=${CONFIGURATION} --platform=ios --apple-project-path=${SRCROOT}\n";
-		};
 		1F87988B1981AFDB9871B46C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -406,6 +388,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+		};
+		ABA2BAF1E21BDF087032FCB6 /* FlutterFire: "flutterfire bundle-service-file" */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "FlutterFire: \"flutterfire bundle-service-file\"";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\n#!/bin/bash\nPATH=${PATH}:$FLUTTER_ROOT/bin:$HOME/.pub-cache/bin\nflutterfire bundle-service-file --plist-destination=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app --build-configuration=${CONFIGURATION} --platform=ios --apple-project-path=${SRCROOT}\n";
 		};
 		AF073101EB53DB08EA5C1C9C /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../failed_api_response/failed_api_response.dart';
 import '../../utils/extensions.dart';
 
 part 'exceptions.freezed.dart';
@@ -11,61 +11,69 @@ part 'exceptions.freezed.dart';
 @freezed
 abstract class AppExceptions with _$AppExceptions implements Exception {
   const factory AppExceptions.requestCancelled() = _RequestCancelled;
+
+  const factory AppExceptions.requestTimeout() = _RequestTimeout;
+
+  const factory AppExceptions.sendTimeout() = _SendTimeout;
+
+  const factory AppExceptions.receiveTimeout() = _ReceiveTimeout;
+
+  const factory AppExceptions.badRequest(String? error) = _BadRequest;
+
   const factory AppExceptions.unauthorizedRequest(String? reason) =
       _UnauthorizedRequest;
-  const factory AppExceptions.badRequest(String? error) = _BadRequest;
+
   const factory AppExceptions.notFound(String? reason) = _NotFound;
-  const factory AppExceptions.methodNotAllowed() = _MethodNotAllowed;
-  const factory AppExceptions.notAcceptable() = _NotAcceptable;
-  const factory AppExceptions.requestTimeout() = _RequestTimeout;
-  const factory AppExceptions.sendTimeout() = _SendTimeout;
-  const factory AppExceptions.receiveTimeout() = _ReceiveTimeout;
+
+  const factory AppExceptions.unexpectedError() = _UnexpectedError;
+
   const factory AppExceptions.unprocessableEntity(String? reason) =
       _UnprocessableEntity;
-  const factory AppExceptions.conflict() = _Conflict;
+
   const factory AppExceptions.internalServerError() = _InternalServerError;
-  const factory AppExceptions.notImplemented() = _NotImplemented;
+
   const factory AppExceptions.serviceUnavailable() = _ServiceUnavailable;
+
   const factory AppExceptions.noInternetConnection() = _NoInternetConnection;
+
   const factory AppExceptions.formatException() = _FormatException;
-  const factory AppExceptions.unableToProcess() = _UnableToProcess;
+
   const factory AppExceptions.defaultError(String? error) = _DefaultError;
-  const factory AppExceptions.unexpectedError() = _UnexpectedError;
+
+  const factory AppExceptions.typeException(String error) = _TypeException;
+
+  const factory AppExceptions.platformException(String? error) =
+      _PlatformException;
 
   static AppExceptions _handleResponse(Response<dynamic>? response) {
     int statusCode = response?.statusCode ?? 0;
-    final badResponse = response?.data != null
-        ? FailedApiResponse.fromJson(response?.data)
-        : const FailedApiResponse(
-            status: "failed", message: "No response data available");
+    String message = response?.data["message"];
 
     switch (statusCode) {
       case 400:
-        return AppExceptions.badRequest(badResponse.message);
+        return AppExceptions.badRequest(message);
       case 401:
-        return AppExceptions.unauthorizedRequest(badResponse.message);
+        return AppExceptions.unauthorizedRequest(message);
       case 403:
-        return AppExceptions.unauthorizedRequest(badResponse.message);
+        return AppExceptions.unauthorizedRequest(message);
       case 404:
-        return AppExceptions.notFound(badResponse.message);
+        return AppExceptions.notFound(message);
       case 408:
         return const AppExceptions.requestTimeout();
-      case 409:
-        return const AppExceptions.conflict();
       case 422:
-        return AppExceptions.unprocessableEntity(badResponse.message);
+        return AppExceptions.unprocessableEntity(message);
       case 500:
         return const AppExceptions.internalServerError();
       case 503:
         return const AppExceptions.serviceUnavailable();
       default:
         return AppExceptions.defaultError(
-          badResponse.message ?? "Unknown error with status code: $statusCode",
-        );
+            "Unknown error with status code: $statusCode");
     }
   }
 
-  static AppExceptions handleExceptions(exception) {
+  static AppExceptions handleExceptions(dynamic exception) {
+    // exception.printLog();
     if (exception is Exception) {
       try {
         AppExceptions networkExceptions;
@@ -107,15 +115,16 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
               }
               break;
           }
-        } else if (exception is SocketException) {
-          networkExceptions = const AppExceptions.noInternetConnection();
         } else {
-          exception.printLog();
           networkExceptions = const AppExceptions.unexpectedError();
         }
         return networkExceptions;
-      } on FormatException catch (formatError) {
-        formatError.printLog();
+      } on SocketException {
+        return const AppExceptions.noInternetConnection();
+      } on PlatformException catch (e) {
+        return AppExceptions.platformException(e.message);
+      } on FormatException catch (e) {
+        e.printLog();
         return const AppExceptions.formatException();
       } catch (e) {
         e.printLog();
@@ -123,8 +132,7 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
       }
     } else {
       if (exception.toString().contains("is not a subtype of")) {
-        exception.printLog();
-        return const AppExceptions.unableToProcess();
+        return AppExceptions.typeException(exception);
       } else {
         return const AppExceptions.unexpectedError();
       }
@@ -133,71 +141,55 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
 
   static String getErrorMessage(AppExceptions? appException) {
     String? errorMessage;
-    if (appException != null) {
-      appException.when(
-        notImplemented: () {
-          errorMessage = "Not Implemented";
-        },
-        requestCancelled: () {
-          errorMessage = "Request Cancelled";
-        },
-        internalServerError: () {
-          errorMessage = "Internal Server Error";
-        },
-        notFound: (String? reason) {
-          errorMessage ??= reason;
-        },
-        serviceUnavailable: () {
-          errorMessage = "Service unavailable";
-        },
-        methodNotAllowed: () {
-          errorMessage = "Method Allowed";
-        },
-        badRequest: (value) {
-          errorMessage = value;
-        },
-        unauthorizedRequest: (String? error) {
-          errorMessage = error;
-        },
-        unprocessableEntity: (String? error) {
-          errorMessage = error;
-        },
-        unexpectedError: () {
-          errorMessage = "Unexpected error occurred";
-        },
-        requestTimeout: () {
-          errorMessage = "Connection request timeout";
-        },
-        noInternetConnection: () {
-          errorMessage = "No internet connection";
-        },
-        conflict: () {
-          errorMessage = "Error due to a conflict";
-        },
-        sendTimeout: () {
-          errorMessage = "Send timeout in connection with API server";
-        },
-        unableToProcess: () {
-          errorMessage = "This credentials does not meet any of our records, "
-              "please make sure you have entered the right credentials";
-        },
-        defaultError: (error) {
-          errorMessage = error ?? "";
-        },
-        formatException: () {
-          errorMessage = "Unexpected error occurred";
-        },
-        notAcceptable: () {
-          errorMessage = "Not acceptable";
-        },
-        receiveTimeout: () {
-          errorMessage = "A receive timeout occurred";
-        },
-      );
-    } else {
-      errorMessage =
-          "Oops!, we ran into technical difficulties. Try again later.";
-    }
+    appException?.maybeWhen(
+      requestCancelled: () {
+        errorMessage = "Request Cancelled";
+      },
+      internalServerError: () {
+        errorMessage = "Internal Server Error";
+      },
+      notFound: (String? reason) {
+        errorMessage ??= reason;
+      },
+      serviceUnavailable: () {
+        errorMessage = "Service unavailable";
+      },
+
+      badRequest: (value) {
+        errorMessage = value;
+      },
+      unauthorizedRequest: (String? error) {
+        errorMessage = error;
+      },
+      unprocessableEntity: (String? error) {
+        errorMessage = error;
+      },
+      unexpectedError: () {
+        errorMessage = "Unexpected error occurred";
+      },
+      requestTimeout: () {
+        errorMessage = "Connection request timeout";
+      },
+      noInternetConnection: () {
+        errorMessage = "No internet connection";
+      },
+      sendTimeout: () {
+        errorMessage = "Send timeout in connection with API server";
+      },
+      // unableToProcess: () {
+      //   errorMessage = "This credentials does not meet any of our records, "
+      //       "please make sure you have entered the right credentials";
+      // },
+      formatException: () {
+        errorMessage = "Unexpected error occurred";
+      },
+
+      receiveTimeout: () {
+        errorMessage = "A receive timeout occurred";
+      },
+      orElse: () => errorMessage =
+          "Oops!, we ran into technical difficulties. Try again later.",
+    );
 
     return errorMessage ?? "";
   }

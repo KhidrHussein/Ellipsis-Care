@@ -8,7 +8,6 @@ import '../../../../config/router/route_names.dart';
 import '../../../../core/services/contacts_service.dart';
 import '../../../../core/services/mic_service.dart';
 import '../../../../core/services/notification_service.dart';
-import '../../../../core/services/sms_service.dart';
 import '../../../../core/services/voice_command_service.dart';
 import '../../../../core/utils/helpers.dart';
 
@@ -60,10 +59,10 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   }
 
   void _hasViewedOnboarding() async {
-    final userdata = await injector<HiveStorageService>().getAppSession();
-    userdata?.hasUserOnboard = true;
-    await userdata?.save().then((value) {
-      UtilHelpers.pushTo(RouteNames.signup);
+    await injector<HiveStorageService>().getAppSession().then((userdata) async {
+      userdata?.hasUserOnboard = true;
+      await userdata?.save();
+      UtilHelpers.pushTo(RouteNames.setupAccount);
     });
   }
 
@@ -92,16 +91,11 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
   void _setupEmergencyServices() async {
     final phoneService = injector<PhoneContactService>();
-    final smsService = injector<SmsService>();
     final hiveStorage = injector<HiveStorageService>();
 
     await phoneService.checkForPermission().then((permission) async {
-      await smsService.askForPermission().then((value) async {
-        if (permission == true) {
-          final contact = await phoneService.pickContact();
-          await hiveStorage.storeEmergencyContact(contact);
-        }
-      });
+      final contact = await phoneService.pickContact();
+      await hiveStorage.storeEmergencyContact(contact);
       _nextStory();
     });
   }

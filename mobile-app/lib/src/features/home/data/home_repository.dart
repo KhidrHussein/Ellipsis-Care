@@ -6,7 +6,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import '../../../../core/api/exceptions/exceptions.dart';
 import '../../../../core/constants/api_endpoints.dart';
-import '../../../../core/services/api_service.dart';
+import '../../../../core/api/dio.dart';
 import '../../../../core/utils/injector.dart';
 import '../models/home_response.dart';
 

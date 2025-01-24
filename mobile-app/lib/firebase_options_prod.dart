@@ -65,4 +65,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'ellipsis-care-prod.firebasestorage.app',
     iosBundleId: 'com.ellipsis.ellipsisCare',
   );
+
 }

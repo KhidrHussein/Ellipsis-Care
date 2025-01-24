@@ -1,17 +1,27 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:ellipsis_care/core/constants/api_endpoints.dart';
 import 'package:ellipsis_care/core/services/secure_storage.dart';
 import 'package:ellipsis_care/core/utils/injector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logman/logman.dart';
+
+List<String> openEndPoints = [
+  ApiUrl.signUp,
+  ApiUrl.signIn,
+  ApiUrl.userExist,
+  ApiUrl.verifyEmail,
+  ApiUrl.googleLogin,
+  ApiUrl.forgotPassword,
+];
 
 class AuthInterceptor extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     String? token = await injector<SecureStorage>().getAccessToken();
-    if (token != null) {
+    if (token != null && !openEndPoints.contains(options.path)) {
       options.headers.addAll({"Authorization": "Token $token"});
     }
 

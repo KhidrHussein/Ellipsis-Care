@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:ellipsis_care/core/api/exceptions/exceptions.dart';
 import 'package:ellipsis_care/core/enums/api_state.dart';
 import 'package:ellipsis_care/core/services/hive_storage_service.dart';
+import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/core/utils/injector.dart';
 import 'package:ellipsis_care/src/features/settings/data/settings_repository.dart';
 import 'package:equatable/equatable.dart';

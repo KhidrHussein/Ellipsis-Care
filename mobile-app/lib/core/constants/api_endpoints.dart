@@ -1,6 +1,8 @@
 class ApiUrl {
   static const String signUp = "users/";
+  static const String userExist = "email-check/";
   static const String signIn = "auth/login/";
+  static const String googleLogin = "auth/google-login/";
   static const String verifyEmail = "auth/verify-email/";
   static const String forgotPassword = "auth/password-reset/";
   static const String resetPassword = "auth/password-reset-confirm/";

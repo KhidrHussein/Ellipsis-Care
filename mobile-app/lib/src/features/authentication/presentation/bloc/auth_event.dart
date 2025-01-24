@@ -5,22 +5,30 @@ sealed class AuthenticationEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class CheckIfEmailExistsEvent extends AuthenticationEvent {
+  CheckIfEmailExistsEvent({required this.email});
+  final String email;
+
+  @override
+  List<Object?> get props => [email];
+}
+
 class SignUpEvent extends AuthenticationEvent {
   SignUpEvent({
-    this.firstName,
-    this.lastName,
-    this.password,
     this.userName,
-    this.hasAcceptedTerms,
+    required this.firstName,
+    required this.lastName,
+    required this.password,
+    required this.hasAcceptedTerms,
     required this.email,
   });
 
-  final String? email;
+  final String email;
   final String? userName;
-  final String? firstName;
-  final String? lastName;
-  final String? password;
-  final bool? hasAcceptedTerms;
+  final String firstName;
+  final String lastName;
+  final String password;
+  final bool hasAcceptedTerms;
 
   @override
   List<Object?> get props =>
@@ -44,7 +52,6 @@ class OAuthSignUpEvent extends AuthenticationEvent {
 
 class OAuthSignInEvent extends AuthenticationEvent {
   OAuthSignInEvent({required this.email});
-
   final String? email;
 
   @override
@@ -53,9 +60,8 @@ class OAuthSignInEvent extends AuthenticationEvent {
 
 class SignInEvent extends AuthenticationEvent {
   SignInEvent({required this.email, required this.password});
-
-  final String? email;
-  final String? password;
+  final String email;
+  final String password;
 
   @override
   List<Object?> get props => [email, password];
@@ -80,6 +86,19 @@ class ForgotPasswordEvent extends AuthenticationEvent {
 
   @override
   List<Object?> get props => [email];
+}
+
+class CreatePasswordEvent extends AuthenticationEvent {
+  CreatePasswordEvent({
+    required this.password,
+    required this.confirmPassword,
+  });
+
+  final String password;
+  final String confirmPassword;
+
+  @override
+  List<Object?> get props => [password, confirmPassword];
 }
 
 class GoogleOAuthEvent extends AuthenticationEvent {

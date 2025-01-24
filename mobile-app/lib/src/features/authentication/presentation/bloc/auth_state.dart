@@ -1,32 +1,28 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'auth_bloc.dart';
 
-class AuthenticationState<T> extends Equatable {
+class AuthenticationState<T> extends AppState {
   const AuthenticationState({
-    this.data,
-    this.error = "",
-    this.isUsingOauth = false,
-    this.apiState = ApiState.none,
+    super.data,
+    super.error = "",
+    super.message = "",
+    super.state = ApiState.none,
   });
-  
-  final T? data;
-  final String error;
-  final bool isUsingOauth;
-  final ApiState apiState;
 
   AuthenticationState<T> copyWith({
     T? data,
+    String? message,
     String? error,
-    bool? isUsingOauth,
-    ApiState? apiState,
+    ApiState? state,
   }) {
     return AuthenticationState<T>(
       data: data ?? this.data,
+      message: message ?? this.message,
       error: error ?? this.error,
-      isUsingOauth: isUsingOauth ?? this.isUsingOauth,
-      apiState: apiState ?? this.apiState,
+      state: state ?? this.state,
     );
   }
 
   @override
-  List<Object?> get props => [data, error, isUsingOauth, apiState];
+  List<Object?> get props => [data, error, message, state];
 }
