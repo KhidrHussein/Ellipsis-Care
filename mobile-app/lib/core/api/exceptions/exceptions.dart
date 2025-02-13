@@ -73,7 +73,8 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
   }
 
   static AppExceptions handleExceptions(dynamic exception) {
-    // exception.printLog();
+    exception.printLog();
+    
     if (exception is Exception) {
       try {
         AppExceptions networkExceptions;
@@ -119,9 +120,11 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
           networkExceptions = const AppExceptions.unexpectedError();
         }
         return networkExceptions;
-      } on SocketException {
+      } on SocketException catch (e) {
+        e.printLog();
         return const AppExceptions.noInternetConnection();
       } on PlatformException catch (e) {
+        e.printLog();
         return AppExceptions.platformException(e.message);
       } on FormatException catch (e) {
         e.printLog();
@@ -149,14 +152,14 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
         errorMessage = "Internal Server Error";
       },
       notFound: (String? reason) {
-        errorMessage ??= reason;
+        errorMessage = reason;
       },
       serviceUnavailable: () {
         errorMessage = "Service unavailable";
       },
 
-      badRequest: (value) {
-        errorMessage = value;
+      badRequest: (String? message) {
+        errorMessage = message;
       },
       unauthorizedRequest: (String? error) {
         errorMessage = error;

@@ -1,16 +1,14 @@
+import 'package:ellipsis_care/config/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../../core/utils/extensions.dart';
 import '../bloc/auth_bloc.dart';
 
-import '../../../../../core/constants/asset_strings.dart';
 
-class AuthenticationOptions extends StatelessWidget {
-  final bool isNewUser;
-  const AuthenticationOptions({super.key, this.isNewUser = false});
+class OAuthOptions extends StatelessWidget {
+  const OAuthOptions({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +18,7 @@ class AuthenticationOptions extends StatelessWidget {
       children: [
         OutlinedButton.icon(
           onPressed: () => authenticationBloc.add(
-            GoogleOAuthEvent(isNewUser: isNewUser),
+            GoogleOAuthEvent(),
           ),
           label: Text(
             "Continue with Google",
@@ -29,7 +27,7 @@ class AuthenticationOptions extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          icon: SvgPicture.asset(AssetStrings.google),
+          icon: AppAssets.icons.authentication.google.svg(),
         ),
         // SizedBox(height: 16.h),
         // OutlinedButton.icon(

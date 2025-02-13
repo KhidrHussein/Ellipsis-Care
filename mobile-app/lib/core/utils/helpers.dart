@@ -8,8 +8,6 @@ import '../../src/features/reminders/presentation/views/add_reminder.dart';
 import 'extensions.dart';
 
 class UtilHelpers {
-  UtilHelpers._();
-
   static void pushTo(String routeName, [Map<String, String>? pathParams]) {
     router.pushNamed(
       routeName,

@@ -35,7 +35,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>com.googleusercontent.apps.271967696940-l7a7jc8p0enb0dl248o122a2n3k2d9h5</string>
+          <string>$(GOOGLE_SIGNIN_KEY)</string>
         </array>
       </dict>
     </array>

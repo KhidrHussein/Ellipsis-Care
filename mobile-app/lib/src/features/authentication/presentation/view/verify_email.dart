@@ -63,11 +63,13 @@ class _VerifyEmailState extends State<VerifyEmail> {
                     case ApiState.success:
                       UtilHelpers.goTo(RouteNames.signIn);
                       break;
+
                     case ApiState.failed:
                       UtilHelpers.showError(blocState.error);
                       break;
+
                     default:
-                      break;
+                    
                   }
                 },
                 builder: (context, blocState) {

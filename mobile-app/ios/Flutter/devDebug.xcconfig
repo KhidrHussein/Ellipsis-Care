@@ -5,3 +5,4 @@ FLUTTER_TARGET=lib/main_dev.dart
 ASSET_PREFIX=dev
 BUNDLE_NAME=Ellipsis Care Dev
 BUNDLE_DISPLAY_NAME=Ellipsis Care Dev
+GOOGLE_SIGNIN_KEY=com.googleusercontent.apps.271967696940-l7a7jc8p0enb0dl248o122a2n3k2d9h5

@@ -30,7 +30,7 @@ class OnboardStory {
 final List<OnboardStory> stories = [
   OnboardStory(
     id: 0,
-    title: "Welcome to Ellipses Care",
+    title: "Welcome to Ellipsis Care",
     body: "Your health, simplified. Ellipses Care is your personal health "
         "companion, here to ensure you stay on top of your "
         "well-being—anytime, anywhere.",

@@ -1,17 +1,26 @@
 import 'dart:io';
 
-import 'package:ellipsis_care/core/api/exceptions/exceptions.dart';
-import 'package:ellipsis_care/core/enums/api_state.dart';
-import 'package:ellipsis_care/core/services/hive_storage_service.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/core/utils/injector.dart';
-import 'package:ellipsis_care/src/features/settings/data/settings_repository.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
-part 'settings_state.dart';
+import 'package:ellipsis_care/core/api/exceptions/exceptions.dart';
+import 'package:ellipsis_care/core/enums/api_state.dart';
+import 'package:ellipsis_care/core/services/hive_storage_service.dart';
+import 'package:ellipsis_care/core/services/secure_storage.dart';
+import 'package:ellipsis_care/core/utils/app_state.dart';
+import 'package:ellipsis_care/core/utils/helpers.dart';
+import 'package:ellipsis_care/core/utils/injector.dart';
+import 'package:ellipsis_care/core/utils/storage_keys.dart';
+import 'package:ellipsis_care/src/features/emergency/domain/emergency_contact.dart';
+import 'package:ellipsis_care/src/features/reminders/models/reminder_model.dart/reminder_model.dart';
+import 'package:ellipsis_care/src/features/settings/data/settings_repository.dart';
+import 'package:ellipsis_care/src/features/settings/model/settings_model.dart';
+import 'package:ellipsis_care/src/shared/models/user/user_model.dart';
+
+import '../../../../../config/router/route_names.dart';
+
 part 'settings_events.dart';
+part 'settings_state.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SettingsBloc() : super(SettingsState()) {
@@ -22,6 +31,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<UpdateLocationPermissionEvent>(_canUseLocation);
     on<UpdatePasswordEvent>(_updatePassword);
     on<UpdateProfileEvent>(_updateProfile);
+    on<SignOutEvent>(_signOut);
   }
   final SettingsRepository _apiRepository = injector<SettingsRepository>();
   final HiveStorageService _hiveStorage = injector<HiveStorageService>();
@@ -81,7 +91,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   void _updatePassword(
       UpdatePasswordEvent event, Emitter<SettingsState> emit) async {
-    emit(state.copyWith(apiState: ApiState.loading));
+    emit(state.copyWith(state: ApiState.loading));
 
     final Map<String, dynamic> payload = {
       "old_password": event.currentPassword,
@@ -93,18 +103,18 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     result.fold(
       (response) {
-        emit(state.copyWith(apiState: ApiState.success, data: response));
+        emit(state.copyWith(state: ApiState.success, data: response));
       },
       (exception) {
         final errorMessage = AppExceptions.getErrorMessage(exception);
-        emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
+        emit(state.copyWith(state: ApiState.failed, error: errorMessage));
       },
     );
   }
 
   void _updateProfile(
       UpdateProfileEvent event, Emitter<SettingsState> emit) async {
-    emit(state.copyWith(apiState: ApiState.loading));
+    emit(state.copyWith(state: ApiState.loading));
 
     final Map<String, dynamic> payload = {
       "first_name": event.firstName,
@@ -114,18 +124,24 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     final result = await _apiRepository.updateProfile(payload);
 
-    result.fold(
-      (response) async {
+    await result.fold(
+      (success) async {
         _updateUser(
-          firstName: response.user.firstName,
-          lastName: response.user.lastName,
-          email: response.user.email,
+          firstName: success.data!.user.firstName,
+          lastName: success.data!.user.lastName,
+          email: success.data!.user.email,
         );
-        emit(state.copyWith(apiState: ApiState.success));
+
+        emit(
+          state.copyWith(
+            state: ApiState.success,
+            message: success.message,
+          ),
+        );
       },
       (exception) {
         final errorMessage = AppExceptions.getErrorMessage(exception);
-        emit(state.copyWith(apiState: ApiState.failed, error: errorMessage));
+        emit(state.copyWith(state: ApiState.failed, error: errorMessage));
       },
     );
   }
@@ -137,5 +153,37 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       user?.email = email;
       await user?.save();
     });
+  }
+
+  void _signOut(SignOutEvent event, Emitter<SettingsState> emit) async {
+    emit(state.copyWith(state: ApiState.loading));
+
+    final result = await _apiRepository.logout();
+
+    await result.fold(
+      (success) async {
+        await injector<SecureStorage>().deleteAll();
+        await _hiveStorage
+            .clearBoxStorage<EmergencyContact>(HiveBoxNames.emergency);
+        await _hiveStorage
+            .clearBoxStorage<ReminderModel>(HiveBoxNames.reminders);
+        await _hiveStorage
+            .clearBoxStorage<SettingsModel>(HiveBoxNames.settings);
+        await _hiveStorage.clearBoxStorage<UserModel>(HiveBoxNames.user);
+
+        emit(
+          state.copyWith(
+            state: ApiState.success,
+            message: "You have been logged out.",
+          ),
+        );
+
+        UtilHelpers.goTo(RouteNames.signIn);
+      },
+      (exception) {
+        final errorMessage = AppExceptions.getErrorMessage(exception);
+        emit(state.copyWith(state: ApiState.failed, error: errorMessage));
+      },
+    );
   }
 }

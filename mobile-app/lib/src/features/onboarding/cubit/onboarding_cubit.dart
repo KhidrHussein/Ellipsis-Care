@@ -59,11 +59,8 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   }
 
   void _hasViewedOnboarding() async {
-    await injector<HiveStorageService>().getAppSession().then((userdata) async {
-      userdata?.hasUserOnboard = true;
-      await userdata?.save();
-      UtilHelpers.pushTo(RouteNames.setupAccount);
-    });
+    injector<HiveStorageService>().updateOnboardingStatus();
+    UtilHelpers.pushTo(RouteNames.setupAccount);
   }
 
   void _initializeAudio() async {

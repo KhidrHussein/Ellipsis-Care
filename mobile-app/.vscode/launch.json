@@ -29,19 +29,6 @@
             ]
         },
         {
-            "name": "Release-dev",
-            "type": "dart",
-            "request": "launch",
-            "flutterMode": "release",
-            "program": "lib/main_dev.dart",
-            "args": [
-                "--flavor",
-                "dev",
-                "--dart-define-from-file",
-                ".env.dev"
-            ]
-        },
-        {
             "name": "Release-prod",
             "type": "dart",
             "request": "launch",

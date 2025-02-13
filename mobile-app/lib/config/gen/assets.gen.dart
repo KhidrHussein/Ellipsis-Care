@@ -206,6 +206,10 @@ class $AssetsIconsSettingsGen {
   SvgGenImage get icPushNotification =>
       const SvgGenImage('assets/icons/settings/ic_push_notification.svg');
 
+  /// File path: assets/icons/settings/ic_signout.svg
+  SvgGenImage get icSignout =>
+      const SvgGenImage('assets/icons/settings/ic_signout.svg');
+
   /// Directory path: assets/icons/settings
   String get path => 'assets/icons/settings';
 
@@ -219,7 +223,8 @@ class $AssetsIconsSettingsGen {
         icNavigateBack,
         icPrivacyPolicy,
         icProfile,
-        icPushNotification
+        icPushNotification,
+        icSignout
       ];
 }
 
@@ -322,13 +327,8 @@ class $AssetsIconsHomeNavBarGen {
 class AppAssets {
   AppAssets._();
 
-  static const String aEnv = '.env.dev';
-  static const String aEnv = '.env.prod';
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
-
-  /// List of all assets
-  static List<String> get values => [aEnv, aEnv];
 }
 
 class AssetGenImage {

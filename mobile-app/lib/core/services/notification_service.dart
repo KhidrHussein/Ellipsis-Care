@@ -34,9 +34,7 @@ class NotificationService {
 
   Future<void> init() async {
     try {
-      final hasSetupSystem =
-          await _service.initialize(null, _channels, debug: true);
-      "Noitification Service is initialized ?$hasSetupSystem".printLog();
+      await _service.initialize(null, _channels, debug: true);
     } catch (e) {
       "$runtimeType Error: $e".printLog();
     }

@@ -12,7 +12,12 @@
           "package_name": "com.ellipsis.ellipsis_care"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "855289615108-vd4ps0p9o5g8scmuacgadpnr7142dhgp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCbPF6upA1rMorZa64GGDCASZK7i99VEmk"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "855289615108-vd4ps0p9o5g8scmuacgadpnr7142dhgp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "855289615108-shufavve87atpiieor9htkf7pe18u6v7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ellipsis.ellipsisCare"
+              }
+            }
+          ]
         }
       }
     }

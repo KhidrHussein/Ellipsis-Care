@@ -1,3 +1,5 @@
+import 'package:ellipsis_care/core/api/response/api_response.dart';
+import 'package:ellipsis_care/core/utils/typedef.dart';
 import 'package:fpdart/fpdart.dart';
 
 import 'package:ellipsis_care/src/features/settings/model/update_profile_response/update_profile_response.dart';
@@ -5,41 +7,48 @@ import 'package:ellipsis_care/src/features/settings/model/update_profile_respons
 import '../../../../core/api/exceptions/exceptions.dart';
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/api/dio.dart';
-import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/injector.dart';
 
 class SettingsRepository {
-  final ApiService _service = injector<ApiService>();
+  SettingsRepository() : _service = injector<ApiService>();
 
-  Future<Either<UpdateProfileResponse, AppExceptions>> updateProfile(
+  final ApiService _service;
+
+  FutureEitherResponseOf<UpdateProfileResponse> updateProfile(
       Map<String, dynamic> payload) async {
     try {
-      final apiResponse =
-          await _service.put(ApiUrl.updateProfile, data: payload);
-      final updatedProfile =
-          UpdateProfileResponse.fromJson(apiResponse.data["data"]);
+      final result = await _service.put(ApiUrl.updateProfile, data: payload);
 
-      return left(updatedProfile);
+      final response = ApiResponse<UpdateProfileResponse>.fromJson(
+        result.data,
+        (json) => UpdateProfileResponse.fromJson(json as Map<String, dynamic>),
+      );
+
+      return left(response);
     } catch (e) {
-      "$runtimeType exception \n Exception Type: ${e.runtimeType} \n Exception Details: $e \n"
-          .printLog();
-
       final exception = AppExceptions.handleExceptions(e);
       return right(exception);
     }
   }
 
-  Future<Either<String, AppExceptions>> changePassword(
+  FutureEitherResponseOf<void> changePassword(
       Map<String, dynamic> payload) async {
     try {
-      final response =
-          await _service.post(ApiUrl.changePassword, data: payload);
+      final result = await _service.post(ApiUrl.changePassword, data: payload);
 
-      return left(response.data["message"]);
+      final response = ApiResponse<void>.fromJson(result.data, (json) {});
+      return left(response);
     } catch (e) {
-      "$runtimeType exception \n Exception Type: ${e.runtimeType} \n Exception Details: $e \n"
-          .printLog();
+      final exception = AppExceptions.handleExceptions(e);
+      return right(exception);
+    }
+  }
 
+  FutureEitherOf<void> logout() async {
+    try {
+      final result = await _service.post(ApiUrl.logout);
+      return left(result.data);
+    } catch (e) {
       final exception = AppExceptions.handleExceptions(e);
       return right(exception);
     }

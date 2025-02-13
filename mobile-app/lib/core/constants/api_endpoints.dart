@@ -6,6 +6,7 @@ class ApiUrl {
   static const String verifyEmail = "auth/verify-email/";
   static const String forgotPassword = "auth/password-reset/";
   static const String resetPassword = "auth/password-reset-confirm/";
+  static const String logout = "auth/token/logout/";
 
   static const String uploadAudio = "audio/";
   static const String addReminder = "reminder/";

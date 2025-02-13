@@ -91,21 +91,21 @@ class _ProfileState extends State<Profile> {
               ),
               .3.sh.sizedBoxHeight,
               BlocConsumer<SettingsBloc, SettingsState>(
-                listener: (context, state) {
-                  switch (state.apiState) {
+                listener: (context, blocState) {
+                  switch (blocState.state) {
                     case ApiState.success:
                       UtilHelpers.showSuccess("Profile Updated!");
                       UtilHelpers.pop();
                       break;
                     case ApiState.failed:
-                      UtilHelpers.showError(state.error);
+                      UtilHelpers.showError(blocState.error);
                       break;
                     default:
                   }
                 },
-                builder: (context, state) {
+                builder: (context, blocState) {
                   return FilledButton(
-                    onPressed: switch (state.apiState) {
+                    onPressed: switch (blocState.state) {
                       ApiState.loading => null,
                       _ => () {
                           bool conditions = (_emailController.text.isNotEmpty &&

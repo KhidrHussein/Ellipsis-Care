@@ -11,7 +11,8 @@ import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth
 import 'package:ellipsis_care/src/shared/widgets/textfield.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+  const SignUp({super.key, required this.email});
+  final String email;
 
   @override
   State<SignUp> createState() => _SignUpState();
@@ -20,7 +21,6 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _firstnameController = TextEditingController();
   final TextEditingController _lastnameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -32,7 +32,6 @@ class _SignUpState extends State<SignUp> {
   @override
   void dispose() {
     _reset();
-    _emailController.dispose();
     _firstnameController.dispose();
     _lastnameController.dispose();
     _passwordController.dispose();
@@ -131,12 +130,18 @@ class _SignUpState extends State<SignUp> {
                         switch (blocState.state) {
                           case ApiState.success:
                             UtilHelpers.showSuccess(blocState.message);
+
                             UtilHelpers.pushTo(
                               RouteNames.verifyEmail,
-                              {"email": _emailController.text},
+                              {"email": widget.email},
                             );
+
+                            break;
+
                           case ApiState.failed:
                             UtilHelpers.showError(blocState.error);
+                            break;
+                            
                           default:
                         }
                       },
@@ -149,7 +154,7 @@ class _SignUpState extends State<SignUp> {
                                     _hasAcceptedTerms.value) {
                                   authBloc.add(
                                     SignUpEvent(
-                                      email: _emailController.text,
+                                      email: widget.email,
                                       firstName: _firstnameController.text,
                                       lastName: _lastnameController.text,
                                       password: _passwordController.text,
@@ -194,7 +199,6 @@ class _SignUpState extends State<SignUp> {
   }
 
   void _reset() {
-    _emailController.clear();
     _firstnameController.clear();
     _lastnameController.clear();
     _passwordController.clear();

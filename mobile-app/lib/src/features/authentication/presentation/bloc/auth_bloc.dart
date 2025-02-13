@@ -43,7 +43,6 @@ class AuthenticationBloc
       (response) {
         emit(
           state.copyWith(
-            error: "",
             state: ApiState.success,
             message: response.message,
           ),
@@ -53,7 +52,6 @@ class AuthenticationBloc
         final errorMessage = AppExceptions.getErrorMessage(exception);
         emit(
           state.copyWith(
-            message: "",
             state: ApiState.failed,
             error: errorMessage,
           ),
@@ -71,17 +69,15 @@ class AuthenticationBloc
     emit(state.copyWith(state: ApiState.loading));
     final result = await _apiRepository.signIn(payload);
 
-    result.fold(
+    await result.fold(
       (response) async {
         await injector<SecureStorage>().storeAccessToken(response.data!.token);
 
         _updateSession(
-          email: response.data?.email,
+          email: response.data!.email,
           firstName: response.data?.firstName,
           lastName: response.data?.lastName,
         );
-
-        _loginUser();
 
         emit(
           state.copyWith(
@@ -115,28 +111,29 @@ class AuthenticationBloc
 
     final result = await _apiRepository.signUp(payload);
 
-    result.fold(
-      (response) {
-        _updateSession(
-          email: response.data?.email,
-          firstName: response.data?.firstName,
-          lastName: response.data?.lastName,
-        );
+    await result.fold(
+      (success) async {
+        if (success.data?.firstName != null && success.data?.lastName != null) {
+          _updateSession(
+            email: success.data!.email,
+            firstName: success.data!.firstName,
+            lastName: success.data!.lastName,
+          );
+        } else {
+          _updateSession(email: success.data!.email);
+        }
 
         emit(
           state.copyWith(
             state: ApiState.success,
-            message: response.message,
+            message: success.message,
           ),
         );
       },
       (exception) {
         final errorMessage = AppExceptions.getErrorMessage(exception);
         emit(
-          state.copyWith(
-            state: ApiState.failed,
-            error: errorMessage,
-          ),
+          state.copyWith(state: ApiState.failed, error: errorMessage),
         );
       },
     );
@@ -185,18 +182,39 @@ class AuthenticationBloc
         final result =
             await _apiRepository.signUpWithGoogle(authentication.idToken);
 
-        result.fold(
-          (success) {
-            emit(state.copyWith(state: ApiState.success));
+        await result.fold(
+          (success) async {
+            await injector<SecureStorage>()
+                .storeAccessToken(success.data!.token);
+
+            _updateSession(
+              email: success.data?.email,
+              firstName: success.data?.firstName,
+              lastName: success.data?.lastName,
+            );
+
+            emit(
+              state.copyWith(
+                state: ApiState.success,
+                message: success.message,
+              ),
+            );
           },
           (exception) {
             emit(
               state.copyWith(
                 state: ApiState.failed,
-                error: exception.toString(),
+                error: AppExceptions.getErrorMessage(exception),
               ),
             );
           },
+        );
+      } else {
+        emit(
+          state.copyWith(
+            state: ApiState.failed,
+            error: "Could not sign up with Google.",
+          ),
         );
       }
     } catch (e) {
@@ -226,21 +244,14 @@ class AuthenticationBloc
 
   void _updateSession({
     required String? email,
-    required String? firstName,
-    required String? lastName,
+    String? firstName,
+    String? lastName,
   }) async {
     await _hiveStorage.getUser().then((user) async {
       user?.email = email;
       user?.firstname = firstName;
       user?.lastname = lastName;
       await user?.save();
-    });
-  }
-
-  void _loginUser() async {
-    await _hiveStorage.getAppSession().then((session) async {
-      session?.isLoggedIn = true;
-      await session?.save();
     });
   }
 }

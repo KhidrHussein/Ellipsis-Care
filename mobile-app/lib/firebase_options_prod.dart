@@ -63,6 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '855289615108',
     projectId: 'ellipsis-care-prod',
     storageBucket: 'ellipsis-care-prod.firebasestorage.app',
+    iosClientId: '855289615108-shufavve87atpiieor9htkf7pe18u6v7.apps.googleusercontent.com',
     iosBundleId: 'com.ellipsis.ellipsisCare',
   );
 

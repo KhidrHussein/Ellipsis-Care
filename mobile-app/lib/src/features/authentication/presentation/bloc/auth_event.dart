@@ -102,13 +102,5 @@ class CreatePasswordEvent extends AuthenticationEvent {
 }
 
 class GoogleOAuthEvent extends AuthenticationEvent {
-  GoogleOAuthEvent({required this.isNewUser});
-  final bool isNewUser;
-
-  @override
-  List<Object?> get props => [isNewUser];
+  GoogleOAuthEvent();
 }
-
-class FacebookOAuthEvent extends AuthenticationEvent {}
-
-class AppleOAuthEvent extends AuthenticationEvent {}

@@ -123,8 +123,8 @@ flutter:
     - assets/icons/settings/
     - assets/icons/sos/
     - assets/images/
-    - .env.dev
-    - .env.prod
+    # - .env.dev
+    # - .env.prod
 
   fonts:
     - family: Manrope

@@ -21,6 +21,8 @@ class EllipsisCare extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Env.printEnvConfig();
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(

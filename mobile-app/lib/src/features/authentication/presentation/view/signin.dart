@@ -1,3 +1,4 @@
+import 'package:ellipsis_care/config/env.dart';
 import 'package:ellipsis_care/core/enums/api_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class _SigninState extends State<Signin> {
   @override
   void initState() {
     super.initState();
-    if (kDebugMode) {
+    if (Env.isDev) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Logman.instance.attachOverlay(context: context);
       });
@@ -133,7 +134,7 @@ class _SigninState extends State<Signin> {
                 SizedBox(height: 6.h),
                 const AuthenticationDivider(),
                 SizedBox(height: 6.h),
-                const AuthenticationOptions(),
+                const OAuthOptions(),
               ],
             ),
           ),

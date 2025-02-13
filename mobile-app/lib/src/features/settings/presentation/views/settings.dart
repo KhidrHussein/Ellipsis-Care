@@ -1,3 +1,4 @@
+import 'package:ellipsis_care/config/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -121,6 +122,11 @@ class Settings extends StatelessWidget {
                         svgIcon: AssetStrings.legalIcon,
                         title: "Legal",
                         onPressed: () => UtilHelpers.pushTo(RouteNames.legal),
+                      ),
+                      SettingCardOption(
+                        svgIcon: AppAssets.icons.settings.icSignout.path,
+                        title: "Sign Out",
+                        onPressed: () => bloc.add(SignOutEvent()),
                       ),
                     ],
                   ),

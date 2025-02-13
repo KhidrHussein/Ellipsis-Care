@@ -88,15 +88,22 @@ class _SetupAccountState extends State<SetupAccount> {
                         switch (blocState.state) {
                           case ApiState.success:
                             UtilHelpers.showSuccess(blocState.message);
+
                             if (blocState.message.contains(available)) {
-                              UtilHelpers.pushTo(RouteNames.signup);
+                              UtilHelpers.pushTo(
+                                RouteNames.signup,
+                                {"email": _emailController.text},
+                              );
                               break;
                             }
+                            
                             UtilHelpers.pushTo(RouteNames.createPassword);
                             break;
+
                           case ApiState.failed:
                             UtilHelpers.showError(blocState.error);
                             break;
+
                           default:
                         }
                       },
@@ -139,7 +146,7 @@ class _SetupAccountState extends State<SetupAccount> {
                       ),
                     ),
                     const AuthenticationDivider(),
-                    const AuthenticationOptions(isNewUser: true),
+                    const OAuthOptions(),
                   ],
                 ),
               )

@@ -1,3 +1,4 @@
+import 'package:ellipsis_care/src/shared/models/user/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logman/logman.dart';
@@ -10,6 +11,7 @@ import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/create_password.dart';
 import 'package:ellipsis_care/src/features/authentication/presentation/view/signup.dart';
 
+import '../../core/services/secure_storage.dart';
 import '../../core/utils/injector.dart';
 import '../../src/features/authentication/presentation/view/forgot_password.dart';
 import '../../src/features/authentication/presentation/view/setup_account.dart';
@@ -38,31 +40,31 @@ import 'route_names.dart';
 
 final GlobalKey<NavigatorState> _mainRouterKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
-// final List<String> _unprotectedRoutes = [
-//   "/setup-account",
-//   "/sign-up"
-//       "/sign-in",
-//   "/forgot-password",
-// ];
 
 final GoRouter router = GoRouter(
   initialLocation: "/",
   navigatorKey: _mainRouterKey,
   observers: [
     SentryNavigatorObserver(),
-    LogmanNavigatorObserver(),
     TalkerRouteObserver(UtilHelpers.logger),
   ],
   redirect: (context, state) async {
-    final user = await injector<HiveStorageService>().getUser();
-    final appSession = await injector<HiveStorageService>().getAppSession();
-    appSession.printLog();
+    final UserModel? user = await injector<HiveStorageService>().getUser();
+    final String? accessToken =
+        await injector<SecureStorage>().getAccessToken();
+    final bool? hasOnboard =
+        await injector<HiveStorageService>().getOnboardingStatus();
+
+    accessToken.printLog();
+    hasOnboard.printLog();
+    user.printLog();
 
     final isNavigatingToPeerRoutes =
         state.matchedLocation.startsWith('/setup-account') ||
             state.matchedLocation.startsWith('/sign-in') ||
             state.matchedLocation.startsWith('/forgot-password') ||
-            state.matchedLocation.startsWith('/sign-up');
+            state.matchedLocation.startsWith('/sign-up') ||
+            state.matchedLocation.startsWith('/create-password');
 
     final isNavigatingToShellRoute =
         state.matchedLocation.startsWith('/home') ||
@@ -71,18 +73,14 @@ final GoRouter router = GoRouter(
             state.matchedLocation.startsWith('/dashboard') ||
             state.matchedLocation.startsWith('/settings');
 
-    // Determine redirection conditions
-    final bool redirectToOnboarding = appSession?.hasUserOnboard != true;
+    final bool redirectToSignUp =
+        hasOnboard! && (user?.email == null || user?.email?.isEmpty == true);
 
-    final bool redirectToSignUp = appSession?.hasUserOnboard == true &&
-        (user?.email == null || user?.email?.isEmpty == true);
-
-    final bool redirectToHome = appSession?.hasUserOnboard == true &&
-        appSession?.isLoggedIn == true &&
-        user?.email?.isNotEmpty == true;
+    final bool redirectToHome =
+        hasOnboard && accessToken != null && user?.email?.isNotEmpty == true;
 
     // Redirect logic
-    if (redirectToOnboarding && state.matchedLocation != '/') {
+    if (!hasOnboard && accessToken == null && state.matchedLocation != '/') {
       return '/';
     } else if (redirectToSignUp &&
         !isNavigatingToShellRoute &&
@@ -105,10 +103,12 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/sign-up',
+      path: '/sign-up/:email',
       name: RouteNames.signup,
-      pageBuilder: (context, state) => const MaterialPage<SignUp>(
-        child: SignUp(),
+      pageBuilder: (context, state) => MaterialPage<SignUp>(
+        child: SignUp(
+          email: Uri.decodeComponent(state.pathParameters["email"] ?? ""),
+        ),
       ),
     ),
     GoRoute(

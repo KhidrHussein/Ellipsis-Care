@@ -4,6 +4,8 @@ sealed class SettingsEvent {}
 
 class LoadSettingsEvent implements SettingsEvent {}
 
+class SignOutEvent implements SettingsEvent {}
+
 class UpdateProfilePictureEvent implements SettingsEvent {}
 
 class UpdateThemeEvent implements SettingsEvent {
