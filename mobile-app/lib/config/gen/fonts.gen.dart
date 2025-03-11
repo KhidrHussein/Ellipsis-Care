@@ -13,9 +13,6 @@ class FontFamily {
   /// Font family: Colfax
   static const String colfax = 'Colfax';
 
-  /// Font family: Krona One
-  static const String kronaOne = 'Krona One';
-
   /// Font family: Manrope
   static const String manrope = 'Manrope';
 

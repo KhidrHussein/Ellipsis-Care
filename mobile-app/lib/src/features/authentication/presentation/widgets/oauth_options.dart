@@ -27,7 +27,7 @@ class OAuthOptions extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          icon: AppAssets.icons.authentication.google.svg(),
+          icon: AppAssets.icons.authentication.icGoogle.svg(),
         ),
         // SizedBox(height: 16.h),
         // OutlinedButton.icon(

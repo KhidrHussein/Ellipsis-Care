@@ -1,14 +1,10 @@
-import 'package:ellipsis_care/config/router/route_names.dart';
-import 'package:ellipsis_care/src/shared/widgets/navigator_shell/navigator_shell.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../../core/constants/asset_strings.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../bloc/home_bloc.dart';
-import '../widgets/home_action_chip.dart';
 
 import '../../../../shared/widgets/appbar.dart';
 

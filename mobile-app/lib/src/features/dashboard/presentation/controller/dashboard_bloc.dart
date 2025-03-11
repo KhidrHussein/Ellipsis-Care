@@ -1,9 +1,7 @@
 import 'package:ellipsis_care/core/enums/api_state.dart';
 import 'package:ellipsis_care/core/enums/reminder_options/reminder_options.dart';
 import 'package:ellipsis_care/core/services/hive_storage_service.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/core/utils/injector.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/widgets/meal/nutrition_card.dart';
 import 'package:ellipsis_care/src/features/reminders/models/reminder_model.dart/reminder_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,13 +1,12 @@
 class AssetStrings {
   static const String manrope = "Manrope";
-  static const String kronaOne = "Krona One";
   static const String colfax = "Colfax";
   static const String visbyRoundCF = "Visby Round CF";
 
   static const String logo = "assets/images/applogo.png";
 
   static const String hide = "assets/icons/authentication/hide.svg";
-  static const String show = "assets/icons/authentication/show.svg";
+  static const String show = "assets/icons/authentication/ic_show.svg";
   static const String apple = "assets/icons/authentication/apple.svg";
   static const String facebook = "assets/icons/authentication/facebook.svg";
   static const String google = "assets/icons/authentication/google.svg";

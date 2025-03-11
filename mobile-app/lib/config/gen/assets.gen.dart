@@ -54,31 +54,32 @@ class $AssetsImagesGen {
 class $AssetsIconsAuthenticationGen {
   const $AssetsIconsAuthenticationGen();
 
-  /// File path: assets/icons/authentication/apple.svg
-  SvgGenImage get apple =>
-      const SvgGenImage('assets/icons/authentication/apple.svg');
+  /// File path: assets/icons/authentication/ic_apple.svg
+  SvgGenImage get icApple =>
+      const SvgGenImage('assets/icons/authentication/ic_apple.svg');
 
-  /// File path: assets/icons/authentication/facebook.svg
-  SvgGenImage get facebook =>
-      const SvgGenImage('assets/icons/authentication/facebook.svg');
+  /// File path: assets/icons/authentication/ic_facebook.svg
+  SvgGenImage get icFacebook =>
+      const SvgGenImage('assets/icons/authentication/ic_facebook.svg');
 
-  /// File path: assets/icons/authentication/google.svg
-  SvgGenImage get google =>
-      const SvgGenImage('assets/icons/authentication/google.svg');
+  /// File path: assets/icons/authentication/ic_google.svg
+  SvgGenImage get icGoogle =>
+      const SvgGenImage('assets/icons/authentication/ic_google.svg');
 
-  /// File path: assets/icons/authentication/hide.svg
-  SvgGenImage get hide =>
-      const SvgGenImage('assets/icons/authentication/hide.svg');
+  /// File path: assets/icons/authentication/ic_hide.svg
+  SvgGenImage get icHide =>
+      const SvgGenImage('assets/icons/authentication/ic_hide.svg');
 
-  /// File path: assets/icons/authentication/show.svg
-  SvgGenImage get show =>
-      const SvgGenImage('assets/icons/authentication/show.svg');
+  /// File path: assets/icons/authentication/ic_show.svg
+  SvgGenImage get icShow =>
+      const SvgGenImage('assets/icons/authentication/ic_show.svg');
 
   /// Directory path: assets/icons/authentication
   String get path => 'assets/icons/authentication';
 
   /// List of all assets
-  List<SvgGenImage> get values => [apple, facebook, google, hide, show];
+  List<SvgGenImage> get values =>
+      [icApple, icFacebook, icGoogle, icHide, icShow];
 }
 
 class $AssetsIconsDashboardGen {
@@ -245,51 +246,51 @@ class $AssetsIconsSosGen {
 class $AssetsIconsHomeActionsGen {
   const $AssetsIconsHomeActionsGen();
 
-  /// File path: assets/icons/home/actions/add_reminder_ic.svg
-  SvgGenImage get addReminderIc =>
-      const SvgGenImage('assets/icons/home/actions/add_reminder_ic.svg');
+  /// File path: assets/icons/home/actions/ic_add_reminder.svg
+  SvgGenImage get icAddReminder =>
+      const SvgGenImage('assets/icons/home/actions/ic_add_reminder.svg');
 
-  /// File path: assets/icons/home/actions/cancel_ic.svg
-  SvgGenImage get cancelIc =>
-      const SvgGenImage('assets/icons/home/actions/cancel_ic.svg');
+  /// File path: assets/icons/home/actions/ic_cancel.svg
+  SvgGenImage get icCancel =>
+      const SvgGenImage('assets/icons/home/actions/ic_cancel.svg');
 
-  /// File path: assets/icons/home/actions/health_status_ic.svg
-  SvgGenImage get healthStatusIc =>
-      const SvgGenImage('assets/icons/home/actions/health_status_ic.svg');
+  /// File path: assets/icons/home/actions/ic_health.svg
+  SvgGenImage get icHealth =>
+      const SvgGenImage('assets/icons/home/actions/ic_health.svg');
 
-  /// File path: assets/icons/home/actions/info_ic.svg
-  SvgGenImage get infoIc =>
-      const SvgGenImage('assets/icons/home/actions/info_ic.svg');
+  /// File path: assets/icons/home/actions/ic_info.svg
+  SvgGenImage get icInfo =>
+      const SvgGenImage('assets/icons/home/actions/ic_info.svg');
 
-  /// File path: assets/icons/home/actions/microphone_ic.svg
-  SvgGenImage get microphoneIc =>
-      const SvgGenImage('assets/icons/home/actions/microphone_ic.svg');
+  /// File path: assets/icons/home/actions/ic_message.svg
+  SvgGenImage get icMessage =>
+      const SvgGenImage('assets/icons/home/actions/ic_message.svg');
 
-  /// File path: assets/icons/home/actions/pause_ic.svg
-  SvgGenImage get pauseIc =>
-      const SvgGenImage('assets/icons/home/actions/pause_ic.svg');
+  /// File path: assets/icons/home/actions/ic_microphone.svg
+  SvgGenImage get icMicrophone =>
+      const SvgGenImage('assets/icons/home/actions/ic_microphone.svg');
 
-  /// File path: assets/icons/home/actions/previous_message_ic.svg
-  SvgGenImage get previousMessageIc =>
-      const SvgGenImage('assets/icons/home/actions/previous_message_ic.svg');
+  /// File path: assets/icons/home/actions/ic_pause.svg
+  SvgGenImage get icPause =>
+      const SvgGenImage('assets/icons/home/actions/ic_pause.svg');
 
-  /// File path: assets/icons/home/actions/sos_ic.svg
-  SvgGenImage get sosIc =>
-      const SvgGenImage('assets/icons/home/actions/sos_ic.svg');
+  /// File path: assets/icons/home/actions/ic_sos.svg
+  SvgGenImage get icSos =>
+      const SvgGenImage('assets/icons/home/actions/ic_sos.svg');
 
   /// Directory path: assets/icons/home/actions
   String get path => 'assets/icons/home/actions';
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        addReminderIc,
-        cancelIc,
-        healthStatusIc,
-        infoIc,
-        microphoneIc,
-        pauseIc,
-        previousMessageIc,
-        sosIc
+        icAddReminder,
+        icCancel,
+        icHealth,
+        icInfo,
+        icMessage,
+        icMicrophone,
+        icPause,
+        icSos
       ];
 }
 
