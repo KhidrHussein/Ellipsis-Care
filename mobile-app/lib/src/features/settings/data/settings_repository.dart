@@ -1,8 +1,8 @@
-import 'package:ellipsis_care/core/api/response/api_response.dart';
-import 'package:ellipsis_care/core/utils/typedef.dart';
+import '../../../../core/api/response/api_response.dart';
+import '../../../../core/utils/typedef.dart';
 import 'package:fpdart/fpdart.dart';
 
-import 'package:ellipsis_care/src/features/settings/model/update_profile_response/update_profile_response.dart';
+import '../model/update_profile_response/update_profile_response.dart';
 
 import '../../../../core/api/exceptions/exceptions.dart';
 import '../../../../core/constants/api_endpoints.dart';

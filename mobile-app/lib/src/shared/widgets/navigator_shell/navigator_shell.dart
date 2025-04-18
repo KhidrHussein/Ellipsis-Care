@@ -1,3 +1,6 @@
+import 'package:ellipsis_care/core/utils/enums.dart';
+
+import '../../../../config/gen/assets.gen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logman/logman.dart';
 
@@ -11,7 +14,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/utils/helpers.dart';
 
 import '../../../../config/router/route_names.dart';
-import '../../../../core/constants/asset_strings.dart';
 import '../../../../core/constants/colors.dart';
 
 part 'bottom_bar_cubit.dart';
@@ -63,7 +65,7 @@ class CustomNavigatorBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NavigationRowCubit, String>(
+    return BlocBuilder<NavigationRowCubit, InAppNavigationRoutes>(
       builder: (context, state) {
         return SafeArea(
           top: false,
@@ -81,25 +83,25 @@ class CustomNavigatorBar extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       NavigatorBarItem(
-                        iconPath: AssetStrings.home,
-                        selectedIcon: AssetStrings.home == state,
+                        route: InAppNavigationRoutes.home,
+                        iconPath: AppAssets.icons.home.icHome.path,
                       ),
                       24.horizontalSpace,
                       NavigatorBarItem(
-                        iconPath: AssetStrings.reminders,
-                        selectedIcon: AssetStrings.reminders == state,
+                        route: InAppNavigationRoutes.reminders,
+                        iconPath: AppAssets.icons.home.icReminders.path,
                       ),
                       16.horizontalSpace,
                       72.sizedBoxWidth,
                       16.horizontalSpace,
                       NavigatorBarItem(
-                        iconPath: AssetStrings.dashboard,
-                        selectedIcon: AssetStrings.dashboard == state,
+                        route: InAppNavigationRoutes.dashboard,
+                        iconPath: AppAssets.icons.home.icDashboard.path,
                       ),
                       24.horizontalSpace,
                       NavigatorBarItem(
-                        iconPath: AssetStrings.settings,
-                        selectedIcon: AssetStrings.settings == state,
+                        route: InAppNavigationRoutes.settings,
+                        iconPath: AppAssets.icons.home.icSettings.path,
                       ),
                     ],
                   ),
@@ -107,8 +109,8 @@ class CustomNavigatorBar extends StatelessWidget {
                 Positioned(
                   bottom: 18.h,
                   child: NavigatorBarItem(
-                    iconPath: AssetStrings.emergency,
-                    selectedIcon: AssetStrings.emergency == state,
+                    route: InAppNavigationRoutes.emergency,
+                    iconPath: AppAssets.icons.home.icEmergency.path,
                   ),
                 ),
               ],
@@ -122,68 +124,73 @@ class CustomNavigatorBar extends StatelessWidget {
 
 class NavigatorBarItem extends StatelessWidget {
   final String iconPath;
-  final bool selectedIcon;
+  final InAppNavigationRoutes route;
 
   const NavigatorBarItem({
     super.key,
     required this.iconPath,
-    required this.selectedIcon,
+    required this.route,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.read<NavigationRowCubit>().goToRoute(iconPath),
+      onTap: () => context.read<NavigationRowCubit>().goToRoute(route),
       child: Padding(
         padding: REdgeInsets.all(8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (iconPath == AssetStrings.emergency)
-              Container(
-                height: 54.h,
-                width: 54.w,
-                padding: REdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: switch (selectedIcon) {
-                    true => AppColors.black,
-                    false => AppColors.red,
-                  },
-                  shape: BoxShape.circle,
-                ),
-                child: SvgPicture.asset(
-                  iconPath,
-                  colorFilter: const ColorFilter.mode(
-                    AppColors.white,
-                    BlendMode.srcIn,
+        child: BlocBuilder<NavigationRowCubit, InAppNavigationRoutes>(
+          builder: (context, state) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (iconPath == AppAssets.icons.home.icEmergency.path)
+                  Container(
+                    height: 54.h,
+                    width: 54.w,
+                    padding: REdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: switch (state == route) {
+                        true => AppColors.black,
+                        false => AppColors.red,
+                      },
+                      shape: BoxShape.circle,
+                    ),
+                    child: SvgPicture.asset(
+                      iconPath,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.white,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  )
+                else
+                  SvgPicture.asset(
+                    iconPath,
+                    width: 24.w,
+                    height: 24.h,
+                    // colorFilter: ColorFilter.mode(
+                    //   switch (selectedIcon) {
+                    //     true => AppColors.black,
+                    //     false => AppColors.navigationIconColor,
+                    //   },
+                    //   BlendMode.srcIn,
+                    // ),
                   ),
-                ),
-              )
-            else
-              SvgPicture.asset(
-                iconPath,
-                width: 24.w,
-                height: 24.h,
-                // colorFilter: ColorFilter.mode(
-                //   switch (selectedIcon) {
-                //     true => AppColors.black,
-                //     false => AppColors.navigationIconColor,
-                //   },
-                //   BlendMode.srcIn,
-                // ),
-              ),
-            if (selectedIcon && iconPath != AssetStrings.emergency)
-              Container(
-                width: 6.w,
-                height: 6.w,
-                margin: REdgeInsets.only(top: 3),
-                decoration: const BoxDecoration(
-                  color: AppColors.black,
-                  shape: BoxShape.circle,
-                ),
-              ),
-          ],
+                if (state == route &&
+                    iconPath != AppAssets.icons.home.icEmergency.path)
+                  Container(
+                    width: 6.w,
+                    height: 6.w,
+                    margin: REdgeInsets.only(top: 3),
+                    decoration: const BoxDecoration(
+                      color: AppColors.black,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
       ),
     );

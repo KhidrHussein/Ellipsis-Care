@@ -1,11 +1,11 @@
-import '../../../../../core/constants/asset_strings.dart';
+import '../../../../../config/gen/assets.gen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../bloc/emergency_bloc.dart';
 import 'help_circle.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pulsator/pulsator.dart';
 
 import '../../../../../core/constants/colors.dart';
@@ -45,7 +45,7 @@ class NearestContacts extends StatelessWidget {
                       color: AppColors.white,
                       shape: BoxShape.circle,
                     ),
-                    child: SvgPicture.asset(AssetStrings.sosBroadcast),
+                    child: AppAssets.icons.icBroadcast.svg(),
                   ),
                 ),
               ),

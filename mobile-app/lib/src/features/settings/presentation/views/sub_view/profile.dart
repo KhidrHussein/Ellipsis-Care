@@ -1,11 +1,9 @@
-import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../core/enums/api_state.dart';
-import '../../../../../../core/utils/extensions.dart';
+import 'package:ellipsis_care/core/utils/utils.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_appbar.dart';
 import 'package:ellipsis_care/src/shared/widgets/textfield.dart';
 import 'package:ellipsis_care/src/shared/widgets/user_avatar.dart';

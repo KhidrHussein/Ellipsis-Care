@@ -1,14 +1,12 @@
-import 'package:ellipsis_care/core/enums/api_state.dart';
+import 'package:ellipsis_care/core/utils/utils.dart';
 
 import '../bloc/auth_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../config/router/route_names.dart';
-import '../../../../../core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/utils/extensions.dart';
 
 import '../widgets/otp_field.dart';
 

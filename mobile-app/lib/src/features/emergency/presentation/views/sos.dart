@@ -1,17 +1,16 @@
-import 'package:ellipsis_care/src/features/emergency/presentation/bloc/emergency_bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../../config/router/route_names.dart';
-import '../../../../../core/utils/helpers.dart';
-import '../widgets/contacts_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../config/gen/fonts.gen.dart';
+
+import '../../../../../config/router/route_names.dart';
 import '../../../../../core/constants/colors.dart';
 import '../../../../../core/utils/extensions.dart';
-
-import '../../../../../core/constants/asset_strings.dart';
+import '../../../../../core/utils/helpers.dart';
 import '../../../../shared/widgets/page_info.dart';
+import '../bloc/emergency_bloc.dart';
+import '../widgets/contacts_sheet.dart';
 
 class SosPage extends StatelessWidget {
   const SosPage({super.key});
@@ -39,7 +38,7 @@ class SosPage extends StatelessWidget {
                     fontSize: 96.sp,
                     // color: context.themeExtension.,
                     fontWeight: FontWeight.w700,
-                    fontFamily: AssetStrings.visbyRoundCF,
+                    fontFamily: FontFamily.visbyRoundCF,
                   ),
                 ),
               ),

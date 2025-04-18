@@ -1,15 +1,13 @@
 import 'package:dotted_border/dotted_border.dart';
+import '../../../../../config/gen/assets.gen.dart';
 import 'package:ellipsis_care/src/features/reminders/presentation/bloc/reminder_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../../core/constants/colors.dart';
 
-import '../../../../../core/enums/reminder_options/reminder_options.dart';
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/helpers.dart';
+import 'package:ellipsis_care/core/utils/utils.dart';
 import '../../models/reminder_model.dart/reminder_model.dart';
 
 class ReminderTile extends StatefulWidget {
@@ -134,20 +132,22 @@ class _ReminderTileState extends State<ReminderTile> {
                             },
                             borderRadius: BorderRadius.circular(4.r),
                           ),
-                          child: SvgPicture.asset(
-                            widget.reminder.type.icon,
-                            width: 36.w,
-                            fit: BoxFit.cover,
-                            colorFilter: ColorFilter.mode(
-                              switch (widget.reminder.type) {
-                                ReminderType.drug =>
+                          child: switch (widget.reminder.type) {
+                            ReminderType.drug => AppAssets.icons.icDrug.svg(
+                                width: 36,
+                                colorFilter: ColorFilter.mode(
                                   context.themeExtension.drugColor,
-                                ReminderType.food =>
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ReminderType.food => AppAssets.icons.icFood.svg(
+                                width: 36,
+                                colorFilter: ColorFilter.mode(
                                   context.themeExtension.foodColor,
-                              },
-                              BlendMode.srcIn,
-                            ),
-                          ),
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                          },
                         ),
                         12.horizontalSpace,
                         Expanded(

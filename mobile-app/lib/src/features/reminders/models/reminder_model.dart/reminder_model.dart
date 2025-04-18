@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:ellipsis_care/core/utils/enums.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../../../../core/enums/reminder_options/reminder_options.dart';
 
 part 'reminder_model.g.dart';
 

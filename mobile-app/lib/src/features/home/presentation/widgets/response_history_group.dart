@@ -1,8 +1,7 @@
+import '../../../../../config/gen/assets.gen.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../../core/constants/asset_strings.dart';
 import '../../../../../core/utils/extensions.dart';
 
 class ResponseHistoryGroup extends StatelessWidget {
@@ -45,8 +44,7 @@ class ResponseHistoryGroup extends StatelessWidget {
               color: context.themeExtension.homeColor,
               borderRadius: BorderRadius.circular(5.r),
             ),
-            child: SvgPicture.asset(
-              AssetStrings.previousMessageIcon,
+            child: AppAssets.icons.home.icMessage.svg(
               colorFilter: ColorFilter.mode(
                 context.themeExtension.homeIconColor,
                 BlendMode.srcIn,

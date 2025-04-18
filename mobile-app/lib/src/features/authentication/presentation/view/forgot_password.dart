@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/enums/api_state.dart';
-import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth_bloc.dart';
+import '../../../../../core/utils/utils.dart';
+import '../bloc/auth_bloc.dart';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/helpers.dart';
 import '../../../../shared/widgets/textfield.dart';
 
 class ForgotPassword extends StatefulWidget {

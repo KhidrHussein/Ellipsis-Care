@@ -1,4 +1,4 @@
-import 'package:ellipsis_care/config/gen/assets.gen.dart';
+import '../../../../../config/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

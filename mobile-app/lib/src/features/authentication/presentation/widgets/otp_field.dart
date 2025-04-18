@@ -1,5 +1,5 @@
-import 'package:ellipsis_care/core/constants/colors.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../../../../core/constants/colors.dart';
+import '../../../../../core/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';

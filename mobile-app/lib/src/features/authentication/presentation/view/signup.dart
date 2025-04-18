@@ -1,14 +1,12 @@
-import 'package:ellipsis_care/core/enums/api_state.dart';
+import '../../../../../core/utils/utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../config/router/route_names.dart';
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/authentication/presentation/bloc/auth_bloc.dart';
-import 'package:ellipsis_care/src/shared/widgets/textfield.dart';
+import '../bloc/auth_bloc.dart';
+import '../../../../shared/widgets/textfield.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key, required this.email});

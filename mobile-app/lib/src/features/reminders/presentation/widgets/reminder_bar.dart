@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/src/features/reminders/presentation/bloc/reminder_bloc.dart';
+import '../bloc/reminder_bloc.dart';
 
 class ReminderBar extends StatelessWidget {
   const ReminderBar({super.key});

@@ -1,10 +1,11 @@
-import '../../../../../config/router/route_names.dart';
-import '../../../../../core/constants/asset_strings.dart';
-import '../../../../../core/utils/extensions.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../../../config/gen/assets.gen.dart';
+import '../../../../../core/utils/helpers.dart';
+
+import '../../../../../config/router/route_names.dart';
+import '../../../../../core/utils/extensions.dart';
 
 class DashboardAppbar extends StatelessWidget {
   final String title;
@@ -22,7 +23,7 @@ class DashboardAppbar extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () => UtilHelpers.pop(),
-          child: SvgPicture.asset(AssetStrings.navigateBackIcon),
+          child: AppAssets.icons.settings.icNavigateBack.svg(),
         ),
         5.sizedBoxWidth,
         Text(

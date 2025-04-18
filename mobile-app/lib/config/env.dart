@@ -6,6 +6,9 @@ class Env {
   static String? flavor = appFlavor;
   static String baseUrl = const String.fromEnvironment('BACKEND_BASE_URL');
   static String sentryDSN = const String.fromEnvironment('SENTRY_DSN');
+  static String twilioAccountSID = const String.fromEnvironment('TWILIO_ACCOUNT_SID');
+  static String twilioAuthToken = const String.fromEnvironment('TWILIO_AUTH_TOKEN');
+  static String twilioPhoneNumber = const String.fromEnvironment('TWILIO_NUMBER');
 
   static bool get isProd => flavor == "prod";
   static bool get isDev => flavor == "dev";

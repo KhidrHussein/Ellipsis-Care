@@ -3,12 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
-import 'package:ellipsis_care/core/services/hive_storage_service.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/authentication/presentation/view/create_password.dart';
-import 'package:ellipsis_care/src/features/authentication/presentation/view/signup.dart';
-import 'package:ellipsis_care/src/shared/models/user/user_model.dart';
+import '../../core/services/hive_storage_service.dart';
+import '../../core/utils/extensions.dart';
+import '../../core/utils/helpers.dart';
+import '../../src/features/authentication/presentation/view/create_password.dart';
+import '../../src/features/authentication/presentation/view/signup.dart';
+import '../../src/shared/models/user/user_model.dart';
 
 import '../../core/services/secure_storage.dart';
 import '../../core/utils/injector.dart';

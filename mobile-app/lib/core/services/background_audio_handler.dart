@@ -1,6 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../utils/extensions.dart';
 import 'package:uuid/uuid.dart';
 
 class BackgroundAudioService {

@@ -1,9 +1,10 @@
 import 'dart:io';
 
-import 'package:ellipsis_care/core/enums/file_storage_type.dart';
 import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/core/utils/helpers.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../utils/enums.dart';
 
 class FileStorageService {
   Future<void> storeFile({

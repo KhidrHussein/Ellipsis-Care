@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/laolu/Documents/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/laolu/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/laolu/Desktop/FlutterProjects/Ellipsis-Care/mobile-app/android/app/.cxx/RelWithDebInfo/41516k47/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/laolu/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/laolu/Desktop/FlutterProjects/Ellipsis-Care/mobile-app/android/app/.cxx/RelWithDebInfo/41516k47/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

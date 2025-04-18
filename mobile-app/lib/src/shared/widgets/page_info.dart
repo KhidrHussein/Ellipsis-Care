@@ -30,7 +30,8 @@ class PageInfo extends StatelessWidget {
             child: Text(
               info,
               style: context.textTheme.labelMedium?.copyWith(
-                color: context.textTheme.labelMedium?.color!.withOpacity(.5),
+                color:
+                    context.textTheme.labelMedium?.color!.withValues(alpha: .5),
               ),
             ),
           ),

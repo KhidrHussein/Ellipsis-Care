@@ -25,17 +25,27 @@ class $AssetsIconsGen {
   /// Directory path: assets/icons/home
   $AssetsIconsHomeGen get home => const $AssetsIconsHomeGen();
 
-  /// Directory path: assets/icons/reminder
-  $AssetsIconsReminderGen get reminder => const $AssetsIconsReminderGen();
+  /// File path: assets/icons/ic_broadcast.svg
+  SvgGenImage get icBroadcast =>
+      const SvgGenImage('assets/icons/ic_broadcast.svg');
+
+  /// File path: assets/icons/ic_drug.svg
+  SvgGenImage get icDrug => const SvgGenImage('assets/icons/ic_drug.svg');
+
+  /// File path: assets/icons/ic_edit.svg
+  SvgGenImage get icEdit => const SvgGenImage('assets/icons/ic_edit.svg');
+
+  /// File path: assets/icons/ic_food.svg
+  SvgGenImage get icFood => const SvgGenImage('assets/icons/ic_food.svg');
 
   /// Directory path: assets/icons/settings
   $AssetsIconsSettingsGen get settings => const $AssetsIconsSettingsGen();
 
-  /// Directory path: assets/icons/sos
-  $AssetsIconsSosGen get sos => const $AssetsIconsSosGen();
-
   /// Directory path: assets/icons
   String get path => 'assets/icons';
+
+  /// List of all assets
+  List<SvgGenImage> get values => [icBroadcast, icDrug, icEdit, icFood];
 }
 
 class $AssetsImagesGen {
@@ -136,36 +146,74 @@ class $AssetsIconsDashboardGen {
 class $AssetsIconsHomeGen {
   const $AssetsIconsHomeGen();
 
-  /// Directory path: assets/icons/home/actions
-  $AssetsIconsHomeActionsGen get actions => const $AssetsIconsHomeActionsGen();
+  /// File path: assets/icons/home/ic_add_reminder.svg
+  SvgGenImage get icAddReminder =>
+      const SvgGenImage('assets/icons/home/ic_add_reminder.svg');
 
-  /// Directory path: assets/icons/home/nav_bar
-  $AssetsIconsHomeNavBarGen get navBar => const $AssetsIconsHomeNavBarGen();
+  /// File path: assets/icons/home/ic_cancel.svg
+  SvgGenImage get icCancel =>
+      const SvgGenImage('assets/icons/home/ic_cancel.svg');
+
+  /// File path: assets/icons/home/ic_dashboard.svg
+  SvgGenImage get icDashboard =>
+      const SvgGenImage('assets/icons/home/ic_dashboard.svg');
+
+  /// File path: assets/icons/home/ic_emergency.svg
+  SvgGenImage get icEmergency =>
+      const SvgGenImage('assets/icons/home/ic_emergency.svg');
+
+  /// File path: assets/icons/home/ic_health.svg
+  SvgGenImage get icHealth =>
+      const SvgGenImage('assets/icons/home/ic_health.svg');
+
+  /// File path: assets/icons/home/ic_home.svg
+  SvgGenImage get icHome => const SvgGenImage('assets/icons/home/ic_home.svg');
+
+  /// File path: assets/icons/home/ic_info.svg
+  SvgGenImage get icInfo => const SvgGenImage('assets/icons/home/ic_info.svg');
+
+  /// File path: assets/icons/home/ic_message.svg
+  SvgGenImage get icMessage =>
+      const SvgGenImage('assets/icons/home/ic_message.svg');
+
+  /// File path: assets/icons/home/ic_microphone.svg
+  SvgGenImage get icMicrophone =>
+      const SvgGenImage('assets/icons/home/ic_microphone.svg');
+
+  /// File path: assets/icons/home/ic_pause.svg
+  SvgGenImage get icPause =>
+      const SvgGenImage('assets/icons/home/ic_pause.svg');
+
+  /// File path: assets/icons/home/ic_reminders.svg
+  SvgGenImage get icReminders =>
+      const SvgGenImage('assets/icons/home/ic_reminders.svg');
+
+  /// File path: assets/icons/home/ic_settings.svg
+  SvgGenImage get icSettings =>
+      const SvgGenImage('assets/icons/home/ic_settings.svg');
+
+  /// File path: assets/icons/home/ic_sos.svg
+  SvgGenImage get icSos => const SvgGenImage('assets/icons/home/ic_sos.svg');
 
   /// Directory path: assets/icons/home
   String get path => 'assets/icons/home';
-}
-
-class $AssetsIconsReminderGen {
-  const $AssetsIconsReminderGen();
-
-  /// File path: assets/icons/reminder/ic_drug.svg
-  SvgGenImage get icDrug =>
-      const SvgGenImage('assets/icons/reminder/ic_drug.svg');
-
-  /// File path: assets/icons/reminder/ic_edit.svg
-  SvgGenImage get icEdit =>
-      const SvgGenImage('assets/icons/reminder/ic_edit.svg');
-
-  /// File path: assets/icons/reminder/ic_food.svg
-  SvgGenImage get icFood =>
-      const SvgGenImage('assets/icons/reminder/ic_food.svg');
-
-  /// Directory path: assets/icons/reminder
-  String get path => 'assets/icons/reminder';
 
   /// List of all assets
-  List<SvgGenImage> get values => [icDrug, icEdit, icFood];
+  List<SvgGenImage> get values => [
+        icAddReminder,
+        icCancel,
+        icDashboard,
+        icEmergency,
+        icHealth,
+        icHome,
+        icInfo,
+        icMessage,
+        icMicrophone,
+        icPause,
+        icReminders,
+        icSettings,
+        icSos
+      ];
 }
 
 class $AssetsIconsSettingsGen {
@@ -229,104 +277,8 @@ class $AssetsIconsSettingsGen {
       ];
 }
 
-class $AssetsIconsSosGen {
-  const $AssetsIconsSosGen();
-
-  /// File path: assets/icons/sos/ic_broadcast.svg
-  SvgGenImage get icBroadcast =>
-      const SvgGenImage('assets/icons/sos/ic_broadcast.svg');
-
-  /// Directory path: assets/icons/sos
-  String get path => 'assets/icons/sos';
-
-  /// List of all assets
-  List<SvgGenImage> get values => [icBroadcast];
-}
-
-class $AssetsIconsHomeActionsGen {
-  const $AssetsIconsHomeActionsGen();
-
-  /// File path: assets/icons/home/actions/ic_add_reminder.svg
-  SvgGenImage get icAddReminder =>
-      const SvgGenImage('assets/icons/home/actions/ic_add_reminder.svg');
-
-  /// File path: assets/icons/home/actions/ic_cancel.svg
-  SvgGenImage get icCancel =>
-      const SvgGenImage('assets/icons/home/actions/ic_cancel.svg');
-
-  /// File path: assets/icons/home/actions/ic_health.svg
-  SvgGenImage get icHealth =>
-      const SvgGenImage('assets/icons/home/actions/ic_health.svg');
-
-  /// File path: assets/icons/home/actions/ic_info.svg
-  SvgGenImage get icInfo =>
-      const SvgGenImage('assets/icons/home/actions/ic_info.svg');
-
-  /// File path: assets/icons/home/actions/ic_message.svg
-  SvgGenImage get icMessage =>
-      const SvgGenImage('assets/icons/home/actions/ic_message.svg');
-
-  /// File path: assets/icons/home/actions/ic_microphone.svg
-  SvgGenImage get icMicrophone =>
-      const SvgGenImage('assets/icons/home/actions/ic_microphone.svg');
-
-  /// File path: assets/icons/home/actions/ic_pause.svg
-  SvgGenImage get icPause =>
-      const SvgGenImage('assets/icons/home/actions/ic_pause.svg');
-
-  /// File path: assets/icons/home/actions/ic_sos.svg
-  SvgGenImage get icSos =>
-      const SvgGenImage('assets/icons/home/actions/ic_sos.svg');
-
-  /// Directory path: assets/icons/home/actions
-  String get path => 'assets/icons/home/actions';
-
-  /// List of all assets
-  List<SvgGenImage> get values => [
-        icAddReminder,
-        icCancel,
-        icHealth,
-        icInfo,
-        icMessage,
-        icMicrophone,
-        icPause,
-        icSos
-      ];
-}
-
-class $AssetsIconsHomeNavBarGen {
-  const $AssetsIconsHomeNavBarGen();
-
-  /// File path: assets/icons/home/nav_bar/ic_dashboard.svg
-  SvgGenImage get icDashboard =>
-      const SvgGenImage('assets/icons/home/nav_bar/ic_dashboard.svg');
-
-  /// File path: assets/icons/home/nav_bar/ic_emergency.svg
-  SvgGenImage get icEmergency =>
-      const SvgGenImage('assets/icons/home/nav_bar/ic_emergency.svg');
-
-  /// File path: assets/icons/home/nav_bar/ic_home.svg
-  SvgGenImage get icHome =>
-      const SvgGenImage('assets/icons/home/nav_bar/ic_home.svg');
-
-  /// File path: assets/icons/home/nav_bar/ic_reminders.svg
-  SvgGenImage get icReminders =>
-      const SvgGenImage('assets/icons/home/nav_bar/ic_reminders.svg');
-
-  /// File path: assets/icons/home/nav_bar/ic_settings.svg
-  SvgGenImage get icSettings =>
-      const SvgGenImage('assets/icons/home/nav_bar/ic_settings.svg');
-
-  /// Directory path: assets/icons/home/nav_bar
-  String get path => 'assets/icons/home/nav_bar';
-
-  /// List of all assets
-  List<SvgGenImage> get values =>
-      [icDashboard, icEmergency, icHome, icReminders, icSettings];
-}
-
 class AppAssets {
-  AppAssets._();
+  const AppAssets._();
 
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
@@ -365,7 +317,7 @@ class AssetGenImage {
     bool gaplessPlayback = true,
     bool isAntiAlias = false,
     String? package,
-    FilterQuality filterQuality = FilterQuality.low,
+    FilterQuality filterQuality = FilterQuality.medium,
     int? cacheWidth,
     int? cacheHeight,
   }) {

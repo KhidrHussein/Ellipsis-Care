@@ -2,20 +2,20 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../../core/constants/asset_strings.dart';
+import 'package:ellipsis_care/config/gen/assets.gen.dart';
+
 import '../../../../../core/utils/extensions.dart';
+import '../../../../shared/widgets/appbar.dart';
 import '../bloc/home_bloc.dart';
 
-import '../../../../shared/widgets/appbar.dart';
+final Map<String, String> _actions = {
+  AppAssets.icons.home.icAddReminder.path: "Add \nReminder",
+  AppAssets.icons.home.icSos.path: "SOS",
+  AppAssets.icons.home.icHealth.path: "Check health \nstatus",
+};
 
 class NotRecording extends StatelessWidget {
   const NotRecording({super.key});
-
-  final Map<String, String> _actions = const {
-    AssetStrings.addReminderIcon: "Add \nReminder",
-    AssetStrings.sosIcon: "SOS",
-    AssetStrings.healthStatusIcon: "Check health \nstatus",
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class NotRecording extends StatelessWidget {
             homeBloc.add(StartRecordingEvent());
           },
           child: SvgPicture.asset(
-            AssetStrings.microphoneIcon,
+            AppAssets.icons.home.icMicrophone.path,
             colorFilter: ColorFilter.mode(
               context.themeExtension.homeIconColor,
               BlendMode.srcIn,

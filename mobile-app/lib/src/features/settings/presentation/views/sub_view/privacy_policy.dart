@@ -1,4 +1,4 @@
-import 'package:ellipsis_care/core/constants/asset_strings.dart';
+import '../../../../../../core/constants/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,7 +17,7 @@ class PrivacyPolicy extends StatelessWidget {
             children: [
               SettingsAppbar(title: "Privacy Policy"),
               24.verticalSpace,
-              Text(AssetStrings.privacyPolicy),
+              Text(kAppPrivacyPolicy),
             ],
           ),
         ),

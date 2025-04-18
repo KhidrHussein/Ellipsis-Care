@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../core/constants/asset_strings.dart';
+import '../../../../../../core/constants/strings.dart';
 import '../../widgets/settings_appbar.dart';
 
 class TermsOfUse extends StatelessWidget {
@@ -17,7 +17,7 @@ class TermsOfUse extends StatelessWidget {
             children: [
               SettingsAppbar(title: "Terms of Use"),
               24.verticalSpace,
-              Text(AssetStrings.termsOfUse),
+              Text(kAppTermsOfUse),
             ],
           ),
         ),

@@ -1,15 +1,13 @@
+import '../../../../../config/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:ellipsis_care/core/constants/colors.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/src/features/home/presentation/widgets/animated_spinner/spinner.dart';
-import 'package:ellipsis_care/src/shared/widgets/appbar.dart';
+import '../../../../../core/constants/colors.dart';
+import '../widgets/animated_spinner/spinner.dart';
+import '../../../../shared/widgets/appbar.dart';
 
-import '../../../../../core/constants/asset_strings.dart';
-import '../../../../../core/enums/microphone_state.dart';
+import '../../../../../core/utils/utils.dart';
 import '../bloc/home_bloc.dart';
 
 class RecordingPage extends StatelessWidget {
@@ -53,7 +51,7 @@ class RecordingPage extends StatelessWidget {
                               Icons.play_arrow,
                               color: AppColors.white,
                             )
-                          : SvgPicture.asset(AssetStrings.pauseIcon),
+                          : AppAssets.icons.home.icPause.svg(),
                     ),
                   ),
                   10.sizedBoxWidth,
@@ -67,10 +65,7 @@ class RecordingPage extends StatelessWidget {
                         shape: CircleBorder(),
                         color: AppColors.stopIconBgColor,
                       ),
-                      child: SvgPicture.asset(
-                        AssetStrings.cancelIcon,
-                        width: 21,
-                      ),
+                      child: AppAssets.icons.home.icCancel.svg(width: 21),
                     ),
                   )
                 ],

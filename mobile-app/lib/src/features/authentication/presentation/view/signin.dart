@@ -1,13 +1,11 @@
-import 'package:ellipsis_care/config/env.dart';
-import 'package:ellipsis_care/core/enums/api_state.dart';
+import '../../../../../config/env.dart';
+import '../../../../../core/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:logman/logman.dart';
 
 import '../../../../../config/router/route_names.dart';
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/helpers.dart';
 import '../bloc/auth_bloc.dart';
 import '../widgets/divider.dart';
 import '../widgets/oauth_options.dart';

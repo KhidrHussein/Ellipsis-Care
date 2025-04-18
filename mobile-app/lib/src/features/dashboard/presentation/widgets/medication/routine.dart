@@ -1,14 +1,11 @@
+import '../../../../../../config/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:ellipsis_care/core/constants/asset_strings.dart';
-import 'package:ellipsis_care/core/enums/reminder_options/reminder_options.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/controller/dashboard_bloc.dart';
+import '../../../../../../core/utils/utils.dart';
+import '../../controller/dashboard_bloc.dart';
 
-import '../../../../../../core/utils/extensions.dart';
-//import '../../../../../../core/constants/colors.dart';
 
 class RoutineCard extends StatelessWidget {
   final ReminderSchedule schedule;
@@ -26,13 +23,14 @@ class RoutineCard extends StatelessWidget {
       padding: REdgeInsets.only(bottom: 10),
       child: Row(
         children: [
-          SvgPicture.asset(
-            switch (schedule) {
-              ReminderSchedule.morning => AssetStrings.morningIcon,
-              ReminderSchedule.afternoon => AssetStrings.afternoonIcon,
-              ReminderSchedule.evening => AssetStrings.nightIcon,
-            },
-          ),
+          switch (schedule) {
+            ReminderSchedule.morning =>
+              AppAssets.icons.dashboard.icMorning.svg(),
+            ReminderSchedule.afternoon =>
+              AppAssets.icons.dashboard.icAfternoon.svg(),
+            ReminderSchedule.evening => AppAssets.icons.dashboard.icNight.svg(),
+          },
+
           10.horizontalSpace,
           Text(
             switch (schedule) {

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:twilio_flutter/twilio_flutter.dart';
 
 import '../../utils/extensions.dart';
 
@@ -73,8 +74,8 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
   }
 
   static AppExceptions handleExceptions(dynamic exception) {
-    exception.printLog();
-    
+    // printLog(message: exception);
+
     if (exception is Exception) {
       try {
         AppExceptions networkExceptions;
@@ -129,6 +130,9 @@ abstract class AppExceptions with _$AppExceptions implements Exception {
       } on FormatException catch (e) {
         e.printLog();
         return const AppExceptions.formatException();
+      } on TwilioFlutterException catch (e) {
+        e.printLog();
+        return AppExceptions.serviceUnavailable();
       } catch (e) {
         e.printLog();
         return const AppExceptions.unexpectedError();

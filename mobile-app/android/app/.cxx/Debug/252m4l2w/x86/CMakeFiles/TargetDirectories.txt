@@ -1,0 +1,2 @@
+/Users/laolu/Desktop/FlutterProjects/Ellipsis-Care/mobile-app/android/app/.cxx/Debug/252m4l2w/x86/CMakeFiles/edit_cache.dir
+/Users/laolu/Desktop/FlutterProjects/Ellipsis-Care/mobile-app/android/app/.cxx/Debug/252m4l2w/x86/CMakeFiles/rebuild_cache.dir

@@ -1,35 +1,26 @@
 part of 'navigator_shell.dart';
 
-class NavigationRowCubit extends Cubit<String> {
-  NavigationRowCubit() : super(navigationRowIconPaths.first);
+class NavigationRowCubit extends Cubit<InAppNavigationRoutes> {
+  NavigationRowCubit() : super(InAppNavigationRoutes.home);
 
-  void goToRoute(String nextRoute) {
+  void goToRoute(InAppNavigationRoutes nextRoute) {
     switch (nextRoute) {
-      case AssetStrings.home:
+      case InAppNavigationRoutes.home:
         UtilHelpers.goTo(RouteNames.home);
         break;
-      case AssetStrings.reminders:
+      case InAppNavigationRoutes.reminders:
         UtilHelpers.goTo(RouteNames.reminders);
         break;
-      case AssetStrings.emergency:
+      case InAppNavigationRoutes.emergency:
         UtilHelpers.goTo(RouteNames.sos);
         break;
-      case AssetStrings.dashboard:
+      case InAppNavigationRoutes.dashboard:
         UtilHelpers.goTo(RouteNames.dashboard);
         break;
-      case AssetStrings.settings:
+      case InAppNavigationRoutes.settings:
         UtilHelpers.goTo(RouteNames.settings);
         break;
-      default:
     }
     emit(nextRoute);
   }
 }
-
-final List<String> navigationRowIconPaths = <String>[
-  AssetStrings.home,
-  AssetStrings.reminders,
-  AssetStrings.emergency,
-  AssetStrings.dashboard,
-  AssetStrings.settings,
-];

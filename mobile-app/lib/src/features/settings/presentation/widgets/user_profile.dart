@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/src/shared/user_bloc/user_bloc.dart';
+import '../../../../shared/user_bloc/user_bloc.dart';
 
+import '../../../../../config/gen/assets.gen.dart';
 import '../../../../../config/router/route_names.dart';
-import '../../../../../core/constants/asset_strings.dart';
 import '../../../../../core/constants/colors.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/helpers.dart';
@@ -77,10 +77,11 @@ class UserProfile extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          const CircleAvatar(
+                          CircleAvatar(
                             minRadius: 10,
                             backgroundColor: AppColors.white,
-                            backgroundImage: AssetImage(AssetStrings.logo),
+                            backgroundImage:
+                                AssetImage(AppAssets.images.applogo.path),
                           ),
                           5.sizedBoxWidth,
                           Text(

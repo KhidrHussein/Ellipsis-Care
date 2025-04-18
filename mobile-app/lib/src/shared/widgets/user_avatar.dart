@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:ellipsis_care/src/shared/user_bloc/user_bloc.dart';
+import '../user_bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/constants/colors.dart';

@@ -1,16 +1,14 @@
+import '../../../../../config/gen/assets.gen.dart';
+import '../../../../../config/gen/fonts.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/check_type_picker.dart';
-import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/custom_date_picker.dart';
-import 'package:ellipsis_care/src/features/reminders/presentation/widgets/pickers/radio_type_picker.dart';
+import '../widgets/pickers/check_type_picker.dart';
+import '../widgets/pickers/custom_date_picker.dart';
+import '../widgets/pickers/radio_type_picker.dart';
 
-import '../../../../../core/constants/asset_strings.dart';
-import '../../../../../core/enums/reminder_options/reminder_options.dart';
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/helpers.dart';
+import '../../../../../core/utils/utils.dart';
 import '../bloc/reminder_bloc.dart';
 import '../widgets/add_reminder_section.dart';
 
@@ -99,7 +97,7 @@ class _AddReminderState extends State<AddReminder> {
             style: context.textTheme.headlineMedium?.copyWith(
               fontSize: 24.sp,
               fontWeight: FontWeight.w700,
-              fontFamily: AssetStrings.visbyRoundCF,
+              fontFamily: FontFamily.visbyRoundCF,
             ),
           ),
           10.sizedBoxHeight,
@@ -219,7 +217,7 @@ class _AddReminderState extends State<AddReminder> {
                 TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
-                  fontFamily: AssetStrings.visbyRoundCF,
+                  fontFamily: FontFamily.visbyRoundCF,
                 ),
               ),
               shape: WidgetStatePropertyAll(
@@ -258,24 +256,29 @@ class _AddReminderState extends State<AddReminder> {
         ),
         child: Column(
           children: [
-            SvgPicture.asset(
-              reminderType.icon,
-              width: 32,
-              colorFilter: ColorFilter.mode(
-                switch (reminderType) {
-                  ReminderType.drug => context.themeExtension.drugColor,
-                  ReminderType.food => context.themeExtension.foodColor,
-                },
-                BlendMode.srcIn,
-              ),
-            ),
+            switch (reminderType) {
+              ReminderType.drug => AppAssets.icons.icDrug.svg(
+                  width: 32,
+                  colorFilter: ColorFilter.mode(
+                    context.themeExtension.drugColor,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ReminderType.food => AppAssets.icons.icFood.svg(
+                  width: 32,
+                  colorFilter: ColorFilter.mode(
+                    context.themeExtension.foodColor,
+                    BlendMode.srcIn,
+                  ),
+                ),
+            },
             10.sizedBoxHeight,
             Text(
               reminderType.name,
               style: context.textTheme.bodyMedium?.copyWith(
                 fontSize: 14.sp,
-                color:
-                    context.themeExtension.reminderInverseColor.withOpacity(.3),
+                color: context.themeExtension.reminderInverseColor
+                    .withValues(alpha: .3),
               ),
             ),
           ],
@@ -294,14 +297,14 @@ class _AddReminderState extends State<AddReminder> {
       style: context.textTheme.labelSmall?.copyWith(
         fontSize: 16.sp,
         fontWeight: FontWeight.w400,
-        color: context.textTheme.labelSmall?.color!.withOpacity(.87),
+        color: context.textTheme.labelSmall?.color!.withValues(alpha: .87),
       ),
       underline: const SizedBox(),
       hint: Text(
         "Daily, twice, etc",
         style: context.textTheme.labelSmall?.copyWith(
           fontSize: 14.sp,
-          color: context.textTheme.labelSmall?.color!.withOpacity(.3),
+          color: context.textTheme.labelSmall?.color!.withValues(alpha: .3),
         ),
       ),
       value: value,

@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:ellipsis_care/core/services/background_audio_handler.dart';
-import 'package:ellipsis_care/core/utils/injector.dart';
+import 'background_audio_handler.dart';
+import '../utils/injector.dart';
 
 import '../utils/extensions.dart';
 

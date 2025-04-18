@@ -1,4 +1,4 @@
-import 'package:ellipsis_care/core/utils/helpers.dart';
+import 'core/utils/helpers.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +23,7 @@ Future<void> initializeApp({FirebaseOptions? firebaseOptions}) async {
   // Initialize [Hive]
   await injector<HiveStorageService>().initializeStorage();
 
-  // Register [Storage Service] type adapters
+  // Register [Storage Service] type adapters{
   injector<HiveStorageService>().registerModels();
 
   injector<BackgroundAudioService>().init();

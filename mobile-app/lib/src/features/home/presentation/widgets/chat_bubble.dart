@@ -1,7 +1,7 @@
+import '../../../../../config/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/constants/asset_strings.dart';
 import '../../../../../core/constants/colors.dart';
 import '../../../../../core/utils/extensions.dart';
 
@@ -16,10 +16,10 @@ class AIChatBubble extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             backgroundColor: AppColors.white,
             maxRadius: 20,
-            backgroundImage: AssetImage(AssetStrings.logo),
+            backgroundImage: AssetImage(AppAssets.images.applogo.path),
           ),
           SizedBox(width: 8.w),
           Expanded(

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:ellipsis_care/core/enums/api_state.dart';
 import 'package:equatable/equatable.dart';
+
+import 'enums.dart';
 
 abstract class AppState<T> extends Equatable {
   const AppState({

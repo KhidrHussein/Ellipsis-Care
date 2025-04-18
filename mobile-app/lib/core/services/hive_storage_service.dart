@@ -1,9 +1,9 @@
-import 'package:ellipsis_care/core/utils/storage_keys.dart';
-import 'package:ellipsis_care/src/features/settings/model/settings_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:ellipsis_care/core/enums/reminder_options/reminder_options.dart';
-import 'package:ellipsis_care/src/features/reminders/models/reminder_model.dart/reminder_model.dart';
+import '../utils/enums.dart';
+import '../utils/storage_keys.dart';
+import '../../src/features/reminders/models/reminder_model.dart/reminder_model.dart';
+import '../../src/features/settings/model/settings_model.dart';
 
 import '../../src/features/emergency/domain/emergency_contact.dart';
 import '../../src/shared/models/user/user_model.dart';
@@ -111,8 +111,14 @@ class HiveStorageService {
 
   Future<List<EmergencyContact>> getEmergencyContacts() async {
     try {
-      final contactsBox = Hive.box<EmergencyContact>(HiveBoxNames.emergency);
-      return [...contactsBox.values];
+      Box<EmergencyContact> box;
+
+      if (!Hive.isBoxOpen(HiveBoxNames.emergency)) {
+        box = await Hive.openBox<EmergencyContact>(HiveBoxNames.emergency);
+      }
+      
+      box = Hive.box(HiveBoxNames.emergency);
+      return [...box.values];
     } catch (e) {
       "$runtimeType Error: $e".printLog();
       return [];

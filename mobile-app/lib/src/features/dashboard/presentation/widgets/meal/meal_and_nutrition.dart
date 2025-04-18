@@ -1,13 +1,12 @@
-import 'package:ellipsis_care/core/enums/reminder_options/reminder_options.dart';
-import 'package:ellipsis_care/src/features/dashboard/presentation/controller/dashboard_bloc.dart';
-import 'package:ellipsis_care/src/shared/widgets/progress_bar.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../../../core/utils/extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../core/constants/asset_strings.dart';
+import '../../../../../../config/gen/assets.gen.dart';
+import '../../../../../../core/utils/utils.dart';
+import '../../controller/dashboard_bloc.dart';
+import '../../../../../shared/widgets/progress_bar.dart';
+
 import 'nutrition_card.dart';
 
 class MealAndNutrition extends StatelessWidget {
@@ -28,7 +27,7 @@ class MealAndNutrition extends StatelessWidget {
     return Column(
       children: [
         ProgressBar(
-          icon: AssetStrings.foodIcon,
+          icon: AppAssets.icons.icFood.path,
           title: "Meal & Nutrition",
           type: ReminderType.food,
           progress: bloc.state.mealProgress * 25,
@@ -38,7 +37,7 @@ class MealAndNutrition extends StatelessWidget {
           title: "Breakfast",
           recipe: "Oats with milk",
           amountOfCalories: 300,
-          icon: AssetStrings.breakfastIcon,
+          icon: AppAssets.icons.dashboard.icBreakfast.path,
           color: context.themeExtension.breakfastCardColor,
           onChanged: (value) => _updateProgress(context, value),
         ),
@@ -52,7 +51,7 @@ class MealAndNutrition extends StatelessWidget {
                     title: "Lunch",
                     recipe: "Oats with milk",
                     amountOfCalories: 300,
-                    icon: AssetStrings.lunchIcon,
+                    icon: AppAssets.icons.dashboard.icLunch.path,
                     color: context.themeExtension.lunchCardColor,
                     onChanged: (value) => _updateProgress(context, value),
                   ),
@@ -61,7 +60,7 @@ class MealAndNutrition extends StatelessWidget {
                     title: "Snacks",
                     recipe: "Oats with milk",
                     amountOfCalories: 300,
-                    icon: AssetStrings.snacksIcon,
+                    icon: AppAssets.icons.dashboard.icSnacks.path,
                     color: context.themeExtension.snacksCardColor,
                     onChanged: (value) => _updateProgress(context, value),
                   ),
@@ -77,7 +76,7 @@ class MealAndNutrition extends StatelessWidget {
                     recipe: "Oats with milk",
                     amountOfCalories: 300,
                     stretchToFill: true,
-                    icon: AssetStrings.dinnerIcon,
+                    icon: AppAssets.icons.dashboard.icDinner.path,
                     color: context.themeExtension.dinnerCardColor,
                     onChanged: (value) => _updateProgress(context, value),
                   ),

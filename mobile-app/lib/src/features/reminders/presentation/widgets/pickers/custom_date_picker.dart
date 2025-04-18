@@ -3,7 +3,7 @@ import 'custom_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../../../../../core/utils/extensions.dart';
 
 import '../../../../../../core/constants/colors.dart';
 
@@ -54,7 +54,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                       color: value != null
                           ? context.textTheme.bodyMedium?.color
                           : context.textTheme.bodyMedium?.color
-                              ?.withOpacity(.3),
+                              ?.withValues(alpha: .3),
                     ),
                   );
                 },

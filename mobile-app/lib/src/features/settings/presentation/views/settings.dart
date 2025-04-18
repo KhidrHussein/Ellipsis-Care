@@ -1,15 +1,14 @@
-import 'package:ellipsis_care/config/gen/assets.gen.dart';
+import '../../../../../config/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/config/router/route_names.dart';
-import 'package:ellipsis_care/core/constants/asset_strings.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
-import 'package:ellipsis_care/core/utils/helpers.dart';
-import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_card_option.dart';
-import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_group.dart';
+import '../../../../../config/router/route_names.dart';
+import '../../../../../core/utils/extensions.dart';
+import '../../../../../core/utils/helpers.dart';
+import '../widgets/settings_card_option.dart';
+import '../widgets/settings_group.dart';
 
 import '../bloc/settings_bloc.dart';
 import '../widgets/user_profile.dart';
@@ -43,12 +42,13 @@ class Settings extends StatelessWidget {
                     groupName: "Personal",
                     options: [
                       SettingCardOption(
-                        svgIcon: AssetStrings.profileIcon,
+                        svgIcon: AppAssets.icons.settings.icProfile.path,
+                   
                         title: "Profile",
                         onPressed: () => UtilHelpers.pushTo(RouteNames.profile),
                       ),
                       SettingCardOption(
-                        svgIcon: AssetStrings.changePasswordIcon,
+                        svgIcon: AppAssets.icons.settings.icChangePassword.path,
                         title: "Change Password",
                         onPressed: () =>
                             UtilHelpers.pushTo(RouteNames.changePassword),
@@ -68,7 +68,7 @@ class Settings extends StatelessWidget {
                     groupName: "Notification Preferences",
                     options: [
                       SettingCardOptionWithSwitch(
-                        svgIcon: AssetStrings.pushNotificationIcon,
+                        svgIcon: AppAssets.icons.settings.icPushNotification.path,
                         title: "Push Notification",
                         initialSwitchValue: state.enabledNotifications,
                         onChanged: (value) {
@@ -83,19 +83,19 @@ class Settings extends StatelessWidget {
                       ),
                       5.sizedBoxHeight,
                       SettingCardOptionWithSwitch(
-                        svgIcon: AssetStrings.drugIcon,
+                        svgIcon:  AppAssets.icons.icDrug.path,
                         title: "Medication",
                         initialSwitchValue: state.enabledNotifications,
                         onChanged: (value) {},
                       ),
                       SettingCardOptionWithSwitch(
-                        svgIcon: AssetStrings.foodIcon,
+                        svgIcon: AppAssets.icons.icFood.path,
                         title: "Food",
                         initialSwitchValue: state.enabledNotifications,
                         onChanged: (value) {},
                       ),
                       SettingCardOptionWithSwitch(
-                        svgIcon: AssetStrings.emergencyNotificationIcon,
+                        svgIcon:  AppAssets.icons.settings.icEmergency.path,
                         title: "Emergency",
                         initialSwitchValue: state.enabledLocation,
                         onChanged: (value) {
@@ -114,12 +114,12 @@ class Settings extends StatelessWidget {
                     groupName: "More",
                     options: [
                       SettingCardOption(
-                        svgIcon: AssetStrings.faqIcon,
+                        svgIcon:  AppAssets.icons.settings.icFaq.path,
                         title: "FAQs",
                         onPressed: () => UtilHelpers.pushTo(RouteNames.faq),
                       ),
                       SettingCardOption(
-                        svgIcon: AssetStrings.legalIcon,
+                        svgIcon:  AppAssets.icons.settings.icLegal.path,
                         title: "Legal",
                         onPressed: () => UtilHelpers.pushTo(RouteNames.legal),
                       ),

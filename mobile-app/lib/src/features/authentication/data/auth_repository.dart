@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
 
-import 'package:ellipsis_care/core/api/response/api_response.dart';
-import 'package:ellipsis_care/core/utils/typedef.dart';
-import 'package:ellipsis_care/src/features/authentication/models/signin/signin_response.dart';
+import '../../../../core/api/response/api_response.dart';
+import '../../../../core/utils/typedef.dart';
+import '../models/signin/signin_response.dart';
 
 import '../../../../core/api/dio.dart';
 import '../../../../core/api/exceptions/exceptions.dart';

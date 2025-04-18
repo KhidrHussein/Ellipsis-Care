@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
-import 'package:ellipsis_care/core/utils/extensions.dart';
+import '../../../../core/utils/extensions.dart';
 import '../../../../core/api/exceptions/exceptions.dart';
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/api/dio.dart';

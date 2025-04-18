@@ -1,12 +1,11 @@
-import 'package:ellipsis_care/core/services/location_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ellipsis_care/core/enums/api_state.dart';
+import '../../../../../core/utils/utils.dart';
+import '../../../../../core/services/location_service.dart';
+
 import '../../../../../core/services/contacts_service.dart';
 import '../../../../../core/services/hive_storage_service.dart';
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/injector.dart';
 import '../../domain/emergency_contact.dart';
 
 part 'emergency_events.dart';
@@ -23,11 +22,11 @@ class EmergencyContactBloc extends Bloc<EmergencyEvents, EmergencyState> {
 
   final PhoneContactService _phoneService = injector<PhoneContactService>();
   final HiveStorageService _hiveStorage = injector<HiveStorageService>();
-  final LocationService _locationService = injector<LocationService>();
+  final TwilioPhoneService _twilioPhoneService = injector<TwilioPhoneService>();
 
   void _fetchContacts(
       FetchContactsEvent event, Emitter<EmergencyState> emit) async {
-    await _locationService.askForPermission();
+    // await _locationService.askForPermission();
     await _hiveStorage.getEmergencyContacts().then((value) {
       emit(state.copyWith(contacts: [...value]));
     });
@@ -46,8 +45,8 @@ class EmergencyContactBloc extends Bloc<EmergencyEvents, EmergencyState> {
 
   void _alertContacts(
       AlertContactsEvent event, Emitter<EmergencyState> emit) async {
-    List<String> numbers =
-        state.contacts.map((contact) => contact.phoneNumber!).toList();
+    // List<String> numbers =
+    //     state.contacts.map((contact) => contact.phoneNumber!).toList();
 
     if (state.contacts.isEmpty) return;
 
@@ -55,7 +54,9 @@ class EmergencyContactBloc extends Bloc<EmergencyEvents, EmergencyState> {
       String sosMessage =
           "I am having an emergency. Call me!. Sent via Ellipsis Care App.";
 
-      // await _smsService.sendSms(numbers.first, sosMessage);
+      await _twilioPhoneService.sendSms(
+          phoneNumber: "+2348134726507", message: sosMessage);
+          
     } catch (e) {
       emit(
         state.copyWith(
@@ -95,11 +96,5 @@ class EmergencyContactBloc extends Bloc<EmergencyEvents, EmergencyState> {
         ),
       );
     }
-  }
-
-  @override
-  void onChange(Change<EmergencyState> change) {
-    super.onChange(change);
-    "$runtimeType ${change.currentState}\n".printLog();
   }
 }

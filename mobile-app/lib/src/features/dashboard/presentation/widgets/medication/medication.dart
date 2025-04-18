@@ -1,5 +1,5 @@
-import 'package:ellipsis_care/core/constants/asset_strings.dart';
-import 'package:ellipsis_care/core/enums/reminder_options/reminder_options.dart';
+import '../../../../../../config/gen/assets.gen.dart';
+import 'package:ellipsis_care/core/utils/utils.dart';
 import 'package:ellipsis_care/src/features/dashboard/presentation/controller/dashboard_bloc.dart';
 import 'package:ellipsis_care/src/shared/widgets/progress_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +17,7 @@ class Medication extends StatelessWidget {
     return Column(
       children: [
         ProgressBar(
-          icon: AssetStrings.drugIcon,
+          icon: AppAssets.icons.icDrug.path,
           title: "Medications",
           type: ReminderType.drug,
           progress: 1,

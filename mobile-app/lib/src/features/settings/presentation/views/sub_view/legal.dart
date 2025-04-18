@@ -1,3 +1,5 @@
+import '../../../../../../config/gen/assets.gen.dart';
+
 import '../../../../../../core/utils/helpers.dart';
 import '../../widgets/settings_card_option.dart';
 import '../../widgets/settings_appbar.dart';
@@ -6,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../config/router/route_names.dart';
-import '../../../../../../core/constants/asset_strings.dart';
 
 class Legal extends StatelessWidget {
   const Legal({super.key});
@@ -24,7 +25,7 @@ class Legal extends StatelessWidget {
               SettingsGroup(
                 options: [
                   SettingCardOption(
-                    svgIcon: AssetStrings.privacyPolicyIcon,
+                    svgIcon: AppAssets.icons.settings.icPrivacyPolicy.path,
                     title: "Privacy Policy",
                     onPressed: () =>
                         UtilHelpers.pushTo(RouteNames.privacyPolicy),

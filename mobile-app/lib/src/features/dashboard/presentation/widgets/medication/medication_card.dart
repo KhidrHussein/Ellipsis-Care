@@ -1,12 +1,10 @@
-import 'package:ellipsis_care/core/utils/helpers.dart';
+import '../../../../../../config/gen/assets.gen.dart';
 import 'package:ellipsis_care/src/features/dashboard/presentation/controller/dashboard_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../../../core/constants/asset_strings.dart';
-import '../../../../../../core/utils/extensions.dart';
+import 'package:ellipsis_care/core/utils/utils.dart';
 import '../../../../reminders/models/reminder_model.dart/reminder_model.dart';
 import 'routine.dart';
 
@@ -40,7 +38,7 @@ class _MedicationSectionCardState extends State<MedicationCard> {
   @override
   Widget build(BuildContext context) {
     final bloc = context.watch<DashboardBloc>();
-    
+
     return GestureDetector(
       onTap: () => _showRoutines.value = !_showRoutines.value,
       child: Container(
@@ -93,7 +91,7 @@ class _MedicationSectionCardState extends State<MedicationCard> {
                   color: context.themeExtension.medicationIconBgColor,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                child: SvgPicture.asset(AssetStrings.medicationIcon),
+                child: AppAssets.icons.dashboard.icMedication.svg(),
               ),
               12.horizontalSpace,
               Flexible(

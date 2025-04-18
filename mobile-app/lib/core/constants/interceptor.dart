@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:ellipsis_care/core/constants/api_endpoints.dart';
-import 'package:ellipsis_care/core/services/secure_storage.dart';
-import 'package:ellipsis_care/core/utils/injector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logman/logman.dart';
+
+import '../services/secure_storage.dart';
+import '../utils/injector.dart';
+import 'api_endpoints.dart';
 
 List<String> openEndPoints = [
   ApiUrl.signUp,

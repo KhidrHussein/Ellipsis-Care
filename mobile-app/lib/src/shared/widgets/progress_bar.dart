@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../core/enums/reminder_options/reminder_options.dart';
-import '../../../core/utils/extensions.dart';
+import '../../../core/utils/utils.dart';
 
 class ProgressBar extends StatelessWidget {
   final String? icon;

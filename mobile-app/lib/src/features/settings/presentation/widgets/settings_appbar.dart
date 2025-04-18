@@ -1,9 +1,10 @@
-import '../../../../../core/constants/asset_strings.dart';
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../../../config/gen/assets.gen.dart';
+
+import '../../../../../core/utils/extensions.dart';
+import '../../../../../core/utils/helpers.dart';
 
 class SettingsAppbar extends StatelessWidget {
   final String? title;
@@ -15,8 +16,7 @@ class SettingsAppbar extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () => UtilHelpers.pop(),
-          child: SvgPicture.asset(
-            AssetStrings.navigateBackIcon,
+          child: AppAssets.icons.settings.icNavigateBack.svg(
             colorFilter: ColorFilter.mode(
               context.textTheme.titleMedium!.color!,
               BlendMode.srcIn,

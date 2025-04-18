@@ -1,7 +1,7 @@
+import '../../../config/gen/fonts.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../core/constants/asset_strings.dart';
 import '../../../core/utils/extensions.dart';
 
 import '../../../core/constants/colors.dart';
@@ -30,7 +30,7 @@ class InAppAlert extends StatelessWidget {
           BoxShadow(
             blurRadius: 14,
             offset: const Offset(0, 4),
-            color: AppColors.black.withOpacity(.15),
+            color: AppColors.black.withValues(alpha: .15),
           ),
         ],
       ),
@@ -57,7 +57,7 @@ class InAppAlert extends StatelessWidget {
                         style: context.textTheme.bodySmall?.copyWith(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
-                          fontFamily: AssetStrings.colfax,
+                          fontFamily: FontFamily.colfax,
                           color: AppColors.alertTitleTextColor,
                         ),
                       ),
@@ -67,7 +67,7 @@ class InAppAlert extends StatelessWidget {
                           style: context.textTheme.bodySmall?.copyWith(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w400,
-                            fontFamily: AssetStrings.colfax,
+                            fontFamily: FontFamily.colfax,
                             color: AppColors.alertMessageTextColor,
                           ),
                         ),

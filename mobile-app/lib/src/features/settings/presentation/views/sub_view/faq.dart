@@ -1,4 +1,4 @@
-import 'package:ellipsis_care/core/constants/asset_strings.dart';
+import 'package:ellipsis_care/core/constants/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,7 +17,7 @@ class Faq extends StatelessWidget {
             children: [
               SettingsAppbar(title: "FAQs"),
               24.verticalSpace,
-              Text(AssetStrings.faq),
+              Text(kAppFaq),
             ],
           ),
         ),

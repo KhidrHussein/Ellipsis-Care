@@ -1,14 +1,12 @@
+import 'package:ellipsis_care/config/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:ellipsis_care/core/constants/asset_strings.dart';
-import 'package:ellipsis_care/core/enums/sync_score.dart';
-import 'package:ellipsis_care/core/utils/extensions.dart';
 import 'package:ellipsis_care/src/features/settings/presentation/widgets/settings_appbar.dart';
 import 'package:ellipsis_care/src/shared/widgets/progress_bar.dart';
 import 'package:ellipsis_care/src/shared/widgets/user_avatar.dart';
 
-import '../../../../../../core/enums/reminder_options/reminder_options.dart';
+import 'package:ellipsis_care/core/utils/utils.dart';
 
 class ComplianceScore extends StatefulWidget {
   const ComplianceScore({super.key});
@@ -62,7 +60,7 @@ class _ComplianceScoreState extends State<ComplianceScore> {
                 style: context.textTheme.bodyLarge?.copyWith(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w400,
-                  color: context.textTheme.bodyLarge?.color?.withOpacity(.5),
+                  color: context.textTheme.bodyLarge?.color?.withValues(alpha: .5),
                 ),
               ),
               20.verticalSpace,
@@ -75,14 +73,14 @@ class _ComplianceScoreState extends State<ComplianceScore> {
                       progress: 45,
                       title: "Medications",
                       type: ReminderType.drug,
-                      icon: AssetStrings.drugIcon,
+                      icon: AppAssets.icons.icDrug.path,
                     ),
                     20.verticalSpace,
                     ProgressBar(
                       progress: 65,
                       title: "Meal & Nutrition",
                       type: ReminderType.food,
-                      icon: AssetStrings.foodIcon,
+                      icon: AppAssets.icons.icFood.path,
                     ),
                   ],
                 ),

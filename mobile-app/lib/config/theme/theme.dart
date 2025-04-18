@@ -86,7 +86,7 @@ class AppTheme {
       hintStyle: TextStyle(
         fontSize: 14.sp,
         fontWeight: FontWeight.w500,
-        color: AppColors.black.withOpacity(.3),
+        color: AppColors.black.withValues(alpha: .3),
       ),
       constraints: BoxConstraints(maxWidth: 362.w),
       contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
@@ -294,7 +294,7 @@ class AppTheme {
       hintStyle: TextStyle(
         fontSize: 14.sp,
         fontWeight: FontWeight.w500,
-        color: AppColors.white.withOpacity(.3),
+        color: AppColors.white.withValues(alpha: .3),
       ),
       contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       constraints: BoxConstraints(maxWidth: 361.w),

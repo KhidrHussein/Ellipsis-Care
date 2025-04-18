@@ -1,6 +1,6 @@
-import 'package:ellipsis_care/core/services/hive_storage_service.dart';
-import 'package:ellipsis_care/core/utils/injector.dart';
-import 'package:ellipsis_care/src/shared/models/user/user_model.dart';
+import '../../../core/services/hive_storage_service.dart';
+import '../../../core/utils/injector.dart';
+import '../models/user/user_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -1,8 +1,8 @@
-import 'package:ellipsis_care/core/services/background_audio_handler.dart';
-import 'package:ellipsis_care/core/services/location_service.dart';
-import 'package:ellipsis_care/core/services/secure_storage.dart';
+import '../services/background_audio_handler.dart';
+import '../services/location_service.dart';
+import '../services/secure_storage.dart';
 
-import 'package:ellipsis_care/src/features/settings/data/settings_repository.dart';
+import '../../src/features/settings/data/settings_repository.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../config/env.dart';
@@ -36,7 +36,7 @@ void initService() {
       .registerLazySingleton<VoiceCommandService>(() => VoiceCommandService());
   injector
       .registerLazySingleton<PhoneContactService>(() => PhoneContactService());
-  injector.registerLazySingleton<LocationService>(() => LocationService());
+  injector.registerLazySingleton<TwilioPhoneService>(() => TwilioPhoneService());
   injector
       .registerLazySingleton<AudioPlayerService>(() => AudioPlayerService());
   injector.registerLazySingleton<BackgroundAudioService>(

@@ -1,11 +1,10 @@
+import '../../../../../config/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:ellipsis_care/src/features/home/presentation/bloc/home_bloc.dart';
+import '../bloc/home_bloc.dart';
 
-import '../../../../../core/constants/asset_strings.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../models/home_response.dart';
 import '../widgets/chat_bubble.dart';
@@ -48,8 +47,7 @@ class PromptResponses extends StatelessWidget {
               onTap: () {
                 context.read<HomeBloc>().add(StartRecordingEvent());
               },
-              child: SvgPicture.asset(
-                AssetStrings.microphoneIcon,
+              child: AppAssets.icons.home.icMicrophone.svg(
                 colorFilter: ColorFilter.mode(
                   context.themeExtension.homeIconColor,
                   BlendMode.srcIn,
