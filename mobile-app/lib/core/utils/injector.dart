@@ -16,7 +16,7 @@ import '../services/file_storage_service.dart';
 import '../services/mic_service.dart';
 import '../services/notification_service.dart';
 import '../services/oauth_service.dart';
-import '../services/hive_storage_service.dart';
+import '../services/local_storage.dart';
 import '../services/voice_command_service.dart';
 
 final injector = GetIt.instance;
@@ -29,14 +29,14 @@ void initService() {
     () => ApiService(baseUrl: Env.baseUrl),
   );
   injector.registerLazySingleton<OAuthService>(() => OAuthService());
-  injector
-      .registerLazySingleton<HiveStorageService>(() => HiveStorageService());
+  injector.registerLazySingleton<LocalStorage>(() => LocalStorage());
   injector.registerLazySingleton<MicrophoneService>(() => MicrophoneService());
   injector
       .registerLazySingleton<VoiceCommandService>(() => VoiceCommandService());
   injector
       .registerLazySingleton<PhoneContactService>(() => PhoneContactService());
-  injector.registerLazySingleton<TwilioPhoneService>(() => TwilioPhoneService());
+  injector
+      .registerLazySingleton<TwilioPhoneService>(() => TwilioPhoneService());
   injector
       .registerLazySingleton<AudioPlayerService>(() => AudioPlayerService());
   injector.registerLazySingleton<BackgroundAudioService>(

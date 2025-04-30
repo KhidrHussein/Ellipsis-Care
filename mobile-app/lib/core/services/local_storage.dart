@@ -9,7 +9,7 @@ import '../../src/features/emergency/domain/emergency_contact.dart';
 import '../../src/shared/models/user/user_model.dart';
 import '../utils/extensions.dart';
 
-class HiveStorageService {
+class LocalStorage {
   Future<void> initializeStorage() => Hive.initFlutter();
 
   void registerModels() async {
@@ -116,7 +116,7 @@ class HiveStorageService {
       if (!Hive.isBoxOpen(HiveBoxNames.emergency)) {
         box = await Hive.openBox<EmergencyContact>(HiveBoxNames.emergency);
       }
-      
+
       box = Hive.box(HiveBoxNames.emergency);
       return [...box.values];
     } catch (e) {

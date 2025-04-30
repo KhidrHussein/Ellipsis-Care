@@ -34,6 +34,13 @@ enum FileStorageType {
   recording,
 }
 
+enum DateRange {
+  day,
+  week,
+  month,
+  year,
+}
+
 enum Status {
   positive("Positive", Color(0xFF56C568)),
   informational("Informational", Color(0xFF3FA2F7)),

@@ -1,5 +1,5 @@
 import '../../../../../core/utils/utils.dart';
-import '../../../../../core/services/hive_storage_service.dart';
+import '../../../../../core/services/local_storage.dart';
 import 'package:ellipsis_care/src/features/reminders/models/reminder_model.dart/reminder_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,14 +8,17 @@ part 'dashboard_events.dart';
 part 'dashboard_state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvents, DashboardState> {
-  DashboardBloc() : super(DashboardState()) {
+  DashboardBloc()
+      : _localStorage = injector<LocalStorage>(),
+        super(DashboardState()) {
     on<AddToMealProgress>(_addToProgress);
     on<SubtractFromMealProgress>(_subtractFromProgress);
     on<GetMedications>(_getMedications);
     on<EditRoutineProgress>(_editRoutine);
+    on<PickHealthOptionEvent>(_pickHealthOption);
   }
 
-  final HiveStorageService _hiveStorageService = injector<HiveStorageService>();
+  final LocalStorage _localStorage;
 
   void _addToProgress(AddToMealProgress event, Emitter<DashboardState> emit) {
     if (state.mealProgress < 5) {
@@ -36,12 +39,21 @@ class DashboardBloc extends Bloc<DashboardEvents, DashboardState> {
 
   void _getMedications(
       GetMedications event, Emitter<DashboardState> emit) async {
-    final reminders = await _hiveStorageService.getAllReminders();
+    final reminders = await _localStorage.getAllReminders();
     List<ReminderModel> medications = reminders
         .where((reminder) => reminder.type == ReminderType.drug)
         .toList();
 
     emit(state.copyWith(medications: medications));
+  }
+
+  void _pickHealthOption(
+      PickHealthOptionEvent event, Emitter<DashboardState> emit) {
+    emit(
+      state.copyWith(
+        healthOption: event.option,
+      ),
+    );
   }
 
   void _editRoutine(EditRoutineProgress event, Emitter<DashboardState> emit) {
@@ -58,7 +70,7 @@ class DashboardBloc extends Bloc<DashboardEvents, DashboardState> {
       if (value && progress >= 0) {
         progress += 1;
       }
-      if(!value && progress > 0) {
+      if (!value && progress > 0) {
         progress -= 1;
       }
     }

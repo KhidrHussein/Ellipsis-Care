@@ -1,11 +1,10 @@
-
 import 'package:ellipsis_care/core/services/notification_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:ellipsis_care/core/services/file_storage_service.dart';
-import 'package:ellipsis_care/core/services/hive_storage_service.dart';
+import 'package:ellipsis_care/core/services/local_storage.dart';
 import 'package:ellipsis_care/core/services/voice_command_service.dart';
 import 'package:ellipsis_care/core/utils/utils.dart';
 import 'package:ellipsis_care/src/features/reminders/data/reminders_repository.dart';
@@ -34,7 +33,7 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
       injector<NotificationService>();
 
   final FileStorageService _fileStorage = injector<FileStorageService>();
-  final HiveStorageService _storageService = injector<HiveStorageService>();
+  final LocalStorage _storageService = injector<LocalStorage>();
 
   void _getAllReminders(
       GetAllReminders event, Emitter<ReminderState> emit) async {

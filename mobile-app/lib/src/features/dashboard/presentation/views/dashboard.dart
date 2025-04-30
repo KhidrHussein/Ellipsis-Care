@@ -2,7 +2,7 @@ import '../widgets/meal/meal_and_nutrition.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-// import '../widgets/chart/chart_section.dart';
+import '../widgets/chart/chart_section.dart';
 import 'package:ellipsis_care/core/utils/utils.dart';
 import '../widgets/dashboard_section.dart';
 import '../widgets/medication/medication.dart';
@@ -19,7 +19,7 @@ class Dashboard extends StatelessWidget {
         child: const Column(
           children: [
             // Overview(),
-            // ChartSection(chartTitle: "Health Overview"),
+            ChartSection(chartTitle: "Health Overview"),
             DashboardSection(
               name: "Meal & Nutrition",
               type: ReminderType.food,

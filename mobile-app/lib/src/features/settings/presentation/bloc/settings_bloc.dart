@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:ellipsis_care/core/api/exceptions/exceptions.dart';
 
 import 'package:ellipsis_care/core/utils/utils.dart';
-import 'package:ellipsis_care/core/services/hive_storage_service.dart';
+import 'package:ellipsis_care/core/services/local_storage.dart';
 import 'package:ellipsis_care/core/services/secure_storage.dart';
 import 'package:ellipsis_care/core/utils/storage_keys.dart';
 import 'package:ellipsis_care/src/features/emergency/domain/emergency_contact.dart';
@@ -32,7 +32,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<SignOutEvent>(_signOut);
   }
   final SettingsRepository _apiRepository = injector<SettingsRepository>();
-  final HiveStorageService _hiveStorage = injector<HiveStorageService>();
+  final LocalStorage _hiveStorage = injector<LocalStorage>();
 
   void _loadSettings(
       LoadSettingsEvent event, Emitter<SettingsState> emit) async {

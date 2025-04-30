@@ -1,14 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'dashboard_bloc.dart';
 
-class DashboardState extends Equatable {
+class DashboardState<T> extends AppState {
   const DashboardState({
-    this.data,
-    this.error = '',
+    super.data,
+    super.error = "",
+    super.message = "",
+    super.state = ApiState.none,
     this.mealProgress = 0,
     this.medicationProgress = 0,
+    this.healthOption = HealthOptions.bloodPressure,
     this.medications = const [],
-    this.apiState = ApiState.none,
     this.routines = const {
       ReminderSchedule.morning: false,
       ReminderSchedule.afternoon: false,
@@ -16,29 +18,29 @@ class DashboardState extends Equatable {
     },
   });
 
-  final dynamic data;
-  final String error;
-  final ApiState apiState;
   final int mealProgress;
   final int medicationProgress;
+  final HealthOptions healthOption;
   final List<ReminderModel> medications;
   final Map<ReminderSchedule, bool> routines;
 
-  DashboardState copyWith({
-    dynamic data,
+  DashboardState<T> copyWith({
+    T? data,
+    ApiState? state,
     String? error,
-    ApiState? apiState,
     int? mealProgress,
     int? medicationProgress,
+    HealthOptions? healthOption,
     List<ReminderModel>? medications,
     Map<ReminderSchedule, bool>? routines,
   }) {
-    return DashboardState(
+    return DashboardState<T>(
       data: data ?? this.data,
       error: error ?? this.error,
-      apiState: apiState ?? this.apiState,
+      state: state ?? this.state,
       mealProgress: mealProgress ?? this.mealProgress,
       medicationProgress: medicationProgress ?? this.medicationProgress,
+      healthOption: healthOption ?? this.healthOption,
       medications: medications ?? this.medications,
       routines: routines ?? this.routines,
     );
@@ -48,10 +50,11 @@ class DashboardState extends Equatable {
   List<Object?> get props => [
         data,
         error,
-        apiState,
+        state,
         mealProgress,
+        medicationProgress,
+        healthOption,
         medications,
         routines,
-        medicationProgress,
       ];
 }

@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/utils/utils.dart';
-import '../../controller/dashboard_bloc.dart';
-
+import '../../bloc/dashboard_bloc.dart';
 
 class RoutineCard extends StatelessWidget {
   final ReminderSchedule schedule;
@@ -71,7 +70,8 @@ class RoutineCard extends StatelessWidget {
                 value: state.routines[schedule] ?? false,
                 onChanged: (value) {
                   context.read<DashboardBloc>().add(
-                        EditRoutineProgress(schedule, value ?? false),
+                        EditRoutineProgress(
+                            schedule: schedule, hasPassed: value ?? false),
                       );
                 },
               );

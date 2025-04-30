@@ -1,7 +1,10 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../../core/utils/extensions.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../bloc/dashboard_bloc.dart';
 import '../widgets/dashboard_appbar.dart';
 
 class ChartDetails extends StatelessWidget {
@@ -9,12 +12,17 @@ class ChartDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.watch<DashboardBloc>();
+
     return SafeArea(
       child: Padding(
         padding: REdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            const DashboardAppbar(title: "Heart rate", canNavigate: true),
+            DashboardAppbar(
+              title: bloc.state.healthOption.name,
+              canNavigate: true,
+            ),
             15.sizedBoxHeight,
           ],
         ),

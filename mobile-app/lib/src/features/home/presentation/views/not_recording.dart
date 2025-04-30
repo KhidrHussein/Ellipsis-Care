@@ -8,11 +8,11 @@ import '../../../../../core/utils/extensions.dart';
 import '../../../../shared/widgets/appbar.dart';
 import '../bloc/home_bloc.dart';
 
-final Map<String, String> _actions = {
-  AppAssets.icons.home.icAddReminder.path: "Add \nReminder",
-  AppAssets.icons.home.icSos.path: "SOS",
-  AppAssets.icons.home.icHealth.path: "Check health \nstatus",
-};
+// final Map<String, String> _actions = {
+//   AppAssets.icons.home.icAddReminder.path: "Add \nReminder",
+//   AppAssets.icons.home.icSos.path: "SOS",
+//   AppAssets.icons.home.icHealth.path: "Check health \nstatus",
+// };
 
 class NotRecording extends StatelessWidget {
   const NotRecording({super.key});

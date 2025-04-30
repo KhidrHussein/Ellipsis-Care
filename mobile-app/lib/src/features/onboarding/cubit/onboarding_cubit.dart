@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ellipsis_care/core/services/hive_storage_service.dart';
+import 'package:ellipsis_care/core/services/local_storage.dart';
 import 'package:ellipsis_care/core/utils/injector.dart';
 
 import '../../../../config/router/route_names.dart';
@@ -59,7 +59,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   }
 
   void _hasViewedOnboarding() async {
-    injector<HiveStorageService>().updateOnboardingStatus();
+    injector<LocalStorage>().updateOnboardingStatus();
     UtilHelpers.pushTo(RouteNames.setupAccount);
   }
 
@@ -74,7 +74,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   }
 
   void _initializeNotificationServiceChannel() async {
-    final hiveStorage = injector<HiveStorageService>();
+    final hiveStorage = injector<LocalStorage>();
     final notificationService = injector<NotificationService>();
 
     await notificationService.checkForPermission().then((permission) async {
@@ -88,7 +88,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
   void _setupEmergencyServices() async {
     final phoneService = injector<PhoneContactService>();
-    final hiveStorage = injector<HiveStorageService>();
+    final hiveStorage = injector<LocalStorage>();
 
     await phoneService.checkForPermission().then((permission) async {
       final contact = await phoneService.pickContact();

@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../config/gen/assets.gen.dart';
 import '../../../../../../core/utils/utils.dart';
-import '../../controller/dashboard_bloc.dart';
+import '../../bloc/dashboard_bloc.dart';
 import '../../../../../shared/widgets/progress_bar.dart';
 
 import 'nutrition_card.dart';

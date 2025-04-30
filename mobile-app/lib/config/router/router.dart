@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
-import '../../core/services/hive_storage_service.dart';
+import '../../core/services/local_storage.dart';
 import '../../core/utils/extensions.dart';
 import '../../core/utils/helpers.dart';
 import '../../src/features/authentication/presentation/view/create_password.dart';
@@ -48,11 +48,11 @@ final GoRouter router = GoRouter(
     TalkerRouteObserver(UtilHelpers.logger),
   ],
   redirect: (context, state) async {
-    final UserModel? user = await injector<HiveStorageService>().getUser();
+    final UserModel? user = await injector<LocalStorage>().getUser();
     final String? accessToken =
         await injector<SecureStorage>().getAccessToken();
     final bool? hasOnboard =
-        await injector<HiveStorageService>().getOnboardingStatus();
+        await injector<LocalStorage>().getOnboardingStatus();
 
     accessToken.printLog();
     hasOnboard.printLog();

@@ -1,4 +1,4 @@
-import '../../../core/services/hive_storage_service.dart';
+import '../../../core/services/local_storage.dart';
 import '../../../core/utils/injector.dart';
 import '../models/user/user_model.dart';
 import 'package:equatable/equatable.dart';
@@ -13,7 +13,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<DeleteUserEvent>(_delete);
   }
 
-  final HiveStorageService _hiveStorage = injector<HiveStorageService>();
+  final LocalStorage _hiveStorage = injector<LocalStorage>();
 
   void _getUser(GetUserEvent event, Emitter<UserState> emit) async {
     await _hiveStorage.getUser().then((user) {

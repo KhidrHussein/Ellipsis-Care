@@ -1,4 +1,4 @@
-import '../../../../../core/services/hive_storage_service.dart';
+import '../../../../../core/services/local_storage.dart';
 import '../../../../../core/services/oauth_service.dart';
 import '../../../../../core/services/secure_storage.dart';
 import '../../../../../core/utils/app_state.dart';
@@ -16,7 +16,7 @@ part 'auth_state.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc()
-      : _hiveStorage = injector<HiveStorageService>(),
+      : _hiveStorage = injector<LocalStorage>(),
         _oAuthService = injector<OAuthService>(),
         _apiRepository = injector<AuthenticationRepository>(),
         super(const AuthenticationState()) {
@@ -29,7 +29,7 @@ class AuthenticationBloc
   }
 
   final AuthenticationRepository _apiRepository;
-  final HiveStorageService _hiveStorage;
+  final LocalStorage _hiveStorage;
   final OAuthService _oAuthService;
 
   void _checkIfEmailExists(

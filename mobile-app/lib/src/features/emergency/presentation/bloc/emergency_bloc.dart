@@ -5,7 +5,7 @@ import '../../../../../core/utils/utils.dart';
 import '../../../../../core/services/location_service.dart';
 
 import '../../../../../core/services/contacts_service.dart';
-import '../../../../../core/services/hive_storage_service.dart';
+import '../../../../../core/services/local_storage.dart';
 import '../../domain/emergency_contact.dart';
 
 part 'emergency_events.dart';
@@ -21,7 +21,7 @@ class EmergencyContactBloc extends Bloc<EmergencyEvents, EmergencyState> {
   }
 
   final PhoneContactService _phoneService = injector<PhoneContactService>();
-  final HiveStorageService _hiveStorage = injector<HiveStorageService>();
+  final LocalStorage _hiveStorage = injector<LocalStorage>();
   final TwilioPhoneService _twilioPhoneService = injector<TwilioPhoneService>();
 
   void _fetchContacts(
@@ -56,7 +56,6 @@ class EmergencyContactBloc extends Bloc<EmergencyEvents, EmergencyState> {
 
       await _twilioPhoneService.sendSms(
           phoneNumber: "+2348134726507", message: sosMessage);
-          
     } catch (e) {
       emit(
         state.copyWith(

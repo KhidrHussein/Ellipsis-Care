@@ -7,7 +7,7 @@ import 'package:talker_bloc_logger/talker_bloc_logger.dart';
 
 import 'config/env.dart';
 import 'core/services/background_audio_handler.dart';
-import 'core/services/hive_storage_service.dart';
+import 'core/services/local_storage.dart';
 import 'core/services/notification_service.dart';
 import 'core/utils/injector.dart';
 import 'ellipsis_care.dart';
@@ -21,10 +21,10 @@ Future<void> initializeApp({FirebaseOptions? firebaseOptions}) async {
   initService();
 
   // Initialize [Hive]
-  await injector<HiveStorageService>().initializeStorage();
+  await injector<LocalStorage>().initializeStorage();
 
   // Register [Storage Service] type adapters{
-  injector<HiveStorageService>().registerModels();
+  injector<LocalStorage>().registerModels();
 
   injector<BackgroundAudioService>().init();
 

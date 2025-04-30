@@ -27,10 +27,10 @@ class DashboardSection extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ).alignLeft,
-        10.sizedBoxHeight,
+        20.sizedBoxHeight,
         Container(
           padding: REdgeInsets.all(15),
-          constraints: BoxConstraints(minWidth: .9.sw, minHeight: .2.sh),
+          constraints: BoxConstraints(minWidth: .9.sw),
           decoration: BoxDecoration(
             color: context.themeData.scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(21.r),
