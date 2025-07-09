@@ -1,24 +1,19 @@
-import 'package:ellipsis_care/core/utils/enums.dart';
-
-import '../../../../config/gen/assets.gen.dart';
-import 'package:flutter/foundation.dart';
-import 'package:logman/logman.dart';
-
-import '../../../../core/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/utils/helpers.dart';
-
+import '../../../../config/gen/assets.gen.dart';
 import '../../../../config/router/route_names.dart';
 import '../../../../core/constants/colors.dart';
+import '../../../../core/utils/enums.dart';
+import '../../../../core/utils/extensions.dart';
+import '../../../../core/utils/helpers.dart';
 
 part 'bottom_bar_cubit.dart';
 
-class NavigatorShell extends StatefulWidget {
+class NavigatorShell extends StatelessWidget {
   final Widget child;
   final GoRouterState routerState;
 
@@ -29,27 +24,10 @@ class NavigatorShell extends StatefulWidget {
   });
 
   @override
-  State<NavigatorShell> createState() => _NavigatorShellState();
-}
-
-class _NavigatorShellState extends State<NavigatorShell> {
-  @override
-  void initState() {
-    super.initState();
-    if (kDebugMode) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Logman.instance.attachOverlay(
-          context: context,
-        );
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: widget.child,
-      backgroundColor: switch (widget.routerState.matchedLocation) {
+      body: child,
+      backgroundColor: switch (routerState.matchedLocation) {
         '/settings' ||
         '/dashboard' =>
           context.themeExtension.dashboardScaffoldColor,

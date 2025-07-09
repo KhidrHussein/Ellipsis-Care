@@ -1,12 +1,9 @@
-import '../../../../../config/gen/assets.gen.dart';
 import '../../../../../config/gen/fonts.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../widgets/pickers/check_type_picker.dart';
 import '../widgets/pickers/custom_date_picker.dart';
-import '../widgets/pickers/radio_type_picker.dart';
 
 import '../../../../../core/utils/utils.dart';
 import '../bloc/reminder_bloc.dart';
@@ -25,17 +22,25 @@ class _AddReminderState extends State<AddReminder> {
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _dosageController = TextEditingController();
+  final TextEditingController _mealNameController = TextEditingController();
+  final TextEditingController _mealNotesController = TextEditingController();
 
   final ValueNotifier<ReminderType> _reminderType =
       ValueNotifier(ReminderType.food);
   final ValueNotifier<ReminderInterval> _reminderInterval =
       ValueNotifier(ReminderInterval.daily);
+  final ValueNotifier<ReminderNotificationSettings> _reminderNotification =
+      ValueNotifier(ReminderNotificationSettings.fiveMins);
+  final ValueNotifier<ReminderMealType> _mealType =
+      ValueNotifier(ReminderMealType.breakfast);
+
   final ValueNotifier<DateTime?> _startDate = ValueNotifier(null);
   final ValueNotifier<DateTime?> _endDate = ValueNotifier(null);
   final ValueNotifier<TimeOfDay> _startReminderAt =
       ValueNotifier(TimeOfDay.now());
   final ValueNotifier<TimeOfDay> _endReminderAt =
       ValueNotifier(TimeOfDay.now());
+  final ValueNotifier<TimeOfDay> _mealTime = ValueNotifier(TimeOfDay.now());
 
   void _createEventAndPop() {
     final bloc = context.read<ReminderBloc>();
@@ -81,242 +86,265 @@ class _AddReminderState extends State<AddReminder> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: REdgeInsets.symmetric(horizontal: 12, vertical: 20),
-      margin: REdgeInsets.symmetric(horizontal: 16, vertical: .08.sh),
-      decoration: BoxDecoration(
-        color: context.themeExtension.reminderColor,
-        borderRadius: BorderRadius.circular(5.r),
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        title: Text(
+          "Add New Reminder",
+          style: context.textTheme.headlineSmall?.copyWith(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+            fontFamily: FontFamily.manrope,
+          ),
+        ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Text(
-            "Add New Reminder",
-            style: context.textTheme.headlineMedium?.copyWith(
-              fontSize: 24.sp,
-              fontWeight: FontWeight.w700,
-              fontFamily: FontFamily.visbyRoundCF,
-            ),
-          ),
-          10.sizedBoxHeight,
-          AddReminderSection(
-            sectionName: "Name",
-            subsection: TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                hintText: "Input the name of the reminder",
-              ),
-            ),
-          ),
-          AddReminderSection(
-            sectionName: "Type",
-            subsection: Row(
-              children: ReminderType.values
-                  .map(
-                    (reminderType) => ValueListenableBuilder(
-                      valueListenable: _reminderType,
-                      builder: (context, value, child) =>
-                          _buildReminderTypeButton(reminderType, value),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-          AddReminderSection(
-            sectionName: "Schedule",
-            subsection: Row(
-              children: ReminderSchedule.values
-                  .map(
-                    (schedule) => CheckTypePicker(
-                      scheduleType: schedule,
-                      schedules: _manageSchedules,
-                      option: schedule.scheduleName,
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-          Row(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: REdgeInsets.symmetric(horizontal: 16, vertical: 30),
+          child: Column(
             children: [
-              Expanded(
-                child: AddReminderSection(
-                  sectionName: "Interval (Daily)",
-                  subsection: DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: context.themeExtension.reminderInverseColor),
-                      borderRadius: BorderRadius.circular(5.r),
+              AddReminderSection(
+                sectionName: "Reminder Type",
+                subsection: Row(
+                  children: [
+                    for (ReminderType type in ReminderType.values)
+                      ReminderTypeButton(type: type, notifier: _reminderType)
+                  ],
+                ),
+              ),
+              AnimatedCrossFade(
+                duration: Durations.short4,
+                firstChild: _DrugReminderDetails(
+                  name: _nameController,
+                  dosage: _dosageController,
+                  intervalNotifier: _reminderInterval,
+                  startDateNotifier: _startDate,
+                  startTimeNotifier: _startReminderAt,
+                  endDateNotifier: _endDate,
+                  endTimeNotifier: _endReminderAt,
+                  notificationNotifier: _reminderNotification,
+                ),
+                secondChild: _FoodReminderDetails(
+                  notes: _mealNotesController,
+                  mealName: _mealNameController,
+                  mealType: _mealType,
+                  mealTime: _mealTime,
+                ),
+                crossFadeState: switch (_reminderType.value) {
+                  ReminderType.drug => CrossFadeState.showFirst,
+                  ReminderType.food => CrossFadeState.showSecond
+                },
+              ),
+              FilledButton(
+                onPressed: _createEventAndPop,
+                style: context.filledButtonTheme?.copyWith(
+                  textStyle: WidgetStatePropertyAll(
+                    TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: FontFamily.visbyRoundCF,
                     ),
-                    child: ValueListenableBuilder(
-                      valueListenable: _reminderInterval,
-                      builder: (context, value, child) =>
-                          _buildDropDownButton(value),
+                  ),
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.r),
                     ),
                   ),
                 ),
+                child: const Text("Set Reminder"),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DrugReminderDetails extends StatelessWidget {
+  const _DrugReminderDetails({
+    required this.name,
+    required this.dosage,
+    required this.intervalNotifier,
+    required this.notificationNotifier,
+    required this.startDateNotifier,
+    required this.startTimeNotifier,
+    required this.endDateNotifier,
+    required this.endTimeNotifier,
+  });
+
+  final TextEditingController name;
+  final TextEditingController dosage;
+  final ValueNotifier<ReminderInterval> intervalNotifier;
+  final ValueNotifier<ReminderNotificationSettings> notificationNotifier;
+  final ValueNotifier<DateTime?> startDateNotifier;
+  final ValueNotifier<TimeOfDay> startTimeNotifier;
+  final ValueNotifier<TimeOfDay> endTimeNotifier;
+  final ValueNotifier<DateTime?> endDateNotifier;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 10,
+      children: [
+        AddReminderSection(
+          sectionName: "Name of Drug",
+          subsection: TextField(
+            controller: name,
+            decoration: const InputDecoration(
+              hintText: "Paracetamol",
+            ),
+          ),
+        ),
+        AddReminderSection(
+          sectionName: "Dosage",
+          subsection: TextField(
+            controller: dosage,
+            decoration: const InputDecoration(
+              hintText: "500mg, 2 tablets, 10ml",
+            ),
+          ),
+        ),
+        AddReminderSection(
+          sectionName: "Frequency (Daily)",
+          subsection: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: context.themeExtension.reminderInverseColor),
+              borderRadius: BorderRadius.circular(5.r),
+            ),
+            child: ReminderDropDown<ReminderInterval>(
+              items: ReminderInterval.values,
+              notifier: intervalNotifier,
+            ),
+          ),
+        ),
+        AddReminderSection(
+          sectionName: "Duration of Medication",
+          subsection: Row(
+            children: [
+              CustomDatePicker(
+                hint: "Start Date",
+                dateListenable: startDateNotifier,
+                timeListenable: startTimeNotifier,
               ),
               16.sizedBoxWidth,
-              Expanded(
-                child: AddReminderSection(
-                  sectionName: "Dose (Daily)",
-                  subsection: TextField(
-                    controller: _dosageController,
-                    decoration:
-                        const InputDecoration(hintText: "1 Tablet, 100 ml"),
-                  ),
-                ),
+              CustomDatePicker(
+                hint: "End Date",
+                dateListenable: endDateNotifier,
+                timeListenable: endTimeNotifier,
               ),
             ],
           ),
-          AddReminderSection(
-            sectionName: "Duration",
-            subsection: Row(
-              children: [
-                CustomDatePicker(
-                  hint: "Start Date",
-                  dateListenable: _startDate,
-                  timeListenable: _startReminderAt,
-                ),
-                16.sizedBoxWidth,
-                CustomDatePicker(
-                  hint: "End Date",
-                  dateListenable: _endDate,
-                  timeListenable: _endReminderAt,
-                ),
-              ],
+        ),
+        AddReminderSection(
+          sectionName: "Frequency (Daily)",
+          subsection: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: context.themeExtension.reminderInverseColor),
+              borderRadius: BorderRadius.circular(5.r),
+            ),
+            child: ReminderDropDown<ReminderInterval>(
+              items: ReminderInterval.values,
+              notifier: intervalNotifier,
             ),
           ),
-          AddReminderSection(
-            sectionName: "Instruction",
-            subsection: Row(
-              children: ReminderInstruction.values.map(
-                (instruction) {
-                  return RadioTypePicker<ReminderInstruction>(
-                    value: instruction,
-                    option: instruction.instructionName,
-                    onInstructionSelected: (value) {
-                      if (value != null) {
-                        if (!_instruction.contains(value)) {
-                          _instruction.add(value);
-                        } else {
-                          _instruction.remove(value);
-                        }
-                      }
-                    },
-                  );
-                },
-              ).toList(),
+        ),
+        AddReminderSection(
+          sectionName: "Notification Preferences",
+          subsection: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: context.themeExtension.reminderInverseColor,
+              ),
+              borderRadius: BorderRadius.circular(5.r),
+            ),
+            child: ReminderDropDown<ReminderNotificationSettings>(
+              items: ReminderNotificationSettings.values,
+              notifier: notificationNotifier,
             ),
           ),
-          FilledButton(
-            onPressed: _createEventAndPop,
-            style: context.filledButtonTheme?.copyWith(
-              textStyle: WidgetStatePropertyAll(
-                TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: FontFamily.visbyRoundCF,
-                ),
-              ),
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50.r),
-                ),
-              ),
-            ),
-            child: const Text("Add Reminder"),
-          )
-        ],
-      ),
+        ),
+      ],
     );
   }
+}
 
-  Widget _buildReminderTypeButton(
-      ReminderType reminderType, ReminderType currentType) {
-    return GestureDetector(
-      onTap: () => _reminderType.value = reminderType,
-      child: AnimatedContainer(
-        duration: Durations.medium2,
-        margin: REdgeInsets.only(right: 10),
-        padding: REdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 10,
+class _FoodReminderDetails extends StatelessWidget {
+  const _FoodReminderDetails({
+    required this.notes,
+    required this.mealName,
+    required this.mealType,
+    required this.mealTime,
+  });
+
+  final TextEditingController mealName;
+  final TextEditingController notes;
+  final ValueNotifier<TimeOfDay> mealTime;
+  final ValueNotifier<ReminderMealType> mealType;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 10,
+      children: [
+        AddReminderSection(
+          sectionName: "Meal Type",
+          subsection: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: context.themeExtension.reminderInverseColor),
+              borderRadius: BorderRadius.circular(5.r),
+            ),
+            child: ReminderDropDown<ReminderMealType>(
+              items: ReminderMealType.values,
+              notifier: mealType,
+            ),
+          ),
         ),
-        decoration: BoxDecoration(
-          color: switch (reminderType) {
-            ReminderType.drug => context.themeExtension.drugBgColor,
-            ReminderType.food => context.themeExtension.foodBgColor,
-          },
-          borderRadius: BorderRadius.circular(5.r),
-          border: currentType == reminderType
-              ? Border.all(color: context.themeExtension.reminderInverseColor)
-              : null,
+        AddReminderSection(
+          sectionName: "Name of Meal",
+          subsection: TextField(
+            controller: mealName,
+            decoration: const InputDecoration(
+              hintText: "Amala with Gbegiri and Ewedu",
+            ),
+          ),
         ),
-        child: Column(
-          children: [
-            switch (reminderType) {
-              ReminderType.drug => AppAssets.icons.icDrug.svg(
-                  width: 32,
-                  colorFilter: ColorFilter.mode(
-                    context.themeExtension.drugColor,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ReminderType.food => AppAssets.icons.icFood.svg(
-                  width: 32,
-                  colorFilter: ColorFilter.mode(
-                    context.themeExtension.foodColor,
-                    BlendMode.srcIn,
-                  ),
-                ),
-            },
-            10.sizedBoxHeight,
-            Text(
-              reminderType.name,
-              style: context.textTheme.bodyMedium?.copyWith(
-                fontSize: 14.sp,
-                color: context.themeExtension.reminderInverseColor
-                    .withValues(alpha: .3),
+        AddReminderSection(
+          sectionName: "Time",
+          subsection: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5.r),
+              border: Border.all(
+                color: context.themeExtension.reminderInverseColor,
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDropDownButton(ReminderInterval? value) {
-    return DropdownButton<ReminderInterval>(
-      elevation: 4,
-      menuWidth: 84.w,
-      isExpanded: true,
-      borderRadius: BorderRadius.circular(5.r),
-      padding: REdgeInsets.only(left: 12),
-      style: context.textTheme.labelSmall?.copyWith(
-        fontSize: 16.sp,
-        fontWeight: FontWeight.w400,
-        color: context.textTheme.labelSmall?.color!.withValues(alpha: .87),
-      ),
-      underline: const SizedBox(),
-      hint: Text(
-        "Daily, twice, etc",
-        style: context.textTheme.labelSmall?.copyWith(
-          fontSize: 14.sp,
-          color: context.textTheme.labelSmall?.color!.withValues(alpha: .3),
-        ),
-      ),
-      value: value,
-      items: ReminderInterval.values
-          .map(
-            (interval) => DropdownMenuItem<ReminderInterval>(
-              value: interval,
-              child: Text(interval.intervalName),
+            child: Padding(
+              padding: REdgeInsets.symmetric(vertical: 12, horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("data"),
+                  Icon(Icons.lock_clock_outlined),
+                ],
+              ),
             ),
-          )
-          .toList(),
-      onChanged: (value) => _reminderInterval.value = value!,
+          ),
+        ),
+        AddReminderSection(
+          sectionName: "Dietary Notes (optional)",
+          subsection: TextField(
+            maxLines: 3,
+            controller: notes,
+            decoration: const InputDecoration(
+              hintText: "Low-carb meal preferred. Avoid dairy.",
+            ),
+          ),
+        ),
+        20.sizedBoxHeight
+      ],
     );
   }
 }

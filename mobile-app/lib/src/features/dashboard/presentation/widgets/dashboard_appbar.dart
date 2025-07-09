@@ -8,14 +8,18 @@ import '../../../../../config/router/route_names.dart';
 import '../../../../../core/utils/extensions.dart';
 
 class DashboardAppbar extends StatelessWidget {
-  final String title;
-  final bool canNavigate;
-
   const DashboardAppbar({
     super.key,
     required this.title,
-    this.canNavigate = false,
+    this.enableAddButton = false,
+    this.showSaveButton = false,
+    this.onSaveButtonPressed,
   });
+
+  final String title;
+  final bool enableAddButton;
+  final bool showSaveButton;
+  final VoidCallback? onSaveButtonPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +37,23 @@ class DashboardAppbar extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        if (canNavigate) ...<Widget>[
+        if (enableAddButton) ...<Widget>[
           const Spacer(),
           IconButton(
             onPressed: () => UtilHelpers.pushTo(RouteNames.addData),
             icon: const Icon(Icons.add),
           )
+        ],
+        if (showSaveButton) ...<Widget>[
+          const Spacer(),
+          GestureDetector(
+            onTap: onSaveButtonPressed,
+            child: Text(
+              "Save",
+              style: context.textTheme.titleSmall
+                  ?.copyWith(fontWeight: FontWeight.w600),
+            ),
+          ),
         ]
       ],
     );

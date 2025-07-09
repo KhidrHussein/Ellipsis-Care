@@ -14,7 +14,6 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<UserBloc>().add(GetUserEvent());
     final bloc = context.watch<UserBloc>().state;
 
     return CircleAvatar(

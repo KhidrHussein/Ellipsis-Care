@@ -10,8 +10,9 @@ import '../../../../../../core/utils/extensions.dart';
 import '../../../../../../core/utils/helpers.dart';
 
 class ChartSection extends StatelessWidget {
-  final String chartTitle;
   const ChartSection({super.key, required this.chartTitle});
+
+  final String chartTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,7 @@ class ChartSection extends StatelessWidget {
                   Expanded(
                     flex: 1,
                     child: Padding(
-                    padding: REdgeInsets.only(left: 15, right: 12),
+                      padding: REdgeInsets.only(left: 15, right: 12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -68,7 +69,8 @@ class ChartSection extends StatelessWidget {
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                           4.verticalSpace,
-                          Text("24/04/2025", style: context.textTheme.labelSmall),
+                          Text("24/04/2025",
+                              style: context.textTheme.labelSmall),
                           20.verticalSpace,
                           Text(
                             " ${bloc.state.healthOption.unitsOfMeasurement.first}",
@@ -76,12 +78,12 @@ class ChartSection extends StatelessWidget {
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                           4.verticalSpace,
-                          Text("1 min ago", style: context.textTheme.labelSmall),
+                          Text("1 min ago",
+                              style: context.textTheme.labelSmall),
                         ],
                       ),
                     ),
                   ),
-          
                   Expanded(
                     flex: 3,
                     child: SizedBox(

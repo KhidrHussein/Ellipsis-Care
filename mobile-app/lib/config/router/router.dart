@@ -1,3 +1,4 @@
+import 'package:ellipsis_care/src/features/reminders/presentation/views/add_reminder.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -195,6 +196,16 @@ final GoRouter router = GoRouter(
           pageBuilder: (context, state) => const MaterialPage<Reminders>(
             child: Reminders(),
           ),
+          routes: [
+            GoRoute(
+              path: 'add_reminder',
+              name: RouteNames.addReminder,
+              parentNavigatorKey: _mainRouterKey,
+              pageBuilder: (context, state) => const MaterialPage<AddReminder>(
+                child: AddReminder(),
+              ),
+            ),
+          ],
         ),
         GoRoute(
           path: '/sos',

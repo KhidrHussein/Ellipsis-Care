@@ -1,3 +1,5 @@
+import 'package:ellipsis_care/config/router/route_names.dart';
+
 import '../../../../../core/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,7 +58,7 @@ class ReminderSheet extends StatelessWidget {
                 listener: (context, state) {
                   switch (state.apiState) {
                     case ApiState.failed:
-                           UtilHelpers.showError(state.error);
+                      UtilHelpers.showError(state.error);
                       break;
 
                     default:
@@ -92,11 +94,7 @@ class ReminderSheet extends StatelessWidget {
               ),
               SliverToBoxAdapter(
                 child: GestureDetector(
-                  onTap: () {
-                    UtilHelpers.showReminderDialog(context: context);
-                    // UtilHelpers.showSnackBar(
-                    // context: context, message: "I'm working");
-                  },
+                  onTap: () => UtilHelpers.pushTo(RouteNames.addReminder),
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Container(

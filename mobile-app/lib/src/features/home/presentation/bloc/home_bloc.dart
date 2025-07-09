@@ -115,10 +115,4 @@ class HomeBloc extends Bloc<HomeEvents, HomeState> {
       );
     }
   }
-
-  // @override
-  // void onChange(Change<HomeState> change) {
-  //   super.onChange(change);
-  //   "$runtimeType ${change.currentState.apiState}".printLog();
-  // }
 }

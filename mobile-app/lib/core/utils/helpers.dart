@@ -119,13 +119,6 @@ class UtilHelpers {
     );
   }
 
-  static void showReminderDialog({required BuildContext context}) async {
-    await showAdaptiveDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) => const AddReminder(),
-    );
-  }
 
   static Talker logger = TalkerFlutter.init(
     settings: TalkerSettings(

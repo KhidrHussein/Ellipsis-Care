@@ -102,6 +102,17 @@ enum SyncScore {
   final Color bgColor;
 }
 
+enum ReminderNotificationSettings {
+  whenReminderStarts,
+  fiveMins,
+  tenMins,
+  fifteenMins,
+  thirtyMins,
+  oneHour;
+}
+
+enum ReminderMealType { breakfast, lunch, dinner, snack }
+
 @HiveType(typeId: 4)
 enum ReminderInterval {
   @HiveField(0)

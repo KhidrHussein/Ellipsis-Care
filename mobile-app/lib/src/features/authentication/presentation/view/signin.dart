@@ -1,9 +1,7 @@
-import '../../../../../config/env.dart';
 import '../../../../../core/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:logman/logman.dart';
 
 import '../../../../../config/router/route_names.dart';
 import '../bloc/auth_bloc.dart';
@@ -26,11 +24,11 @@ class _SigninState extends State<Signin> {
   @override
   void initState() {
     super.initState();
-    if (Env.isDev) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Logman.instance.attachOverlay(context: context);
-      });
-    }
+    // if (Env.isDev) {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     Logman.instance.attachOverlay(context: context);
+    //   });
+    // }
   }
 
   @override
@@ -113,15 +111,16 @@ class _SigninState extends State<Signin> {
                       onPressed: switch (blocState.state) {
                         ApiState.loading => null,
                         _ => () {
-                            if (_formKey.currentState!.validate()) {
-                              authenticationBloc.add(
-                                SignInEvent(
-                                  email: _emailController.text,
-                                  password: _passwordController.text,
-                                ),
-                              );
-                            }
-                            UtilHelpers.killKeyboard();
+                            UtilHelpers.pushTo(RouteNames.home);
+                            // if (_formKey.currentState!.validate()) {
+                            //   authenticationBloc.add(
+                            //     SignInEvent(
+                            //       email: _emailController.text,
+                            //       password: _passwordController.text,
+                            //     ),
+                            //   );
+                            // }
+                            // UtilHelpers.killKeyboard();
                           }
                       },
                       child: const Text("Continue"),

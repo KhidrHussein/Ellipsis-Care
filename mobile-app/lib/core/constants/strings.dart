@@ -206,3 +206,11 @@ Yes. If you have family members or caregivers assisting you, they can be granted
 
 16. How does Ellipsis Care support different languages?
 Our AI-powered voice assistant supports multiple languages to ensure ease of use for non-English speakers. You can choose your preferred language during the setup process.""";
+
+const String kHealthChartInfo = """
+  This chart provides a clear visualization of blood pressure readings over time, enabling users to monitor their cardiovascular health effectively. The chart features two primary lines representing systolic (top number) and diastolic (bottom number) pressures, measured in millimeters of mercury (mmHg).
+
+Users can easily identify trends and fluctuations in their blood pressure, which can prompt timely discussions with healthcare providers. Data points are interactive, allowing users to tap for more detailed information about each reading, including date, time, and any relevant notes on lifestyle changes or medications.
+
+Regular monitoring using this chart can assist in maintaining optimal health and preventing potential complications related to hypertension.
+""";

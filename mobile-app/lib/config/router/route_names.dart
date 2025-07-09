@@ -21,6 +21,7 @@ class RouteNames {
   static const String callEmergencyContacts = "call_emergency_contacts_page";
 
   static const String reminders = "reminders_page";
+  static const String addReminder = "add_reminder_page";
 
   static const String settings = "settings_page";
   static const String complianceScore = "compliance_score_page";
